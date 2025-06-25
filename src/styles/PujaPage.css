@@ -1,0 +1,106 @@
+
+.puja-page {
+  background-color: #f9f9f9;
+}
+
+.puja-card-container {
+  display: flex;
+  left: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.puja-card {
+  width: 300px;
+  height: 450px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.card-body {
+  padding: 12px 14px;
+  flex-grow: 1;
+  overflow: hidden;
+}
+.puja-page {
+  background-color: #f9f9f9;
+  padding: 30px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.puja-content-wrapper {
+  width: 100%;
+  max-width: 1100px;
+  padding: 0 20px;
+}
+
+.tag-label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #ffc107;
+  color: #000;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: bold;
+  border-radius: 5px;
+  z-index: 2;
+}
+
+.card-img-top {
+  height: 150px;
+  object-fit: cover;
+}
+
+.card-body {
+  padding: 12px 14px;
+  flex-grow: 1;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #d9534f;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.card-description {
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.card-benefit {
+  font-size: 12px;
+  font-style: italic;
+  color: #28a745;
+  margin-bottom: 6px;
+}
+
+.card-info {
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.card-footer {
+  padding: 10px 14px;
+  border-top: 1px solid #eee;
+  background: #fff;
+}
+
+.btn-success {
+  font-size: 13px;
+  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 6px;
+}

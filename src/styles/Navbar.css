@@ -1,0 +1,220 @@
+/* Navbar wrapper */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 8px 40px;
+  height: 64px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Logo */
+.logo {
+  height: 44px;
+  object-fit: contain;
+}
+
+/* Nav links center section */
+.nav-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: #080101;
+  font-weight: bold; /* or use 700 */
+  font-size: 13px; /* adjust as needed */
+  transition: color 0.3s;
+}
+
+
+.nav-links li a:hover {
+  color: #c0392b;
+}
+
+/* Right buttons */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Nav buttons like login, cart */
+.nav-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  background-color: transparent;
+  border: 2px solid #070707;
+  /* color: #c0392b; */
+  color: #070707;
+  padding: 6px 12px;
+  border-radius: 18px;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  height: 36px;
+}
+
+.nav-button:hover {
+  background-color: #c0392b;
+  color: #fff;
+}
+
+/* Icons inside buttons */
+.icon {
+  font-size: 16px;
+}
+
+/* Hamburger menu */
+.hamburger {
+  display: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #c0392b;
+}
+
+/* Language Dropdown */
+#google-language-container {
+  margin-right: 5px;
+  display: flex;
+  align-items: center;
+  height: 36px;
+}
+
+.language-select {
+  padding: 1px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  height: 36px;
+}
+
+/* Profile Avatar and Dropdown */
+.profile-dropdown-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 36px;
+}
+
+.profile-avatar {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+
+
+/* Make profile icon look like login/cart buttons */
+.profile-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: 2px solid #070707;
+  padding: 6px 12px;
+  border-radius: 18px;
+  height: 36px;
+  cursor: pointer;
+}
+
+.icon {
+  font-size: 16px;
+  color: #070707;
+}
+
+/* Remove image styles if not using image avatar anymore */
+.profile-avatar img {
+  display: none;
+}
+
+/* Dropdown Menu */
+.profile-dropdown-menu {
+  position: absolute;
+  top: 69px;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  width: 180px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 999;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.dropdown-item .icon {
+  margin-right: 10px;
+}
+
+.dropdown-item:hover {
+  background-color: #f6f6f6;
+}
+
+.logout {
+  color: #e74c3c;
+  border-top: 1px solid #eee;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .nav-center {
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    padding: 20px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-center.open {
+    display: flex;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .nav-right {
+    gap: 8px;
+  }
+}
