@@ -1,22 +1,8 @@
-// // src/api/api.js
-// import axios from "axios";
 
-// const BASE_URL = "https://beta.devalayas.com";
+// import axios from 'axios';
 
 // const api = axios.create({
-//   baseURL: BASE_URL,
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-// });
-
-// // ✅ Interceptor to attach the token
-// api.interceptors.request.use((config) => {
-//   const token = localStorage.getItem("c91ae32509fa4ce4e8c21aa4a86118100f97c4f2");
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//   }
-//   return config;
+//   baseURL: 'https://beta.devalayas.com',
 // });
 
 // export default api;
@@ -24,52 +10,97 @@
 
 
 
-// src/api/api.js
-// import axios from "axios";
 
-// const BASE_URL = "https://beta.devalayas.com";
+import axios from 'axios';
 
-// const api = axios.create({
-//   baseURL: BASE_URL,
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-// });
-
-// // ✅ Attach token from localStorage (stored as "authToken")
-// api.interceptors.request.use((config) => {
-//   const token = localStorage.getItem("authToken","c91ae32509fa4ce4e8c21aa4a86118100f97c4f2");
-//   if (token) {
-//     config.headers.Authorization = `Token ${token}`; // ✅ DRF format
-//   }
-//   return config;
-// });
-
-// export default api;
-
-
-
-
-// src/api/api.js
-import axios from "axios";
-
-const BASE_URL = "https://beta.devalayas.com";
-
-// ✅ Axios instance
 const api = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  baseURL: 'https://beta.devalayas.com',
 });
 
-// ✅ Interceptor to attach token from localStorage
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("authToken"); // ✅ Correct: only one argument
-  if (token) {
-    config.headers.Authorization = `Token ${token}`; // ✅ Correct: DRF-style auth
+// Firebase Placeholder (if needed)
+const initializeFirebase = () => {
+  // firebase.initializeApp({...});
+};
+
+const fetchTemple = async (templeId) => {
+  try {
+    const response = await api.get(`/devotee/temple/${templeId}`);
+    return response.data;
+  } catch (err) {
+    console.error(err);
+    return {};
   }
-  return config;
-});
+};
 
+const fetchPoojas = async (templeId, search) => {
+  try {
+    const response = await api.get(`/devotee/pooja/?temple=${templeId}&search=${search}`);
+    const results = response.data.results;
+    const regex = new RegExp('prasad', 'i');
+    return {
+      poojas: results.filter(item => !regex.test(item.name)),
+      prasads: results.filter(item => regex.test(item.name)),
+    };
+  } catch (err) {
+    console.error(err);
+    return { poojas: [], prasads: [] };
+  }
+};
+
+const fetchConstants = async () => {
+  try {
+    const response = await api.get("/devotee/constants/");
+    return response.data;
+  } catch (err) {
+    console.error(err);
+    return {};
+  }
+};
+
+const requestPooja = async (poojaId) => {
+  try {
+    await api.get(`/devotee/pooja/${poojaId}/request`);
+    return true;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+};
+
+const fetchPaymentKey = async () => {
+  try {
+    const response = await api.get("/devotee/payment_key/");
+    return response.data.key;
+  } catch (err) {
+    console.error(err);
+    return "";
+  }
+};
+
+const placeOrder = async (rz_response, paymentId, orderId) => {
+  try {
+    const data = {
+      razorpay_response: rz_response,
+      request_id: paymentId,
+    };
+    await api.post("/devotee/pooja_request/payment/", data);
+    return true;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+};
+
+const bulkPoojaRequest = async (cart) => {
+  try {
+    const payload = { requests: cart };
+    const response = await api.post('/devotee/bulk_pooja_request/', payload);
+    return response.data;
+  } catch (err) {
+    console.error(err.response?.data?.errors?.[0]?.message?.[0] || 'Error in bulk request');
+    return [];
+  }
+};
+
+// ✅ Add this at the end
 export default api;

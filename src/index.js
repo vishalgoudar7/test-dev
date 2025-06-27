@@ -9,7 +9,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 // 🔽 Redux
 import { Provider } from 'react-redux';
-import { store } from './redux/store'; // Make sure this path is correct
+import store from './redux/store'; // Make sure this path is correct
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
