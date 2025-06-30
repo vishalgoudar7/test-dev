@@ -8,6 +8,8 @@ import '../styles/TempleDetails.css';
 import api from '../api/api';
 
 
+
+
 const TempleDetails = () => {
   const { id } = useParams();
   const [temple, setTemple] = useState(null);
