@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchTemples, setSearch } from '../redux/templeSlice';
@@ -22,7 +20,6 @@ const TempleList = () => {
   const {
     temples = [],
     loading = false,
-    error = '',
     search = ''
   } = useSelector((state) => state.temple || {});
 
@@ -106,22 +103,33 @@ const TempleList = () => {
 
       {!loading && (
         <div className="pagination-container">
-          <button className="btn btn-outline-secondary" onClick={handlePrev} disabled={page === 1}>
+          <button className="btn btn-outline-secondary btn-sm" onClick={handlePrev} disabled={page === 1}>
             Prev
           </button>
 
-          {[...Array(totalPages)].map((_, i) => (
-            <button
-              key={i + 1}
-              onClick={() => handlePageClick(i + 1)}
-              className={`btn ${page === i + 1 ? 'btn-primary' : 'btn-outline-primary'}`}
-            >
-              {i + 1}
-            </button>
-          ))}
+          {/* Show up to 3 page numbers: current, previous, next */}
+          {(() => {
+            let start = Math.max(1, page - 1);
+            let end = Math.min(totalPages, page + 1);
+            if (page === 1) end = Math.min(totalPages, 3);
+            if (page === totalPages) start = Math.max(1, totalPages - 2);
+            const pages = [];
+            for (let i = start; i <= end; i++) {
+              pages.push(i);
+            }
+            return pages.map((num) => (
+              <button
+                key={num}
+                onClick={() => handlePageClick(num)}
+                className={`btn btn-sm ${page === num ? 'btn-primary' : 'btn-outline-primary'}`}
+              >
+                {num}
+              </button>
+            ));
+          })()}
 
           <button
-            className="btn btn-outline-secondary"
+            className="btn btn-outline-secondary btn-sm"
             onClick={handleNext}
             disabled={page === totalPages}
           >

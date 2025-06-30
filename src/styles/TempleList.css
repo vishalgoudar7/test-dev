@@ -1,3 +1,42 @@
+/* Search input and button sizing */
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.search-container .form-control {
+  width: 1100px;
+  max-width: 100%;
+  height: 60px;
+  font-size: 1.25rem;
+  padding: 0 18px;
+  border-radius: 8px;
+}
+.search-container .btn-primary {
+  width: 150px;
+  height: 60px;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Pagination buttons size */
+.pagination-container .btn {
+  min-width: 45px;
+  min-height: 45px;
+  width: 45px;
+  height: 45px;
+  padding: 0;
+  font-size: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  margin: 0 2px;
+}
 
 /* src/styles/TempleList.css */
 
