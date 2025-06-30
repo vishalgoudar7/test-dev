@@ -4,6 +4,8 @@ import { fetchTemples, setSearch } from '../redux/templeSlice';
 import { useNavigate } from 'react-router-dom';
 import '../styles/TempleList.css';
 
+
+
 const SkeletonCard = () => (
   <div className="temple-card skeleton">
     <div className="skeleton-img" />
