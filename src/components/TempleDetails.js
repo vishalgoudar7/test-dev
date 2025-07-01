@@ -6,12 +6,12 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import '../styles/TempleDetails.css';
 import api from '../api/api';
 
-<<<<<<< HEAD
-=======
+// <<<<<<< HEAD
+// =======
 
 
 
->>>>>>> c9daa4caa3ed45011e36037f51c3f4ad3e574080
+// >>>>>>> c9daa4caa3ed45011e36037f51c3f4ad3e574080
 const TempleDetails = () => {
   const { id } = useParams();
   const [temple, setTemple] = useState(null);
