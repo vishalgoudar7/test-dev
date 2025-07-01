@@ -1,4 +1,4 @@
-
+/* 
 .puja-page {
   background-color: #f9f9f9;
 }
@@ -103,4 +103,60 @@
   font-weight: bold;
   padding: 6px 12px;
   border-radius: 6px;
+} */
+
+
+
+.puja-list-container {
+  padding: 20px;
+  text-align: center;
+}
+
+.puja-heading {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.puja-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.puja-card {
+  width: 250px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.puja-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.no-image {
+  width: 100%;
+  height: 160px;
+  background-color: #eee;
+  border-radius: 8px;
+  line-height: 160px;
+  color: #777;
+  font-weight: bold;
+}
+
+.book-button {
+  margin-top: 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
 }

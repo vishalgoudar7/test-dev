@@ -9,7 +9,6 @@ import PujaDetails from "../pages/PujaDetails";
 import PhoneSignUp from "../components/PhoneSignUp";
 import ForgotPassword from "../components/ForgotPassword";
 import ProfilePage from "../pages/ProfilePage";
-import PujaPage from "../pages/PujaPage";
 import TempleDetails from '../components/TempleDetails';
 import ProfileDetails from "../pages/ProfileDetails";
 import MyBookings from "../pages/MyBookings";
@@ -17,6 +16,7 @@ import SuggestTemples from "../pages/SuggestTemples";
 import EditProfile from "../pages/EditProfile";
 import TempleList from "../components/TempleList";
 import CartPage from '../pages/CartPage';
+import PujaList from "../pages/PujaList";
 
 const AllRouters = () => {
   return (
@@ -30,7 +30,7 @@ const AllRouters = () => {
       <Route path="/puja/:id" element={<PujaDetails />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/profile/edit" element={<EditProfile />} />
-      <Route path="/puja" element={<PujaPage />} />
+      <Route path="/puja" element={<PujaList />} />
       <Route path="/temples" element={<TempleList />} />
       <Route path="/temples/:id" element={<TempleDetails />} />
       <Route path="/profile/details" element={<ProfileDetails />} />
