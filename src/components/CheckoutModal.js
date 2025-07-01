@@ -60,26 +60,31 @@ const CheckoutModal = ({ open, onClose }) => {
   });
 
   useEffect(() => {
-    // Calculate charges based on cart and pincode
-    let prasadCost = cart.reduce((sum, item) => sum + (Number(item.prasad_cost) || 0) * (item.quantity || 1), 0);
-    let convinceCharge = cart.reduce((sum, item) => sum + (Number(item.convince_charge) || 0) * (item.quantity || 1), 0);
-    let subtotal = cart.reduce((sum, item) => sum + (Number(item.final_total) || Number(item.cost) || 0) * (item.quantity || 1), 0);
-
-    // Example: shipping charge logic based on pincode
-    let shippingCharge = 0;
-    if (address.pincode && /^\d{6}$/.test(address.pincode)) {
-      // Example: if pincode starts with 56, free shipping; else 50
-      if (address.pincode.startsWith('56')) {
-        shippingCharge = 0;
-      } else {
-        shippingCharge = 50;
+    // If cart has payment_data from API, use those values for charges
+    if (cart.length > 0 && cart.every(item => item.payment_data && item.payment_data.final_total)) {
+      let subtotal = cart.reduce((sum, item) => sum + (Number(item.payment_data.original_cost) || 0) * (item.quantity || 1), 0);
+      let convinceCharge = cart.reduce((sum, item) => sum + (Number(item.payment_data.convenience_fee) || 0) * (item.quantity || 1), 0);
+      let shippingCharge = cart.reduce((sum, item) => sum + (Number(item.payment_data.delivery_charge) || 0) * (item.quantity || 1), 0);
+      let gst = cart.reduce((sum, item) => sum + (Number(item.payment_data.total_tax) || 0) * (item.quantity || 1), 0);
+      let total = cart.reduce((sum, item) => sum + (Number(item.payment_data.final_total) || 0) * (item.quantity || 1), 0);
+      setCharges({ prasadCost: 0, convinceCharge, shippingCharge, subtotal, gst, total });
+    } else {
+      // Fallback to local calculation if API data not present
+      let prasadCost = cart.reduce((sum, item) => sum + (Number(item.prasad_cost) || 0) * (item.quantity || 1), 0);
+      let convinceCharge = cart.reduce((sum, item) => sum + (Number(item.convince_charge) || 0) * (item.quantity || 1), 0);
+      let subtotal = cart.reduce((sum, item) => sum + (Number(item.final_total) || Number(item.cost) || 0) * (item.quantity || 1), 0);
+      let shippingCharge = 0;
+      if (address.pincode && /^\d{6}$/.test(address.pincode)) {
+        if (address.pincode.startsWith('56')) {
+          shippingCharge = 0;
+        } else {
+          shippingCharge = 50;
+        }
       }
+      let gst = Math.round(subtotal * 0.05);
+      let total = subtotal + prasadCost + convinceCharge + shippingCharge + gst;
+      setCharges({ prasadCost, convinceCharge, shippingCharge, subtotal, gst, total });
     }
-
-    // GST: 5% of subtotal (or use item.gst if present)
-    let gst = Math.round(subtotal * 0.05);
-    let total = subtotal + prasadCost + convinceCharge + shippingCharge + gst;
-    setCharges({ prasadCost, convinceCharge, shippingCharge, subtotal, gst, total });
   }, [cart, address.pincode]);
 
 
@@ -138,6 +143,8 @@ const CheckoutModal = ({ open, onClose }) => {
                       const selected = JSON.parse(e.target.value);
                       setAddress(selected);
                       setShowAddressForm(false);
+                      // Trigger charges recalculation by updating address state
+                      setTimeout(() => setAddress(a => ({ ...a })), 0);
                     }}
                     style={{ width: '100%', padding: 8, borderRadius: 6, marginBottom: 8 }}
                   >
@@ -179,7 +186,48 @@ const CheckoutModal = ({ open, onClose }) => {
                   <button
                     className="checkout-proceed-btn"
                     style={{ marginTop: 8, width: '100%' }}
-                    onClick={() => alert('Proceeding to payment...')}
+                    onClick={async () => {
+                      // Prepare payload for API
+                      const payload = cart.map(item => ({
+                        pooja: item.id,
+                        pooja_date: address.bookingDate,
+                        name: address.devoteeName,
+                        devotee_number: address.devoteeMobile,
+                        is_prasadam_delivery: true,
+                        prasadam_delivery_address: `${address.street1}, ${address.area}, ${address.city}, ${address.state} - ${address.pincode}`,
+                        quantity: item.quantity,
+                        // Add more fields as needed
+                      }));
+                      try {
+                        // Get token from localStorage
+                        const token = localStorage.getItem('token');
+                        const response = await fetch('https://beta.devalayas.com/api/v1/devotee/bulk_pooja_request/', {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                            ...(token ? { 'Authorization': `Token ${token}` } : {})
+                          },
+                          body: JSON.stringify(payload),
+                        });
+                        if (!response.ok) throw new Error('Failed to fetch cost from server');
+                        const data = await response.json();
+                        // Update cart with payment_data from API
+                        if (Array.isArray(data)) {
+                          const updatedCart = cart.map(item => {
+                            const found = data.find(d => d.pooja === item.id);
+                            return found && found.payment_data ? { ...item, payment_data: found.payment_data, final_total: found.payment_data.final_total } : item;
+                          });
+                          setCart(updatedCart);
+                          localStorage.setItem('cart', JSON.stringify(updatedCart));
+                          window.dispatchEvent(new Event('storage'));
+                          alert('Cost updated from server. Please review and proceed to payment.');
+                        } else {
+                          alert('Unexpected response from server.');
+                        }
+                      } catch (err) {
+                        alert('Error fetching cost: ' + err.message);
+                      }
+                    }}
                   >
                     Proceed to Payment
                   </button>
@@ -293,10 +341,10 @@ const CheckoutModal = ({ open, onClose }) => {
                   <div className="checkout-cart-info d-flex align-items-center gap-2 mb-1">
                     <div>
                       <div className="checkout-cart-title">{item.name}</div>
-                      <div className="checkout-cart-qty">{item.quantity} x \u20b9{item.final_total || item.cost}</div>
+                      <div className="checkout-cart-qty">{item.quantity} x ₹{Number(item.final_total || item.cost).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} = ₹{(item.quantity * Number(item.final_total || item.cost)).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                     </div>
                   </div>
-                  <div className="checkout-cart-price">\u20b9{(item.final_total || item.cost) * item.quantity}</div>
+                  {/* Remove duplicate price, now shown above with quantity */}
                 </div>
               ))}
             </div>

@@ -88,7 +88,7 @@ const CartDrawer = ({ open, onClose }) => {
                 <div className="flex-grow-1">
                   <div className="fw-bold mb-1">{item.name}</div>
                   <div className="small text-muted">{item.details}</div>
-                  <div className="small">{item.quantity} x ₹{Number(item.final_total || item.cost).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                  <div className="small">{item.quantity} x ₹{Number(item.final_total || item.cost).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} = ₹{(item.quantity * Number(item.final_total || item.cost)).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                   <div className="d-flex align-items-center mt-1">
                     <button className="btn btn-outline-secondary btn-sm" onClick={() => decrement(item.id)}>-</button>
                     <span className="mx-2">{item.quantity}</span>
