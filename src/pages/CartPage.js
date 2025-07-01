@@ -79,14 +79,14 @@ const CartPage = () => {
                     <td>
                       <img
                         src={
-                          item.image && item.image !== 'null'
-                            ? (item.image.startsWith('http')
-                                ? item.image
-                                : item.image.startsWith('/media')
-                                  ? `https://beta.devalayas.com${item.image}`
-                                  : item.image.startsWith('/')
-                                    ? `https://beta.devalayas.com${item.image}`
-                                    : `https://beta.devalayas.com/${item.image}`)
+                          item.images?.[0]?.image && item.images?.[0]?.image !== 'null'
+                            ? (item.images[0].image.startsWith('http')
+                                ? item.images[0].image
+                                : item.images[0].image.startsWith('/media')
+                                  ? `https://beta.devalayas.com${item.images[0].image}`
+                                  : item.images[0].image.startsWith('/')
+                                    ? `https://beta.devalayas.com${item.images[0].image}`
+                                    : `https://beta.devalayas.com/${item.images[0].image}`)
                             : ''
                         }
                         alt={item.name}

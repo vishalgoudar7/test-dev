@@ -1,17 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import CartDrawer from './CartDrawer';
-import { useParams,} from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import '../styles/TempleDetails.css';
 import api from '../api/api';
-
-// <<<<<<< HEAD
-// =======
-
-
-
-// >>>>>>> c9daa4caa3ed45011e36037f51c3f4ad3e574080
 const TempleDetails = () => {
   const { id } = useParams();
   const [temple, setTemple] = useState(null);
@@ -99,14 +92,14 @@ const TempleDetails = () => {
                 <div className="text-center my-3">
                   <img
                     src={
-                      p.image && p.image !== 'null'
-                        ? (p.image.startsWith('http')
-                            ? p.image
-                            : p.image.startsWith('/media')
-                              ? `https://beta.devalayas.com${p.image}`
-                              : p.image.startsWith('/')
-                                ? `https://beta.devalayas.com${p.image}`
-                                : `https://beta.devalayas.com/${p.image}`)
+                      p.images?.[0]?.image && p.images?.[0]?.image !== 'null'
+                        ? (p.images[0].image.startsWith('http')
+                            ? p.images[0].image
+                            : p.images[0].image.startsWith('/media')
+                              ? `https://beta.devalayas.com${p.images[0].image}`
+                              : p.images[0].image.startsWith('/')
+                                ? `https://beta.devalayas.com${p.images[0].image}`
+                                : `https://beta.devalayas.com/${p.images[0].image}`)
                         : require('../assets/Default.png')
                     }
                     alt={p.name}
@@ -178,6 +171,9 @@ const TempleDetails = () => {
             <li className="nav-item" onClick={() => handleTabSwitch(2)}>
               <span className={`nav-link ${tabNo === 2 ? 'active' : ''}`}>Puja / Udi / Chadava</span>
             </li>
+            <li className="nav-item" onClick={() => handleTabSwitch(4)}>
+              <span className={`nav-link ${tabNo === 4 ? 'active' : ''}`}>Prasadam</span>
+            </li>
             <li className="nav-item" onClick={() => handleTabSwitch(3)}>
               <span className={`nav-link ${tabNo === 3 ? 'active' : ''}`}>e-Services</span>
             </li>
@@ -209,6 +205,71 @@ const TempleDetails = () => {
                   {filteredData.length > 0 ? renderCards(filteredData) : <p className="text-center">No items found.</p>}
                 </div>
               </>
+            )}
+
+
+            {tabNo === 4 && (
+              <div className="prasadam-section my-5">
+                <h4 className="mb-4 text-center">Prasadam</h4>
+                {temple.prasadam && temple.prasadam.length > 0 ? (
+                  <div className="row justify-content-center">
+                    {temple.prasadam.map((prasadam, idx) => (
+                      <div className="col-md-4 mb-4" key={prasadam.id || idx}>
+                        <div className="card h-100 shadow-sm border-0 rounded-3" style={{ background: '#fffaf6' }}>
+                          <div className="card-body d-flex flex-column justify-content-between">
+                            <h5 className="fw-bold text-success">
+                              <span role="img" aria-label="prasadam">🍛</span> {prasadam.name}
+                            </h5>
+                            <div className="text-center my-3">
+                              <img
+                                src={
+                                  prasadam.image && prasadam.image !== 'null'
+                                    ? (prasadam.image.startsWith('http')
+                                        ? prasadam.image
+                                        : prasadam.image.startsWith('/media')
+                                          ? `https://beta.devalayas.com${prasadam.image}`
+                                          : prasadam.image.startsWith('/')
+                                            ? `https://beta.devalayas.com${prasadam.image}`
+                                            : `https://beta.devalayas.com/${prasadam.image}`)
+                                    : require('../assets/Default.png')
+                                }
+                                alt={prasadam.name}
+                                className="img-fluid rounded"
+                                style={{
+                                  border: '3px solid #28a745',
+                                  padding: '6px',
+                                  borderRadius: '12px',
+                                  maxHeight: '180px',
+                                  objectFit: 'contain',
+                                }}
+                                onError={e => {
+                                  if (!e.target.src.endsWith('Default.png')) {
+                                    e.target.onerror = null;
+                                    e.target.src = require('../assets/Default.png');
+                                  }
+                                }}
+                              />
+                            </div>
+                            <div className="mt-2 small text-dark">
+                              <p><strong className="text-success">Description:</strong><br />{prasadam.description || '-'}</p>
+                              {prasadam.cost && (
+                                <p><strong className="text-success">Cost:</strong><br />₹ {prasadam.cost} /-</p>
+                              )}
+                              {prasadam.type && (
+                                <p><strong className="text-success">Type:</strong><br />{prasadam.type}</p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center text-muted">
+                    <p>No prasadam available for this temple.</p>
+                  </div>
+                )}
+              </div>
             )}
 
             {tabNo === 3 && <h4 className="text-center text-muted">e-Services coming soon...</h4>}

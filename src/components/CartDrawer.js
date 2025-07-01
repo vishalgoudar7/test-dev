@@ -68,18 +68,27 @@ const CartDrawer = ({ open, onClose }) => {
           ) : (
             cart.map(item => (
               <div className="d-flex align-items-center mb-3 border-bottom pb-2" key={item.id}>
-                {item.image && (
-                  <img src={item.image} alt={item.name} style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 8, marginRight: 12 }} />
+                {item.images?.[0]?.image && (
+                  <img
+                    src={
+                      item.images[0].image && item.images[0].image !== 'null'
+                        ? (item.images[0].image.startsWith('http')
+                            ? item.images[0].image
+                            : item.images[0].image.startsWith('/media')
+                              ? `https://beta.devalayas.com${item.images[0].image}`
+                              : item.images[0].image.startsWith('/')
+                                ? `https://beta.devalayas.com${item.images[0].image}`
+                                : `https://beta.devalayas.com/${item.images[0].image}`)
+                        : require('../assets/Default.png')
+                    }
+                    alt={item.name}
+                    style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 8, marginRight: 12 }}
+                  />
                 )}
                 <div className="flex-grow-1">
-                  <div className="d-flex align-items-center gap-2 mb-1">
-                    {item.image && (
-                      <img src={item.image} alt={item.name} style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 8, border: '1.5px solid #ffa500', background: '#fffbe6', marginRight: 8 }} />
-                    )}
-                    <div className="fw-bold">{item.name}</div>
-                  </div>
+                  <div className="fw-bold mb-1">{item.name}</div>
                   <div className="small text-muted">{item.details}</div>
-                  <div className="small">₹{item.final_total || item.cost} x {item.quantity}</div>
+                  <div className="small">{item.quantity} x ₹{Number(item.final_total || item.cost).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                   <div className="d-flex align-items-center mt-1">
                     <button className="btn btn-outline-secondary btn-sm" onClick={() => decrement(item.id)}>-</button>
                     <span className="mx-2">{item.quantity}</span>
