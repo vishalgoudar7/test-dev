@@ -115,6 +115,13 @@ const EditProfile = () => {
     placeOfBirth: "",
     occupation: "",
     phone: "",
+    street1: "",
+    street2: "",
+    area: "",
+    city: "",
+    state: "",
+    pincode: "",
+    sankalpa: "",
   });
   const navigate = useNavigate();
 
@@ -199,6 +206,44 @@ const EditProfile = () => {
                 <option>Self-Employed</option>
                 <option>Retired</option>
               </select>
+            </div>
+          </div>
+
+          <h4 style={{marginTop:32, marginBottom:8}}>Address Details</h4>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Street Address 1 *</label>
+              <input name="street1" value={formData.street1} onChange={handleChange} required />
+            </div>
+            <div className="form-group">
+              <label>Street Address 2</label>
+              <input name="street2" value={formData.street2} onChange={handleChange} />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Area *</label>
+              <input name="area" value={formData.area} onChange={handleChange} required />
+            </div>
+            <div className="form-group">
+              <label>City *</label>
+              <input name="city" value={formData.city} onChange={handleChange} required />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label>State *</label>
+              <input name="state" value={formData.state} onChange={handleChange} required />
+            </div>
+            <div className="form-group">
+              <label>Pincode *</label>
+              <input name="pincode" value={formData.pincode} maxLength={6} onChange={e => setFormData(prev => ({...prev, pincode: e.target.value.replace(/[^0-9]/g,"")}))} required />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Sankalpa (optional)</label>
+              <input name="sankalpa" value={formData.sankalpa} onChange={handleChange} />
             </div>
           </div>
 

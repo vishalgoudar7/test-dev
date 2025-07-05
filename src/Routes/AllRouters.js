@@ -2,6 +2,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import HomePage from "../pages/HomePage";
+import PaymentSuccess from "../pages/PaymentSuccess";
 import LoginPage from "../pages/LoginPage";
 import AboutUs from "../components/AboutUs";
 import ContactUs from "../components/ContactUs";
@@ -37,6 +38,7 @@ const AllRouters = () => {
       <Route path="/profile/bookings" element={<MyBookings />} />
       <Route path="/profile/suggest" element={<SuggestTemples />} />
       <Route path="/cart" element={<CartPage />} />
+      <Route path="/payment-success" element={<PaymentSuccess />} />
     </Routes>
   );
 };
