@@ -1,111 +1,3 @@
-/* 
-.puja-page {
-  background-color: #f9f9f9;
-}
-
-.puja-card-container {
-  display: flex;
-  left: 30px;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-}
-
-.puja-card {
-  width: 300px;
-  height: 450px;
-  background: #fff;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex-shrink: 0;
-}
-.card-body {
-  padding: 12px 14px;
-  flex-grow: 1;
-  overflow: hidden;
-}
-.puja-page {
-  background-color: #f9f9f9;
-  padding: 30px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.puja-content-wrapper {
-  width: 100%;
-  max-width: 1100px;
-  padding: 0 20px;
-}
-
-.tag-label {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background-color: #ffc107;
-  color: #000;
-  padding: 4px 8px;
-  font-size: 11px;
-  font-weight: bold;
-  border-radius: 5px;
-  z-index: 2;
-}
-
-.card-img-top {
-  height: 150px;
-  object-fit: cover;
-}
-
-.card-body {
-  padding: 12px 14px;
-  flex-grow: 1;
-}
-
-.card-title {
-  font-size: 14px;
-  font-weight: bold;
-  color: #d9534f;
-  margin-bottom: 6px;
-  text-transform: uppercase;
-}
-
-.card-description {
-  font-size: 13px;
-  margin-bottom: 4px;
-  color: #333;
-}
-
-.card-benefit {
-  font-size: 12px;
-  font-style: italic;
-  color: #28a745;
-  margin-bottom: 6px;
-}
-
-.card-info {
-  font-size: 12px;
-  color: #555;
-  margin-bottom: 4px;
-}
-
-.card-footer {
-  padding: 10px 14px;
-  border-top: 1px solid #eee;
-  background: #fff;
-}
-
-.btn-success {
-  font-size: 13px;
-  font-weight: bold;
-  padding: 6px 12px;
-  border-radius: 6px;
-} */
-
-
 
 .puja-list-container {
   padding: 20px;
@@ -113,7 +5,7 @@
 }
 
 .puja-heading {
-  font-size: 28px;
+  font-size: 40px;
   margin-bottom: 20px;
 }
 
@@ -122,6 +14,7 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 20px;
+  margin-top: 20px; /* To push the cards down a little */
 }
 
 .puja-card {
@@ -130,6 +23,10 @@
   border-radius: 12px;
   padding: 15px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 350px; 
 }
 
 .puja-image {
@@ -150,8 +47,24 @@
   font-weight: bold;
 }
 
+.puja-card h3 {
+  font-size: 18px;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.puja-card p {
+  font-size: 14px;
+  margin: 5px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; 
+}
+
 .book-button {
-  margin-top: 10px;
+  margin-top: auto; 
   background-color: #f44336;
   color: white;
   border: none;
@@ -159,4 +72,44 @@
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
+  text-align: center;
+}
+
+/* Search Box Styles */
+.search-box {
+  margin-top: 40px; /* Increased margin-top to push the input field below the header */
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-input {
+  padding: 10px;
+  width: 52%; /* Slightly reduced width to make the input field shorter */
+  font-size: 16px;
+  border-radius: 5px;
+  border: 2px solid #ccc;
+  height: 48px; /* Ensure input field has the same height as the button */
+}
+
+.search-button {
+  padding: 12px 20px; /* Larger padding to make the button look more square */
+  margin-left: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  height: 48px; /* Ensured button height is 48px to align with the input field */
+  width: 86px; /* Set width to match height for a more square-like button */
+  text-align: center;
+  display: flex;
+  justify-content: center; /* Ensures the text is centered inside the button */
+  align-items: center; /* Centers the text vertically */
+}
+
+.search-button:hover {
+  background-color: #0056b3;
 }

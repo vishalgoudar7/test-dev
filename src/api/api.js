@@ -1,26 +1,20 @@
 
-// // src/api/api.js
 
+
+
+// // src/api/api.js
 // import axios from 'axios';
 
-// // ✅ Create axios instance with baseURL
 // const api = axios.create({
 //   baseURL: 'https://beta.devalayas.com',
 //   headers: {
-//     'Content-Type': 'application/json', // Use JSON for GET and standard requests
+//     'Content-Type': 'application/json',
 //   },
 // });
 
-// // ✅ Helper to convert object to x-www-form-urlencoded
-// const toFormUrlEncoded = (obj) =>
-//   Object.keys(obj)
-//     .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]))
-//     .join('&');
-
-// // ✅ Attach token dynamically for authenticated requests
 // api.interceptors.request.use(
 //   (config) => {
-//     const token = localStorage.getItem('token'); // ensure you call login first
+//     const token = localStorage.getItem('token');
 //     if (token) {
 //       config.headers['Authorization'] = `Token ${token}`;
 //     }
@@ -29,7 +23,11 @@
 //   (error) => Promise.reject(error)
 // );
 
-// // ✅ Send OTP via mobile
+// const toFormUrlEncoded = (obj) =>
+//   Object.keys(obj)
+//     .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
+//     .join('&');
+
 // export const sendMobileOtp = async (mobile_number) => {
 //   const payload = {
 //     mobile_number,
@@ -40,19 +38,15 @@
 //     lang: 'en',
 //   };
 
-//   try {
-//     const response = await api.post(
-//       '/api/v1/auth/',
-//       toFormUrlEncoded(payload),
-//       { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-//     );
-//     return response.data;
-//   } catch (error) {
-//     throw error.response?.data?.message || 'Failed to send OTP.';
-//   }
+//   const response = await api.post(
+//     '/api/v1/auth/',
+//     toFormUrlEncoded(payload),
+//     { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+//   );
+
+//   return response.data;
 // };
 
-// // ✅ Login using mobile + OTP
 // export const loginWithMobile = async (mobile_number, otp) => {
 //   const payload = {
 //     mobile_number,
@@ -63,24 +57,19 @@
 //     user_type: 'Devotee',
 //   };
 
-//   try {
-//     const response = await api.post(
-//       '/api/v1/devotee/login/',
-//       toFormUrlEncoded(payload),
-//       { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-//     );
+//   const response = await api.post(
+//     '/api/v1/devotee/login/',
+//     toFormUrlEncoded(payload),
+//     { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+//   );
 
-//     if (response.data.token) {
-//       localStorage.setItem('token', response.data.token);
-//     }
-
-//     return response.data;
-//   } catch (error) {
-//     throw error.response?.data?.message || 'Mobile login failed.';
+//   if (response.data.token) {
+//     localStorage.setItem('token', response.data.token);
 //   }
+
+//   return response.data;
 // };
 
-// // ✅ Login using email + OTP
 // export const loginWithEmail = async (email, otp) => {
 //   const payload = {
 //     email,
@@ -91,27 +80,20 @@
 //     user_type: 'Devotee',
 //   };
 
-//   try {
-//     const response = await api.post(
-//       '/api/v1/devotee/login/',
-//       toFormUrlEncoded(payload),
-//       { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-//     );
+//   const response = await api.post(
+//     '/api/v1/devotee/login/',
+//     toFormUrlEncoded(payload),
+//     { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+//   );
 
-//     if (response.data.token) {
-//       localStorage.setItem('token', response.data.token);
-//     }
-
-//     return response.data;
-//   } catch (error) {
-//     throw error.response?.data?.message || 'Email login failed.';
+//   if (response.data.token) {
+//     localStorage.setItem('token', response.data.token);
 //   }
+
+//   return response.data;
 // };
 
-// // ✅ Export both api and the form encoder
-// export { toFormUrlEncoded };
 // export default api;
-
 
 
 
@@ -122,6 +104,7 @@
 // src/api/api.js
 import axios from 'axios';
 
+// Axios instance
 const api = axios.create({
   baseURL: 'https://beta.devalayas.com',
   headers: {
@@ -129,6 +112,7 @@ const api = axios.create({
   },
 });
 
+// Attach token automatically on each request
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -140,11 +124,13 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Helper to convert object to x-www-form-urlencoded
 const toFormUrlEncoded = (obj) =>
   Object.keys(obj)
     .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
     .join('&');
 
+// Send OTP to mobile
 export const sendMobileOtp = async (mobile_number) => {
   const payload = {
     mobile_number,
@@ -158,12 +144,15 @@ export const sendMobileOtp = async (mobile_number) => {
   const response = await api.post(
     '/api/v1/auth/',
     toFormUrlEncoded(payload),
-    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+    {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    }
   );
 
   return response.data;
 };
 
+// Login with mobile + OTP
 export const loginWithMobile = async (mobile_number, otp) => {
   const payload = {
     mobile_number,
@@ -177,7 +166,9 @@ export const loginWithMobile = async (mobile_number, otp) => {
   const response = await api.post(
     '/api/v1/devotee/login/',
     toFormUrlEncoded(payload),
-    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+    {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    }
   );
 
   if (response.data.token) {
@@ -187,6 +178,7 @@ export const loginWithMobile = async (mobile_number, otp) => {
   return response.data;
 };
 
+// Login with email + OTP
 export const loginWithEmail = async (email, otp) => {
   const payload = {
     email,
@@ -200,7 +192,9 @@ export const loginWithEmail = async (email, otp) => {
   const response = await api.post(
     '/api/v1/devotee/login/',
     toFormUrlEncoded(payload),
-    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+    {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    }
   );
 
   if (response.data.token) {
