@@ -3,8 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchTemples, setSearch } from '../redux/templeSlice';
 import { useNavigate } from 'react-router-dom';
 import '../styles/TempleList.css';
-
-
+import { FaMapMarkerAlt } from 'react-icons/fa';
 
 const SkeletonCard = () => (
   <div className="temple-card skeleton">
@@ -57,21 +56,18 @@ const TempleList = () => {
 
   return (
     <div className="temple-container">
-      <h1 className="temple-title">EXPLORE MORE TEMPLES</h1>
-      <p className="temple-description">
-        Reserve Prasadam and Pujas for yourself and your family at over 1,000 renowned temples across India.
-      </p>
+      <h1 className="temple-title">AVAILABLE PUJA'S</h1>
 
       <div className="search-container">
         <input
           type="text"
           className="form-control"
-          placeholder="Search temples..."
+          placeholder="Search Pujas..."
           value={search}
           onChange={(e) => dispatch(setSearch(e.target.value))}
         />
         <button className="btn btn-primary" type="button">
-          Search
+          SEARCH
         </button>
       </div>
 
@@ -79,14 +75,11 @@ const TempleList = () => {
         {loading
           ? Array(10).fill(0).map((_, idx) => <SkeletonCard key={idx} />)
           : paginated.map((temple) => (
-              <div
-                key={temple.id}
-                className="temple-card"
-              >
+              <div key={temple.id} className="temple-card">
                 <img
                   src={getImageUrl(temple)}
                   alt={temple.name}
-                  onClick={() => navigate(`/temples/${temple.id}`)}
+                  onClick={() => navigate(`/Temples/${temple.id}`)}
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
@@ -94,9 +87,12 @@ const TempleList = () => {
                 />
                 <div className="card-body">
                   <h5 className="card-title">{temple.name}</h5>
-                  <p className="temple-location">{temple.district || temple.taluk || 'Unknown Location'}</p>
-                  <button className="btn btn-outline-primary" onClick={() => navigate(`/temples/${temple.id}`)}>
-                    Book Now
+                  <p className="temple-location">
+                    <FaMapMarkerAlt className="location-icon" />{' '}
+                    {temple.district || temple.taluk || 'Unknown Location'}
+                  </p>
+                  <button className="btn btn-outline-primary" onClick={() => navigate(`/Temples/${temple.id}`)}>
+                    PARTICIPATE
                   </button>
                 </div>
               </div>
@@ -109,7 +105,6 @@ const TempleList = () => {
             Prev
           </button>
 
-          {/* Show up to 3 page numbers: current, previous, next */}
           {(() => {
             let start = Math.max(1, page - 1);
             let end = Math.min(totalPages, page + 1);
