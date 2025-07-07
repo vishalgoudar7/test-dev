@@ -130,27 +130,33 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../api/api';
 
-// ✅ Fetch all temples with extended page size
-export const fetchTemples = createAsyncThunk(
-  'temple/fetchTemples',
-  async (_, thunkAPI) => {
-    const token = localStorage.getItem('token'); // Runtime token
-    if (!token) {
-      return thunkAPI.rejectWithValue("Token missing. Please log in.");
+export const fetchTemples = createAsyncThunk('temple/fetchTemples', async (_, thunkAPI) => {
+  const token = 'c91ae32509fa4ce4e8c21aa4a86118100f97c4f2'; // ✅ Replace with your valid token
+  const headers = { Authorization: `Token ${token}` };
+
+  try {
+    const allTemples = [];
+    let nextUrl = '/api/v1/devotee/temple/';
+
+    while (nextUrl) {
+      const response = await api.get(nextUrl, { headers });
+      const data = response.data;
+
+      allTemples.push(...data.results);
+      // If there’s more pages, continue
+      if (data.next) {
+        const url = new URL(data.next);
+        nextUrl = url.pathname + url.search;
+      } else {
+        nextUrl = null;
+      }
     }
 
-    try {
-      const response = await api.get('/api/v1/devotee/temple/?page_size=100', {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      });
-      return response.data.results;
-    } catch (error) {
-      return thunkAPI.rejectWithValue('Failed to fetch temples');
-    }
+    return allTemples;
+  } catch (error) {
+    return thunkAPI.rejectWithValue('Failed to fetch temples');
   }
-);
+});
 
 const templeSlice = createSlice({
   name: 'temple',
@@ -169,7 +175,6 @@ const templeSlice = createSlice({
     builder
       .addCase(fetchTemples.pending, (state) => {
         state.loading = true;
-        state.error = '';
       })
       .addCase(fetchTemples.fulfilled, (state, action) => {
         state.loading = false;
@@ -177,7 +182,7 @@ const templeSlice = createSlice({
       })
       .addCase(fetchTemples.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Error fetching temples';
+        state.error = action.payload;
       });
   },
 });
