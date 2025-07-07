@@ -1,6 +1,4 @@
 
-
-
 // import { configureStore } from '@reduxjs/toolkit';
 // import templeReducer from './templeSlice';
 
@@ -14,17 +12,17 @@
 
 
 
-
-
-
-
-import pujaReducer from './pujaSlice';
-import templeReducer from './templeSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import templeReducer from "./templeSlice";
+import authReducer from "./authSlice"; // 👈 Add this
 
 const store = configureStore({
   reducer: {
-    puja: pujaReducer,
     temple: templeReducer,
+    auth: authReducer, // 👈 Register here
   },
 });
+
+export default store;
+
 

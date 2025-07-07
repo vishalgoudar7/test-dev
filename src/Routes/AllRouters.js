@@ -12,7 +12,7 @@ import ProfilePage from "../pages/ProfilePage";
 import TempleDetails from '../components/TempleDetails';
 import ProfileDetails from "../pages/ProfileDetails";
 import MyBookings from "../pages/MyBookings";
-import SuggestTemples from "../pages/SuggestTemples";
+import SuggestTemple from "../pages/SuggestTemple";
 import EditProfile from "../pages/EditProfile";
 import TempleList from "../components/TempleList";
 import CartPage from '../pages/CartPage';
@@ -34,8 +34,8 @@ const AllRouters = () => {
       <Route path="/temples" element={<TempleList />} />
       <Route path="/temples/:id" element={<TempleDetails />} />
       <Route path="/profile/details" element={<ProfileDetails />} />
-      <Route path="/profile/bookings" element={<MyBookings />} />
-      <Route path="/profile/suggest" element={<SuggestTemples />} />
+      <Route path="/bookings" element={<MyBookings />} />
+      <Route path="/suggest-temple" element={<SuggestTemple />} />
       <Route path="/cart" element={<CartPage />} />
     </Routes>
   );
