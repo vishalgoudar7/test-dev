@@ -61,34 +61,97 @@
 
 
 
+// import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+// import api from '../api/api';
+
+// // Use the correct token for live (you can make this dynamic later)
+// const token = 'c91ae32509fa4ce4e8c21aa4a86118100f97c4f2';
+
+// // ✅ Async thunk to fetch temples
+// export const fetchTemples = createAsyncThunk(
+//   'temple/fetchTemples',
+//   async (_, thunkAPI) => {
+//     try {
+//       // ✅ Ensure it fetches all temples with enough page_size
+//       const response = await api.get('/api/v1/devotee/temple/?page_size=100', {
+//         headers: {
+//           Authorization: `Token ${token}`,
+//         },
+//       });
+
+//       console.log('Fetched temples:', response.data.results);
+//       return response.data.results; // ✅ Return only the results array
+//     } catch (error) {
+//       console.error('Fetch temples error:', error);
+//       return thunkAPI.rejectWithValue('Failed to fetch temples');
+//     }
+//   }
+// );
+
+// // ✅ Initial state and reducers
+// const templeSlice = createSlice({
+//   name: 'temple',
+//   initialState: {
+//     temples: [],
+//     loading: false,
+//     error: '',
+//     search: '',
+//   },
+//   reducers: {
+//     setSearch: (state, action) => {
+//       state.search = action.payload;
+//     },
+//   },
+//   extraReducers: (builder) => {
+//     builder
+//       .addCase(fetchTemples.pending, (state) => {
+//         state.loading = true;
+//         state.error = '';
+//       })
+//       .addCase(fetchTemples.fulfilled, (state, action) => {
+//         state.loading = false;
+//         state.temples = action.payload;
+//         state.error = '';
+//       })
+//       .addCase(fetchTemples.rejected, (state, action) => {
+//         state.loading = false;
+//         state.temples = [];
+//         state.error = action.payload || 'Error fetching temples';
+//       });
+//   },
+// });
+
+// export const { setSearch } = templeSlice.actions;
+// export default templeSlice.reducer;
+
+
+
+
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../api/api';
 
-// Use the correct token for live (you can make this dynamic later)
-const token = 'c91ae32509fa4ce4e8c21aa4a86118100f97c4f2';
-
-// ✅ Async thunk to fetch temples
+// ✅ Fetch all temples with extended page size
 export const fetchTemples = createAsyncThunk(
   'temple/fetchTemples',
   async (_, thunkAPI) => {
+    const token = localStorage.getItem('token'); // Runtime token
+    if (!token) {
+      return thunkAPI.rejectWithValue("Token missing. Please log in.");
+    }
+
     try {
-      // ✅ Ensure it fetches all temples with enough page_size
       const response = await api.get('/api/v1/devotee/temple/?page_size=100', {
         headers: {
           Authorization: `Token ${token}`,
         },
       });
-
-      console.log('Fetched temples:', response.data.results);
-      return response.data.results; // ✅ Return only the results array
+      return response.data.results;
     } catch (error) {
-      console.error('Fetch temples error:', error);
       return thunkAPI.rejectWithValue('Failed to fetch temples');
     }
   }
 );
 
-// ✅ Initial state and reducers
 const templeSlice = createSlice({
   name: 'temple',
   initialState: {
@@ -111,11 +174,9 @@ const templeSlice = createSlice({
       .addCase(fetchTemples.fulfilled, (state, action) => {
         state.loading = false;
         state.temples = action.payload;
-        state.error = '';
       })
       .addCase(fetchTemples.rejected, (state, action) => {
         state.loading = false;
-        state.temples = [];
         state.error = action.payload || 'Error fetching temples';
       });
   },

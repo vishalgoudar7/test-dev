@@ -1,21 +1,23 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../api/api';
 
-const token = 'c91ae32509fa4ce4e8c21aa4a86118100f97c4f2'; // same token
-
+// ✅ Fetch all pujas with extended page size
 export const fetchPujas = createAsyncThunk(
   'puja/fetchPujas',
   async (_, thunkAPI) => {
+    const token = localStorage.getItem('token'); // Runtime token
+    if (!token) {
+      return thunkAPI.rejectWithValue("Token missing. Please log in.");
+    }
+
     try {
-      const response = await api.get('/api/v1/devotee/puja/', {
+      const response = await api.get('/api/v1/devotee/puja/?page_size=100', {
         headers: {
           Authorization: `Token ${token}`,
         },
       });
-      console.log('Fetched pujas:', response.data.results);
       return response.data.results;
     } catch (error) {
-      console.error('Fetch pujas error:', error);
       return thunkAPI.rejectWithValue('Failed to fetch pujas');
     }
   }
@@ -33,6 +35,7 @@ const pujaSlice = createSlice({
     builder
       .addCase(fetchPujas.pending, (state) => {
         state.loading = true;
+        state.error = '';
       })
       .addCase(fetchPujas.fulfilled, (state, action) => {
         state.loading = false;
