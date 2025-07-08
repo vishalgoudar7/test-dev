@@ -5,31 +5,15 @@ import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import '../styles/TempleDetails.css';
 import api from '../api/api';
+
 const TempleDetails = () => {
   const { id } = useParams();
   const [temple, setTemple] = useState(null);
-  const [tabNo, setTabNo] = useState(2); // default: Pooja
+  const [tabNo, setTabNo] = useState(2); // Default: Pooja
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState([]);
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
-  // Add to cart handler
-  const handleAddToCart = (item) => {
-    // Get cart from localStorage
-    let cart = [];
-    try {
-      cart = JSON.parse(localStorage.getItem('cart')) || [];
-    } catch {
-      cart = [];
-    }
-    // Prevent duplicates
-    if (!cart.find((c) => c.id === item.id)) {
-      cart.push(item);
-      localStorage.setItem('cart', JSON.stringify(cart));
-      // Trigger storage event for other tabs/components
-      window.dispatchEvent(new Event('storage'));
-    }
-    setCartDrawerOpen(true);
-  };
+  const [loading, setLoading] = useState(true);
 
   const token = 'c91ae32509fa4ce4e8c21aa4a86118100f97c4f2';
 
@@ -39,19 +23,54 @@ const TempleDetails = () => {
         const templeRes = await api.get(`/api/v1/devotee/temple/${id}`, {
           headers: { Authorization: `Token ${token}` },
         });
-        setTemple(templeRes.data);
+
+        let prasadamData = [];
+        try {
+          const prasadamRes = await api.get(`/api/v1/devotee/prasadam/?temple=${id}`, {
+            headers: { Authorization: `Token ${token}` },
+          });
+          prasadamData = prasadamRes.data.results || [];
+        } catch (prasadamErr) {
+          console.warn('Failed to load prasadam:', prasadamErr);
+        }
 
         const poojaRes = await api.get(`/api/v1/devotee/pooja/?temple=${id}`, {
           headers: { Authorization: `Token ${token}` },
         });
+
+        setTemple({
+          ...templeRes.data,
+          prasadam: prasadamData,
+        });
+
         setFilteredData(poojaRes.data.results || []);
       } catch (err) {
         console.error('Error loading data:', err);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchTempleAndPoojas();
-  }, [id]);
+  }, [id, token]);
+
+  const handleAddToCart = (item) => {
+    let cart = [];
+
+    try {
+      cart = JSON.parse(localStorage.getItem('cart')) || [];
+    } catch {
+      cart = [];
+    }
+
+    if (!cart.find((c) => c.id === item.id)) {
+      cart.push(item);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      window.dispatchEvent(new Event('storage'));
+    }
+
+    setCartDrawerOpen(true);
+  };
 
   const handleTabSwitch = (tab) => {
     setTabNo(tab);
@@ -75,16 +94,16 @@ const TempleDetails = () => {
   };
 
   const renderCards = (data) => {
-    // Group data into rows of 3
     const rows = [];
     for (let i = 0; i < data.length; i += 3) {
       rows.push(data.slice(i, i + 3));
     }
+
     return rows.map((row, rowIdx) => (
       <div className="row" key={rowIdx}>
         {row.map((p) => (
-          <div className="col-md-4 mb-4" key={p.id}>
-            <div className="card h-100 shadow-sm border-0 rounded-3" style={{ background: '#fffaf6' }}>
+          <div className="col-md-3 mb-2" key={p.id}>
+            <div className="card h-100 shadow-sm border-0 rounded-3" style={{ background: '#ffe9d6' }}>
               <div className="card-body d-flex flex-column justify-content-between">
                 <h5 className="fw-bold text-danger">
                   <span role="img" aria-label="flower">🌸</span> {p.name}
@@ -92,14 +111,10 @@ const TempleDetails = () => {
                 <div className="text-center my-3">
                   <img
                     src={
-                      p.images?.[0]?.image && p.images?.[0]?.image !== 'null'
-                        ? (p.images[0].image.startsWith('http')
-                            ? p.images[0].image
-                            : p.images[0].image.startsWith('/media')
-                              ? `https://beta.devalayas.com${p.images[0].image}`
-                              : p.images[0].image.startsWith('/')
-                                ? `https://beta.devalayas.com${p.images[0].image}`
-                                : `https://beta.devalayas.com/${p.images[0].image}`)
+                      p.images?.[0]?.image && p.images[0].image !== 'null'
+                        ? p.images[0].image.startsWith('http')
+                          ? p.images[0].image
+                          : `https://beta.devalayas.com ${p.images[0].image.startsWith('/') ? '' : '/'}${p.images[0].image}`
                         : require('../assets/Default.png')
                     }
                     alt={p.name}
@@ -111,23 +126,24 @@ const TempleDetails = () => {
                       maxHeight: '180px',
                       objectFit: 'contain',
                     }}
-                    onError={e => {
-                      if (!e.target.src.endsWith('Default.png')) {
-                        e.target.onerror = null;
-                        e.target.src = require('../assets/Default.png');
-                      }
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = require('../assets/Default.png');
                     }}
                   />
                 </div>
                 <div className="mt-2 small text-dark">
                   <p><strong className="text-danger">Details:</strong><br />{p.details}</p>
-                  <p><strong className="text-danger">Include's:</strong><br />{p.included || 'N/A'}</p>
+                  <p><strong className="text-danger">Includes:</strong><br />{p.included || 'N/A'}</p>
                   <p><strong className="text-danger">Benefits:</strong><br />{p.benefits || '-'}</p>
                   <p><strong className="text-danger">Cost:</strong><br />₹ {p.final_total || p.cost || 'N/A'} /-</p>
                 </div>
                 <div className="d-flex justify-content-center mt-3">
-                  <button className="btn btn-warning px-4 fw-semibold shadow-sm" onClick={() => handleAddToCart(p)}>
-                    Book <span className="ms-1">➜</span>
+                  <button
+                    className="btn btn-warning px-4 fw-semibold shadow-sm"
+                    onClick={() => handleAddToCart(p)}
+                  >
+                    Participate <span className="ms-1">➜</span>
                   </button>
                 </div>
               </div>
@@ -138,14 +154,84 @@ const TempleDetails = () => {
     ));
   };
 
+  const renderPrasadam = () => {
+    if (!temple?.prasadam || temple.prasadam.length === 0) {
+      return <p className="text-center">No prasadam available for this temple.</p>;
+    }
 
-  if (!temple) return <p>Loading...</p>;
+    const rows = [];
+    for (let i = 0; i < temple.prasadam.length; i += 3) {
+      rows.push(temple.prasadam.slice(i, i + 3));
+    }
+
+    return rows.map((row, rowIdx) => (
+      <div className="row" key={rowIdx}>
+        {row.map((p) => (
+          <div className="col-md-3 mb-2" key={p.id}>
+            <div className="card h-100 shadow-sm border-0 rounded-3" style={{ background: '#ffe9d6' }}>
+              <div className="card-body d-flex flex-column justify-content-between">
+                <h5 className="fw-bold text-danger">
+                  <span role="img" aria-label="prasadam">🍛</span> {p.name}
+                </h5>
+                <div className="text-center my-3">
+                  <img
+                    src={
+                      p.image && p.image !== 'null'
+                        ? p.image.startsWith('http')
+                          ? p.image
+                          : `https://beta.devalayas.com ${p.image.startsWith('/') ? '' : '/'}${p.image}`
+                        : require('../assets/Default.png')
+                    }
+                    alt={p.name}
+                    className="img-fluid rounded"
+                    style={{
+                      border: '3px solid orange',
+                      padding: '6px',
+                      borderRadius: '12px',
+                      maxHeight: '180px',
+                      objectFit: 'contain',
+                    }}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = require('../assets/Default.png');
+                    }}
+                  />
+                </div>
+                <div className="mt-2 small text-dark">
+                  <p><strong className="text-danger">Details:</strong><br />{p.details || 'N/A'}</p>
+                  <p><strong className="text-danger">Includes:</strong><br />{p.included || 'N/A'}</p>
+                  <p><strong className="text-danger">Benefits:</strong><br />{p.benefits || '-'}</p>
+                  <p><strong className="text-danger">Cost:</strong><br />₹ {p.cost || 'N/A'} /-</p>
+                </div>
+                <div className="d-flex justify-content-center mt-3">
+                  <button
+                    className="btn btn-success px-4 fw-semibold shadow-sm"
+                    onClick={() => handleAddToCart({ ...p, type: 'prasadam' })}
+                  >
+                    Add to Cart <span className="ms-1">➜</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    ));
+  };
+
+  if (loading) {
+    return <p>Loading temple details...</p>;
+  }
+
+  if (!temple) {
+    return <p>No temple found.</p>;
+  }
 
   return (
     <>
       <CartDrawer open={cartDrawerOpen} onClose={() => setCartDrawerOpen(false)} />
       <main className="temple-main">
-        <section className="temple-container container py-5">
+        <section className="temple-container container">
           <h2 className="temple-name">{temple.name}</h2>
           <p className="temple-address">📍 {temple.address}</p>
 
@@ -186,7 +272,7 @@ const TempleDetails = () => {
             {tabNo === 2 && (
               <>
                 <div className="row mb-4">
-                  <div className="col-md-10">
+                  <div className="col-md-6 col-12 mx-auto d-flex align-items-center gap-2">
                     <input
                       type="text"
                       className="form-control form-control-lg"
@@ -195,80 +281,21 @@ const TempleDetails = () => {
                       onChange={(e) => setSearch(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                     />
-                  </div>
-                  <div className="col-md-2">
-                    <button className="btn btn-lg btn-primary w-100" onClick={handleSearch}>Search</button>
+                    <button className="btn btn-lg btn-primary" onClick={handleSearch}>
+                      Search
+                    </button>
                   </div>
                 </div>
-
                 <div className="row">
                   {filteredData.length > 0 ? renderCards(filteredData) : <p className="text-center">No items found.</p>}
                 </div>
               </>
             )}
 
-
             {tabNo === 4 && (
               <div className="prasadam-section my-5">
                 <h4 className="mb-4 text-center">Prasadam</h4>
-                {temple.prasadam && temple.prasadam.length > 0 ? (
-                  <div className="row justify-content-center">
-                    {temple.prasadam.map((prasadam, idx) => (
-                      <div className="col-md-4 mb-4" key={prasadam.id || idx}>
-                        <div className="card h-100 shadow-sm border-0 rounded-3" style={{ background: '#fffaf6' }}>
-                          <div className="card-body d-flex flex-column justify-content-between">
-                            <h5 className="fw-bold text-success">
-                              <span role="img" aria-label="prasadam">🍛</span> {prasadam.name}
-                            </h5>
-                            <div className="text-center my-3">
-                              <img
-                                src={
-                                  prasadam.image && prasadam.image !== 'null'
-                                    ? (prasadam.image.startsWith('http')
-                                        ? prasadam.image
-                                        : prasadam.image.startsWith('/media')
-                                          ? `https://beta.devalayas.com${prasadam.image}`
-                                          : prasadam.image.startsWith('/')
-                                            ? `https://beta.devalayas.com${prasadam.image}`
-                                            : `https://beta.devalayas.com/${prasadam.image}`)
-                                    : require('../assets/Default.png')
-                                }
-                                alt={prasadam.name}
-                                className="img-fluid rounded"
-                                style={{
-                                  border: '3px solid #28a745',
-                                  padding: '6px',
-                                  borderRadius: '12px',
-                                  maxHeight: '180px',
-                                  objectFit: 'contain',
-                                }}
-                                onError={e => {
-                                  if (!e.target.src.endsWith('Default.png')) {
-                                    e.target.onerror = null;
-                                    e.target.src = require('../assets/Default.png');
-                                  }
-                                }}
-                              />
-                            </div>
-                            <div className="mt-2 small text-dark">
-                              <p><strong className="text-success">Description:</strong><br />{prasadam.description || '-'}</p>
-                              {prasadam.cost && (
-                                <p><strong className="text-success">Cost:</strong><br />₹ {prasadam.cost} /-</p>
-                              )}
-                              {prasadam.type && (
-                                <p><strong className="text-success">Type:</strong><br />{prasadam.type}</p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center text-muted">
-                    <p>No prasadam available for this temple.</p>
-                  </div>
-                )}
+                {renderPrasadam()}
               </div>
             )}
 
@@ -284,21 +311,25 @@ const TempleDetails = () => {
                   <div className="row g-3">
                     {temple.images?.map((img, i) => (
                       <div className="col-md-4" key={i}>
-                        <img src={img.image} className="img-fluid rounded" alt={`Temple ${i + 1}`} />
+                        <img
+                          src={img.image}
+                          className="img-fluid rounded"
+                          alt={`Temple ${i + 1}`}
+                          style={{ padding: '8px', background: '#f8f9fa', borderRadius: '8px' }}
+                        />
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="col-md-4">
-                  <h5>Get Directions</h5>
+                <div className="col-md-4 order-md-2">
                   <ul className="list-group">
                     <li className="list-group-item"><strong>Taluk:</strong> {temple.taluk}</li>
                     <li className="list-group-item"><strong>District:</strong> {temple.district}</li>
                     <li className="list-group-item"><strong>City:</strong> {temple.city}</li>
                     <li className="list-group-item"><strong>State:</strong> {temple.state}</li>
                     <li className="list-group-item"><strong>Pincode:</strong> {temple.pincode}</li>
-                    <li className="list-group-item"><strong>Website:</strong> {temple.website}</li>
+                    <li className="list-group-item"><strong>Website:</strong> {temple.website || '-'}</li>
                   </ul>
                 </div>
               </div>

@@ -56,17 +56,17 @@ const TempleList = () => {
 
   return (
     <div className="temple-container">
-      <h1 className="temple-title">AVAILABLE PUJA'S</h1>
+      <h1 className="temple-title">EXPLORE MORE TEMPLES</h1>
 
       <div className="search-container">
         <input
           type="text"
           className="form-control"
-          placeholder="Search Pujas..."
+          placeholder="Search Temples..."
           value={search}
           onChange={(e) => dispatch(setSearch(e.target.value))}
         />
-        <button className="btn btn-primary" type="button">
+        <button className="btn btn-primary" style={{ backgroundColor: '#ff5722', borderColor: '#ff5722' }}>
           SEARCH
         </button>
       </div>
@@ -100,8 +100,8 @@ const TempleList = () => {
       </div>
 
       {!loading && (
-        <div className="pagination-container">
-          <button className="btn btn-outline-secondary btn-sm" onClick={handlePrev} disabled={page === 1}>
+        <div className="pagination-container" style={{ display: 'flex', gap: 8, justifyContent: 'center', alignItems: 'center' }}>
+          <button className="btn btn-outline-danger btn-sm" style={{ minWidth: 40, maxWidth: 40 }} onClick={handlePrev} disabled={page === 1}>
             Prev
           </button>
 
@@ -118,7 +118,8 @@ const TempleList = () => {
               <button
                 key={num}
                 onClick={() => handlePageClick(num)}
-                className={`btn btn-sm ${page === num ? 'btn-primary' : 'btn-outline-primary'}`}
+                className={`btn btn-sm ${page === num ? 'btn-danger' : 'btn-outline-primary'}`}
+                style={{ minWidth: 40, maxWidth: 40, padding: 0 }}
               >
                 {num}
               </button>
@@ -126,7 +127,8 @@ const TempleList = () => {
           })()}
 
           <button
-            className="btn btn-outline-secondary btn-sm"
+            className="btn btn-outline-danger btn-sm"
+            style={{ minWidth: 40, maxWidth: 40 }}
             onClick={handleNext}
             disabled={page === totalPages}
           >
