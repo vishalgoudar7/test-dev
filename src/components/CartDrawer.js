@@ -106,8 +106,10 @@ const CartDrawer = ({ open, onClose }) => {
             <span>₹{subtotal}</span>
           </div>
           {/* Only show subtotal, remove all other charges */}
-          <Link to="/cart" className="btn btn-outline-primary w-100 mb-2" onClick={onClose}>Your Cart</Link>
-          <button className="btn btn-success w-100" disabled={cart.length === 0} onClick={() => setCheckoutOpen(true)}>Checkout</button>
+          <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+            <Link to="/cart" className="btn btn-outline-danger flex-fill" style={{ minWidth: 0 }} onClick={onClose}>Your Cart</Link>
+            <button className="btn btn-danger flex-fill" style={{ minWidth: 0 }} disabled={cart.length === 0} onClick={() => setCheckoutOpen(true)}>Checkout</button>
+          </div>
           <CheckoutModal open={checkoutOpen} onClose={() => setCheckoutOpen(false)} />
         </div>
       </div>

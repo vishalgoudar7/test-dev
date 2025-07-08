@@ -92,9 +92,14 @@ const SpecialPujaSection = () => {
         <div className="special-do_container">
           {pujaData.map((puja, index) => (
             <div className="special-puja-card" key={index}>
-              <a href="#" onClick={(e) => { e.preventDefault(); viewsplPooja(puja.id); }}>
+              <button
+                type="button"
+                onClick={() => viewsplPooja(puja.id)}
+                style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+                className="special-puja-link"
+              >
                 <img src={puja.img} className="special-img-box" alt={`Puja ${puja.id}`} />
-              </a>
+              </button>
               <div className="special-detail-box">
                 <h6>{puja.title}</h6>
               </div>

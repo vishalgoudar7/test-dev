@@ -3,7 +3,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useUserAuth } from "../context/UserAuthContext";
-import { FaUser, FaPhone, FaEnvelope, FaPen } from "react-icons/fa";
+import { FaUser, FaPhone, FaPen } from "react-icons/fa";
 import "../styles/ProfilePage.css";
 
 const ProfilePage = () => {

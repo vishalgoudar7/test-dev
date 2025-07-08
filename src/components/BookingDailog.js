@@ -91,13 +91,15 @@ import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './BookingDialog.css';
+import { useUserAuth } from '../context/UserAuthContext';
 
 const BookingDialog = ({ request, tabNo, close }) => {
+  const { profile } = useUserAuth();
   const [booking, setBooking] = useState({
     pooja_name: '',
     booking_date: null,
     name: '',
-    mobile_no: '',
+    mobile_no: profile?.phone || '',
     rashi: '',
     comment: '',
     prasadam: false,
@@ -177,10 +179,10 @@ const BookingDialog = ({ request, tabNo, close }) => {
             <label>Devotee Mobile Number <span className="text-red">*</span></label>
             <input
               type="text"
-              value={booking.mobile_no}
-              onChange={validateMobileNumber}
+              value={profile?.phone || ''}
+              readOnly
               className="form-control"
-              disabled={!request}
+              disabled
             />
           </div>
 
