@@ -6,7 +6,7 @@ import LoginPage from "../pages/LoginPage";
 import AboutUs from "../components/AboutUs";
 import ContactUs from "../components/ContactUs";
 import PujaDetails from "../pages/PujaDetails";
-import PhoneSignUp from "../components/PhoneSignUp";
+// import PhoneSignUp from "../components/PhoneSignUp";
 import ForgotPassword from "../components/ForgotPassword";
 import ProfilePage from "../pages/ProfilePage";
 import TempleDetails from '../components/TempleDetails';
@@ -24,7 +24,7 @@ const AllRouters = () => {
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/PhoneSignUp" element={<PhoneSignUp />} />
+      {/* <Route path="/PhoneSignUp" element={<PhoneSignUp />} /> */}
       <Route path="/about" element={<AboutUs />} />
       <Route path="/contact" element={<ContactUs />} />
       <Route path="/puja/:id" element={<PujaDetails />} />

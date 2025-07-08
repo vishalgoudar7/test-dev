@@ -59,7 +59,7 @@
 }
 
 .participate-btn {
-  background-color: #f5a01f;
+  background-color: #f44336;
   color: #fff;
   padding: 14px 28px;
   font-size: 18px;
@@ -73,7 +73,7 @@
 }
 
 .participate-btn:hover {
-  background-color: #f5a01f;
+  background-color: #f44336;
 }
 
 /* Tabs */
@@ -97,8 +97,8 @@
 }
 
 .tab-nav button.active {
-  border-bottom: 2px solid #f5a01f;
-  color: #f5a01f;
+  border-bottom: 2px solid #f44336;
+  color: #f44336;
   font-weight: bold;
 }
 
