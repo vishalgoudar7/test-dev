@@ -1,3 +1,4 @@
+
 // import React, { useEffect, useState } from "react";
 // import api from "../api/api";
 // import "../styles/MyBookings.css";
@@ -62,9 +63,12 @@
 //   return (
 //     <div className="my-bookings-page">
 //       <div className="bookings-container">
-//         <h2 className="bookings-title">Bookings</h2>
+//         <h2 className="bookings-title">BOOKINGS</h2>
 
 //         <div className="search-container">
+//           <button className="search-btn">
+//             <i className="fas fa-search"></i>
+//           </button>
 //           <input
 //             type="text"
 //             className="search-input"
@@ -73,9 +77,6 @@
 //             onChange={(e) => setMeta({ ...meta, search: e.target.value })}
 //             onKeyDown={handleSearch}
 //           />
-//           <button className="search-btn" onClick={getBookings}>
-//             <i className="fas fa-search"></i>
-//           </button>
 //         </div>
 
 //         <div className="table-responsive">
@@ -160,10 +161,7 @@
 
 
 
-
-
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import api from "../api/api";
 import "../styles/MyBookings.css";
 import Pagination from "../components/Pagination";
@@ -180,11 +178,8 @@ const MyBookings = () => {
 
   const [bookings, setBookings] = useState([]);
 
-  useEffect(() => {
-    getBookings();
-  }, [meta.page]);
-
-  const getBookings = async () => {
+  // ✅ Fix: useCallback to memoize the function so it can be used in useEffect dependency
+  const getBookings = useCallback(async () => {
     try {
       const response = await api.get(
         `/devotee/pooja_request/list/?page=${meta.page}&size=${meta.size}&search=${meta.search}`
@@ -200,7 +195,11 @@ const MyBookings = () => {
     } catch (error) {
       console.warn("Failed to load bookings", error);
     }
-  };
+  }, [meta.page, meta.size, meta.search]);
+
+  useEffect(() => {
+    getBookings();
+  }, [getBookings]);
 
   const onPageChange = (page) => {
     setMeta((prev) => ({ ...prev, page }));
@@ -209,7 +208,7 @@ const MyBookings = () => {
   const handleSearch = (e) => {
     if (e.key === "Enter") {
       setMeta((prev) => ({ ...prev, page: 1 }));
-      getBookings();
+      getBookings(); // this is fine as getBookings is already defined and stable
     }
   };
 
