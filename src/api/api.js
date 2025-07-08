@@ -3,7 +3,9 @@ import axios from 'axios';
 
 // Axios instance
 const api = axios.create({
-  baseURL: 'https://beta.devalayas.com',
+  // baseURL: 'https://beta.devalayas.com',
+  baseURL: process.env.REACT_APP_BASE_URL,
+
   headers: {
     'Content-Type': 'application/json',
   },
