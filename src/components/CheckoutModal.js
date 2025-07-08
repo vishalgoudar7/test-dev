@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { useUserAuth } from '../context/UserAuthContext';
@@ -59,7 +58,6 @@ function DatePickerWithClose({ selectedDate, onDateChange, error }) {
 
 
 const CheckoutModal = ({ open, onClose }) => {
-  const navigate = useNavigate();
   const { profile } = useUserAuth();
   const [showConfirm, setShowConfirm] = useState(false);
   const [cart, setCart] = useState([]);
@@ -172,6 +170,62 @@ const CheckoutModal = ({ open, onClose }) => {
     }
   }, [cart, address.pincode]);
 
+  // Helper to check if address is valid
+  const isAddressValid = () => {
+    return (
+      address.bookingDate &&
+      address.devoteeName &&
+      /^\d{10}$/.test(address.devoteeMobile) &&
+      address.street1 &&
+      address.area &&
+      address.city &&
+      address.state &&
+      /^\d{6}$/.test(address.pincode)
+    );
+  };
+
+  const API_TOKEN = '94c4c11bfac761ba896de08bd383ca187d4e4dc4';
+
+  // Helper to fetch Razorpay key
+  async function fetchRazorpayKey() {
+    try {
+      const response = await fetch('https://beta.devalayas.com/api/v1/devotee/payment_key/', {
+        headers: {
+          'Authorization': `Token ${API_TOKEN}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch Razorpay key');
+      const data = await response.json();
+      return data.key;
+    } catch (err) {
+      alert('Unable to fetch payment key.');
+      return null;
+    }
+  }
+
+  // Place order after successful payment
+  async function placeOrder(rz_response, paymentId, orderId) {
+    // Show a loading indicator (replace with your loader if needed)
+    alert('Processing your order...');
+    try {
+      const data = {
+        razorpay_payment_id: rz_response.razorpay_payment_id,
+        razorpay_order_id: rz_response.razorpay_order_id,
+        razorpay_signature: rz_response.razorpay_signature,
+        request_id: paymentId,
+      };
+      const response = await fetch('/api/v1/devotee/pooja_request/payment/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error('Order confirmation failed');
+      // On success, navigate to order page
+      window.location.href = `/order?payment_id=${rz_response.razorpay_payment_id}&order_id=${orderId}`;
+    } catch (err) {
+      alert('Order failed: ' + err.message);
+    }
+  }
 
   if (!open) return null;
 
@@ -332,15 +386,15 @@ const CheckoutModal = ({ open, onClose }) => {
                             })));
                           }
                         }}>
-                          <div className="checkout-form-row"><input type="text" required placeholder="Devotee Name *" value={editAddress.devoteeName} onChange={e => setEditAddress({ ...editAddress, devoteeName: e.target.value })} />{errors.devoteeName && <span className="checkout-error">{errors.devoteeName}</span>}</div>
-                          <div className="checkout-form-row"><input type="tel" required placeholder="Devotee Mobile *" value={editAddress.devoteeMobile} maxLength={10} onChange={e => setEditAddress({ ...editAddress, devoteeMobile: e.target.value.replace(/[^0-9]/g, '') })} />{errors.devoteeMobile && <span className="checkout-error">{errors.devoteeMobile}</span>}</div>
-                          <div className="checkout-form-row"><input type="text" placeholder="Sankalpa (optional)" value={editAddress.sankalpa} onChange={e => setEditAddress({ ...editAddress, sankalpa: e.target.value })} /></div>
-                          <div className="checkout-form-row"><input type="text" required placeholder="Street Address 1 *" value={editAddress.street1} onChange={e => setEditAddress({ ...editAddress, street1: e.target.value })} />{errors.street1 && <span className="checkout-error">{errors.street1}</span>}</div>
-                          <div className="checkout-form-row"><input type="text" placeholder="Street Address 2 (optional)" value={editAddress.street2} onChange={e => setEditAddress({ ...editAddress, street2: e.target.value })} /></div>
-                          <div className="checkout-form-row"><input type="text" required placeholder="Area *" value={editAddress.area} onChange={e => setEditAddress({ ...editAddress, area: e.target.value })} />{errors.area && <span className="checkout-error">{errors.area}</span>}</div>
-                          <div className="checkout-form-row"><input type="text" required placeholder="City *" value={editAddress.city} onChange={e => setEditAddress({ ...editAddress, city: e.target.value })} />{errors.city && <span className="checkout-error">{errors.city}</span>}</div>
-                          <div className="checkout-form-row"><input type="text" required placeholder="State *" value={editAddress.state} onChange={e => setEditAddress({ ...editAddress, state: e.target.value })} />{errors.state && <span className="checkout-error">{errors.state}</span>}</div>
-                          <div className="checkout-form-row"><input type="text" required placeholder="Pincode * (6-digit Pincode)" value={editAddress.pincode} maxLength={6} onChange={e => setEditAddress({ ...editAddress, pincode: e.target.value.replace(/[^0-9]/g, '') })} />{errors.pincode && <span className="checkout-error">{errors.pincode}</span>}</div>
+                          <div className="checkout-form-row"><input type="text" required placeholder="Devotee Name *" value={editAddress.devoteeName} onChange={e => setEditAddress({ ...editAddress, devoteeName: e.target.value })} style={{ width: '100%' }} />{errors.devoteeName && <span className="checkout-error">{errors.devoteeName}</span>}</div>
+                          <div className="checkout-form-row"><input type="tel" required placeholder="Devotee Mobile *" value={editAddress.devoteeMobile} maxLength={10} onChange={e => setEditAddress({ ...editAddress, devoteeMobile: e.target.value.replace(/[^0-9]/g, '') })} style={{ width: '100%' }} />{errors.devoteeMobile && <span className="checkout-error">{errors.devoteeMobile}</span>}</div>
+                          <div className="checkout-form-row"><input type="text" placeholder="Sankalpa (optional)" value={editAddress.sankalpa} onChange={e => setEditAddress({ ...editAddress, sankalpa: e.target.value })} style={{ width: '100%' }} /></div>
+                          <div className="checkout-form-row"><input type="text" required placeholder="Street Address 1 *" value={editAddress.street1} onChange={e => setEditAddress({ ...editAddress, street1: e.target.value })} style={{ width: '100%' }} />{errors.street1 && <span className="checkout-error">{errors.street1}</span>}</div>
+                          <div className="checkout-form-row"><input type="text" placeholder="Street Address 2 (optional)" value={editAddress.street2} onChange={e => setEditAddress({ ...editAddress, street2: e.target.value })} style={{ width: '100%' }} /></div>
+                          <div className="checkout-form-row"><input type="text" required placeholder="Area *" value={editAddress.area} onChange={e => setEditAddress({ ...editAddress, area: e.target.value })} style={{ width: '100%' }} />{errors.area && <span className="checkout-error">{errors.area}</span>}</div>
+                          <div className="checkout-form-row"><input type="text" required placeholder="City *" value={editAddress.city} onChange={e => setEditAddress({ ...editAddress, city: e.target.value })} style={{ width: '100%' }} />{errors.city && <span className="checkout-error">{errors.city}</span>}</div>
+                          <div className="checkout-form-row"><input type="text" required placeholder="State *" value={editAddress.state} onChange={e => setEditAddress({ ...editAddress, state: e.target.value })} style={{ width: '100%' }} />{errors.state && <span className="checkout-error">{errors.state}</span>}</div>
+                          <div className="checkout-form-row"><input type="text" required placeholder="Pincode * (6-digit Pincode)" value={editAddress.pincode} maxLength={6} onChange={e => setEditAddress({ ...editAddress, pincode: e.target.value.replace(/[^0-9]/g, '') })} style={{ width: '100%' }} />{errors.pincode && <span className="checkout-error">{errors.pincode}</span>}</div>
                           <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
                           <button type="submit" className="checkout-proceed-btn">Save</button>
                           <button type="button" className="btn btn-secondary" onClick={() => setEditModalOpen(false)}>Cancel</button>
@@ -447,71 +501,57 @@ const CheckoutModal = ({ open, onClose }) => {
                   <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
                     <span style={{ fontWeight: 600, fontSize: '1.08rem', whiteSpace: 'nowrap' }}>Add Address</span>
                     <div style={{ flex: 1 }} />
-                    <button
-                      type="button"
-                      style={{ background: 'transparent', border: 'none', fontSize: 22, cursor: 'pointer', color: '#888', marginLeft: 8, lineHeight: 1 }}
-                      aria-label="Close address form"
-                      onClick={() => {
-                        setShowAddressForm(false);
-                        // If there are saved addresses, restore the first one
-                        if (savedAddresses.length > 0) {
-                          setAddress(a => ({ ...savedAddresses[0], bookingDate: a.bookingDate || '' }));
-                        }
-                      }}
-                    >
-                      &times;
-                    </button>
                   </div>
                   {/* Booking date is now above address section */}
                   <div className="checkout-form-row">
                     <div>
-                      <input type="text" required placeholder="Devotee Name *" value={address.devoteeName} onChange={e => setAddress({ ...address, devoteeName: e.target.value })} />
+                      <input type="text" required placeholder="Devotee Name *" value={address.devoteeName} onChange={e => setAddress({ ...address, devoteeName: e.target.value })} style={{ width: '100%' }} />
                       {errors.devoteeName && <span className="checkout-error">{errors.devoteeName}</span>}
                     </div>
                   </div>
                   <div className="checkout-form-row">
                     <div>
-                      <input type="tel" required placeholder="Devotee Mobile Number * (10-digit Mobile)" value={address.devoteeMobile} maxLength={10} onChange={e => setAddress({ ...address, devoteeMobile: e.target.value.replace(/[^0-9]/g, '') })} />
+                      <input type="tel" required placeholder="Devotee Mobile Number * (10-digit Mobile)" value={address.devoteeMobile} maxLength={10} onChange={e => setAddress({ ...address, devoteeMobile: e.target.value.replace(/[^0-9]/g, '') })} style={{ width: '100%' }} />
                       {errors.devoteeMobile && <span className="checkout-error">{errors.devoteeMobile}</span>}
                     </div>
                   </div>
                   <div className="checkout-form-row">
                     <div>
-                      <input type="text" placeholder="Sankalpa (optional)" value={address.sankalpa} onChange={e => setAddress({ ...address, sankalpa: e.target.value })} />
+                      <input type="text" placeholder="Sankalpa (optional)" value={address.sankalpa} onChange={e => setAddress({ ...address, sankalpa: e.target.value })} style={{ width: '100%' }} />
                     </div>
                   </div>
                   <div className="checkout-form-row">
                     <div>
-                      <input type="text" required placeholder="Street Address 1 *" value={address.street1} onChange={e => setAddress({ ...address, street1: e.target.value })} />
+                      <input type="text" required placeholder="Street Address 1 *" value={address.street1} onChange={e => setAddress({ ...address, street1: e.target.value })} style={{ width: '100%' }} />
                       {errors.street1 && <span className="checkout-error">{errors.street1}</span>}
                     </div>
                   </div>
                   <div className="checkout-form-row">
                     <div>
-                      <input type="text" placeholder="Street Address 2 (optional)" value={address.street2} onChange={e => setAddress({ ...address, street2: e.target.value })} />
+                      <input type="text" placeholder="Street Address 2 (optional)" value={address.street2} onChange={e => setAddress({ ...address, street2: e.target.value })} style={{ width: '100%' }} />
                     </div>
                   </div>
                   <div className="checkout-form-row">
                     <div>
-                      <input type="text" required placeholder="Area *" value={address.area} onChange={e => setAddress({ ...address, area: e.target.value })} />
+                      <input type="text" required placeholder="Area *" value={address.area} onChange={e => setAddress({ ...address, area: e.target.value })} style={{ width: '100%' }} />
                       {errors.area && <span className="checkout-error">{errors.area}</span>}
                     </div>
                   </div>
                   <div className="checkout-form-row">
                     <div>
-                      <input type="text" required placeholder="City *" value={address.city} onChange={e => setAddress({ ...address, city: e.target.value })} />
+                      <input type="text" required placeholder="City *" value={address.city} onChange={e => setAddress({ ...address, city: e.target.value })} style={{ width: '100%' }} />
                       {errors.city && <span className="checkout-error">{errors.city}</span>}
                     </div>
                   </div>
                   <div className="checkout-form-row">
                     <div>
-                      <input type="text" required placeholder="State *" value={address.state} onChange={e => setAddress({ ...address, state: e.target.value })} />
+                      <input type="text" required placeholder="State *" value={address.state} onChange={e => setAddress({ ...address, state: e.target.value })} style={{ width: '100%' }} />
                       {errors.state && <span className="checkout-error">{errors.state}</span>}
                     </div>
                   </div>
                   <div className="checkout-form-row">
                     <div>
-                      <input type="text" required placeholder="Pincode * (6-digit Pincode)" value={address.pincode} maxLength={6} onChange={e => setAddress({ ...address, pincode: e.target.value.replace(/[^0-9]/g, '') })} />
+                      <input type="text" required placeholder="Pincode * (6-digit Pincode)" value={address.pincode} maxLength={6} onChange={e => setAddress({ ...address, pincode: e.target.value.replace(/[^0-9]/g, '') })} style={{ width: '100%' }} />
                       {errors.pincode && <span className="checkout-error">{errors.pincode}</span>}
                     </div>
                   </div>
@@ -519,80 +559,70 @@ const CheckoutModal = ({ open, onClose }) => {
                 </form>
               )}
             {/* Main Proceed to Checkout button at the bottom of the modal */}
-            <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, padding: 16, background: 'rgba(255,255,255,0.95)', borderTop: '1px solid #eee', zIndex: 10 }}>
-              <button
-                type="button"
-                className="checkout-proceed-btn"
-                style={{
-                  width: '100%',
-                  background: '#c1440e',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: 8,
-                  padding: '14px 0',
-                  fontWeight: 700,
-                  fontSize: 18,
-                  cursor: 'pointer',
-                  boxShadow: '0 2px 8px rgba(193,68,14,0.08)',
-                }}
-                onClick={async () => {
-                  // Razorpay integration
-                  const res = await loadRazorpayScript('https://checkout.razorpay.com/v1/checkout.js');
-                  if (!res) {
-                    alert('Razorpay SDK failed to load. Are you online?');
-                    return;
-                  }
-                  // You should create an order on your backend and get order_id, amount, etc.
-                  // For demo, using total from charges (in paise)
-                  const amount = Math.round((charges.total || 1) * 100); // INR to paise
-                  // TODO: In production, fetch order_id from your backend or Razorpay API
-                  const order_id = 'order_QoYYUgHuUvgRbB'; // Example from your API response
-                  // Find the first temple in cart for display (customize as needed)
-                  const firstTemple = cart && cart.length > 0 ? cart[0] : {};
-                  const options = {
-                    key: 'rzp_test_zEFATsk52OKOBn', // Your real Razorpay key
-                    amount,
-                    currency: 'INR',
-                    name: 'Devalaya',
-                    description: 'Temple Booking Payment',
-                    image: require('../assets/logo.png'),
-                    order_id, // Pass the real order_id here
-                    handler: function (response) {
-                      // On payment success, navigate to PaymentSuccess page with details
-                      navigate('/payment-success', {
-                        state: {
-                          orderId: response.razorpay_order_id,
-                          devoteeName: address.devoteeName,
-                          templeName: firstTemple.name,
-                          templeImg: firstTemple.images && firstTemple.images[0] && firstTemple.images[0].image
-                            ? (firstTemple.images[0].image.startsWith('http')
-                                ? firstTemple.images[0].image
-                                : firstTemple.images[0].image.startsWith('/media')
-                                  ? `https://beta.devalayas.com${firstTemple.images[0].image}`
-                                  : firstTemple.images[0].image.startsWith('/')
-                                    ? `https://beta.devalayas.com${firstTemple.images[0].image}`
-                                    : `https://beta.devalayas.com/${firstTemple.images[0].image}`)
-                            : require('../assets/Default.png'),
-                        }
-                      });
-                    },
-                    prefill: {
-                      name: address.devoteeName,
-                      email: profile?.email || '',
-                      contact: address.devoteeMobile,
-                    },
-                    notes: {
-                      address: `${address.street1}, ${address.city}, ${address.state} - ${address.pincode}`,
-                    },
-                    theme: {
-                      color: '#c1440e',
-                    },
-                  };
-                  const rzp = new window.Razorpay(options);
-                  rzp.open();
-                }}
-              >Proceed to Checkout / Make Payment</button>
-            </div>
+            {(!showAddressForm && isAddressValid()) && (
+              <div style={{ marginTop: 24, display: 'flex', justifyContent: 'flex-end' }}>
+                <button
+                  type="button"
+                  className="checkout-proceed-btn"
+                  style={{
+                    width: 'auto',
+                    minWidth: 140,
+                    background: isAddressValid() ? '#c1440e' : '#ccc',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: 8,
+                    padding: '12px 18px',
+                    fontWeight: 700,
+                    fontSize: 16,
+                    cursor: isAddressValid() ? 'pointer' : 'not-allowed',
+                    boxShadow: '0 2px 8px rgba(193,68,14,0.08)',
+                    opacity: isAddressValid() ? 1 : 0.6,
+                  }}
+                  disabled={!isAddressValid()}
+                  onClick={async () => {
+                    if (!isAddressValid()) return;
+                    // Razorpay integration (fetch key and use API url)
+                    const res = await loadRazorpayScript('https://checkout.razorpay.com/v1/checkout.js');
+                    if (!res) {
+                      alert('Razorpay SDK failed to load. Are you online?');
+                      return;
+                    }
+                    const rzKey = await fetchRazorpayKey();
+                    if (!rzKey) return;
+                    const amount = Math.round((charges.total || 1) * 100); // INR to paise
+                    const order_id = 'order_QoYYUgHuUvgRbB'; // Replace with your real order_id logic
+                    var options = {
+                      key: rzKey,
+                      amount: amount,
+                      currency: 'INR',
+                      name: 'Devalaya',
+                      description: 'Payment towards Event Pooja',
+                      image: 'https://cdn.shopify.com/s/files/1/0735/5895/0166/files/unnamed_copy_ac3ece77-8a3a-44b7-b0f2-820c39455044.jpg?v=1679241399&width=500',
+                      order_id: order_id,
+                      handler: function (response) {
+                        placeOrder(response, /* paymentId */ 'REPLACE_WITH_PAYMENT_ID', /* orderId */ 'REPLACE_WITH_ORDER_ID');
+                      },
+                      prefill: {
+                        name: address.devoteeName,
+                        email: profile?.email || '',
+                        contact: address.devoteeMobile,
+                      },
+                      notes: {
+                        address: 'Devalaya',
+                      },
+                      theme: {
+                        color: '#df3002',
+                      },
+                    };
+                    var rzp1 = new window.Razorpay(options);
+                    rzp1.on('payment.failed', function (response) {
+                      alert(JSON.stringify(response));
+                    });
+                    rzp1.open();
+                  }}
+                >Proceed to Checkout / Make Payment</button>
+              </div>
+            )}
           {/* End of checkout-modal-left */}
         </div>
           </div>
