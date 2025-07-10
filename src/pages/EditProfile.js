@@ -5,15 +5,15 @@ import { useUserAuth } from "../context/UserAuthContext";
 import "../styles/EditProfile.css";
 
 const EditProfile = () => {
-  const { profile } = useUserAuth(); // Removed setProfile to prevent error
+  const { profile } = useUserAuth();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
+    phone: "",
     gender: "",
     dob: "",
     placeOfBirth: "",
     occupation: "",
-    phone: "",
     street1: "",
     street2: "",
     area: "",
@@ -22,6 +22,7 @@ const EditProfile = () => {
     pincode: "",
     sankalpa: "",
   });
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,37 +49,43 @@ const EditProfile = () => {
 
   const handleSave = (e) => {
     e.preventDefault();
-    // Removed setProfile(formData); to prevent error
     localStorage.setItem("profile", JSON.stringify(formData));
     navigate("/profile");
   };
 
   return (
-    <div className="edit-container">
-      <h4 className="breadcrumb">Home &gt; Profile &gt; Edit Profile Details</h4>
-      <div className="edit-section">
+    <div className="edit-wrapper">
+      <div className="edit-box">
         <h3>Edit Profile Details</h3>
         <form onSubmit={handleSave}>
           <div className="form-group">
             <label>Your Mobile Number</label>
-            <input type="text" value={`+91${formData.phone}`} readOnly />
+            <input
+              name="phone"
+              type="text"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="+91xxxxxxxxxx"
+              maxLength={10}
+              required
+            />
           </div>
 
           <div className="form-row">
             <div className="form-group">
               <label>First Name</label>
-              <input name="firstName" value={formData.firstName} onChange={handleChange} />
+              <input name="firstName" value={formData.firstName} onChange={handleChange} required />
             </div>
             <div className="form-group">
               <label>Last Name</label>
-              <input name="lastName" value={formData.lastName} onChange={handleChange} />
+              <input name="lastName" value={formData.lastName} onChange={handleChange} required />
             </div>
           </div>
 
           <div className="form-row">
             <div className="form-group">
               <label>Gender</label>
-              <select name="gender" value={formData.gender} onChange={handleChange}>
+              <select name="gender" value={formData.gender} onChange={handleChange} required>
                 <option value="">Select</option>
                 <option>Male</option>
                 <option>Female</option>
@@ -87,7 +94,7 @@ const EditProfile = () => {
             </div>
             <div className="form-group">
               <label>Date of Birth</label>
-              <input type="date" name="dob" value={formData.dob} onChange={handleChange} />
+              <input type="date" name="dob" value={formData.dob} onChange={handleChange} required />
             </div>
           </div>
 
@@ -108,7 +115,8 @@ const EditProfile = () => {
             </div>
           </div>
 
-          <h4 style={{marginTop:32, marginBottom:8}}>Address Details</h4>
+          <h4>Address Details</h4>
+
           <div className="form-row">
             <div className="form-group">
               <label>Street Address 1 *</label>
@@ -119,6 +127,7 @@ const EditProfile = () => {
               <input name="street2" value={formData.street2} onChange={handleChange} />
             </div>
           </div>
+
           <div className="form-row">
             <div className="form-group">
               <label>Area *</label>
@@ -129,6 +138,7 @@ const EditProfile = () => {
               <input name="city" value={formData.city} onChange={handleChange} required />
             </div>
           </div>
+
           <div className="form-row">
             <div className="form-group">
               <label>State *</label>
@@ -136,17 +146,27 @@ const EditProfile = () => {
             </div>
             <div className="form-group">
               <label>Pincode *</label>
-              <input name="pincode" value={formData.pincode} maxLength={6} onChange={e => setFormData(prev => ({...prev, pincode: e.target.value.replace(/[^0-9]/g,"")}))} required />
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="form-group">
-              <label>Sankalpa (optional)</label>
-              <input name="sankalpa" value={formData.sankalpa} onChange={handleChange} />
+              <input
+                name="pincode"
+                value={formData.pincode}
+                maxLength={6}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    pincode: e.target.value.replace(/[^0-9]/g, ""),
+                  }))
+                }
+                required
+              />
             </div>
           </div>
 
-          <button type="submit" className="save-btn">Save Changes</button>
+          <div className="form-group">
+            <label>Sankalpa (optional)</label>
+            <input name="sankalpa" value={formData.sankalpa} onChange={handleChange} />
+          </div>
+
+          <button type="submit" className="save-btn">SAVE CHANGES</button>
         </form>
       </div>
     </div>
