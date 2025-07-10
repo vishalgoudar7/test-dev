@@ -21,7 +21,7 @@ const Login = () => {
   const [showEmailOtp, setShowEmailOtp] = useState(false);
 
   const mockOtp = "111111"; // Simulated OTP for testing
-  const realToken = "c91ae32509fa4ce4e8c21aa4a86118100f97c4f2"; // ✅ Your working token
+  const realToken = process.env.REACT_APP_LOGIN_TOKEN; // ✅ Read from .env
 
   const handleSendMobileOtp = () => {
     if (!mobile) return setError("Enter mobile number");
@@ -33,7 +33,7 @@ const Login = () => {
     if (otp === mockOtp) {
       const userObj = { mobile: `${countryCode}${mobile}` };
       localStorage.setItem("user", JSON.stringify(userObj));
-      localStorage.setItem("token", realToken); // ✅ Store token
+      localStorage.setItem("token", realToken);
       setUser(userObj);
       navigate("/");
     } else {
@@ -51,7 +51,7 @@ const Login = () => {
     if (emailOtp === mockOtp) {
       const userObj = { email };
       localStorage.setItem("user", JSON.stringify(userObj));
-      localStorage.setItem("token", realToken); // ✅ Store token
+      localStorage.setItem("token", realToken);
       setUser(userObj);
       navigate("/");
     } else {
@@ -69,7 +69,7 @@ const Login = () => {
         photo: user.photoURL,
       };
       localStorage.setItem("user", JSON.stringify(userObj));
-      localStorage.setItem("token", realToken); // ✅ Store token for Google too
+      localStorage.setItem("token", realToken);
       setUser(userObj);
       navigate("/");
     } catch (err) {

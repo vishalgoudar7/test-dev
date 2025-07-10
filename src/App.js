@@ -28,6 +28,10 @@ function AppWrapper() {
     "/puja",
     "/prasadam",
     "/chadhava",
+    "/TermsAndConditions",
+    "/CancellationPolicy",
+    "/RefundPolicy",
+    "/PrivacyPolicy",
   ];
 
   return (

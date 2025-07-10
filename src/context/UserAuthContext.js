@@ -25,10 +25,17 @@ export const UserAuthProvider = ({ children }) => {
           photo: currentUser.photoURL,
         };
         localStorage.setItem("user", JSON.stringify(googleUser));
-        localStorage.setItem("token", "c91ae32509fa4ce4e8c21aa4a86118100f97c4f2");
+
+        // Use environment token
+        const apiToken = process.env.REACT_APP_API_TOKEN;
+        if (apiToken) {
+          localStorage.setItem("token", apiToken);
+        }
+
         setUser(googleUser);
       }
     });
+
     return () => unsubscribe();
   }, []);
 

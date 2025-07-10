@@ -26,6 +26,7 @@ const TempleList = () => {
 
   const [page, setPage] = useState(1);
   const pageSize = 10;
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     dispatch(fetchTemples());
@@ -43,7 +44,6 @@ const TempleList = () => {
   const handleNext = () => page < totalPages && setPage(page + 1);
 
   const getImageUrl = (temple) => {
-    const BASE_URL = 'https://beta.devalayas.com';
     if (temple.image_url && temple.image_url !== 'null') {
       return temple.image_url.startsWith('http') ? temple.image_url : `${BASE_URL}${temple.image_url}`;
     }
@@ -101,39 +101,25 @@ const TempleList = () => {
 
       {!loading && (
         <div className="pagination-container" style={{ display: 'flex', gap: 8, justifyContent: 'center', alignItems: 'center' }}>
-          <button className="btn btn-outline-danger btn-sm" style={{ minWidth: 40, maxWidth: 40 }} onClick={handlePrev} disabled={page === 1}>
-            Prev
-          </button>
-
+          <button className="btn btn-outline-danger btn-sm" onClick={handlePrev} disabled={page === 1}>Prev</button>
           {(() => {
             let start = Math.max(1, page - 1);
             let end = Math.min(totalPages, page + 1);
             if (page === 1) end = Math.min(totalPages, 3);
             if (page === totalPages) start = Math.max(1, totalPages - 2);
             const pages = [];
-            for (let i = start; i <= end; i++) {
-              pages.push(i);
-            }
+            for (let i = start; i <= end; i++) pages.push(i);
             return pages.map((num) => (
               <button
                 key={num}
                 onClick={() => handlePageClick(num)}
                 className={`btn btn-sm ${page === num ? 'btn-danger' : 'btn-outline-primary'}`}
-                style={{ minWidth: 40, maxWidth: 40, padding: 0 }}
               >
                 {num}
               </button>
             ));
           })()}
-
-          <button
-            className="btn btn-outline-danger btn-sm"
-            style={{ minWidth: 40, maxWidth: 40 }}
-            onClick={handleNext}
-            disabled={page === totalPages}
-          >
-            Next
-          </button>
+          <button className="btn btn-outline-danger btn-sm" onClick={handleNext} disabled={page === totalPages}>Next</button>
         </div>
       )}
     </div>

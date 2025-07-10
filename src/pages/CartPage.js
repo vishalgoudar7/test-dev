@@ -6,10 +6,11 @@ const CartPage = () => {
   const [cart, setCart] = useState([]);
   const [showCheckout, setShowCheckout] = useState(false);
 
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
+
   useEffect(() => {
     try {
       const stored = JSON.parse(localStorage.getItem('cart')) || [];
-      // Add quantity property if not present
       setCart(stored.map(item => ({ ...item, quantity: item.quantity || 1 })));
     } catch {
       setCart([]);
@@ -47,13 +48,29 @@ const CartPage = () => {
     setShowCheckout(true);
   };
 
-  // Only show subtotal in cart and cart drawer
-  const subtotal = cart.reduce((sum, item) => sum + (item.payment_data?.original_cost ? Number(item.payment_data.original_cost) : (Number(item.final_total) || Number(item.cost) || 0)) * (item.quantity || 1), 0);
+  const subtotal = cart.reduce(
+    (sum, item) =>
+      sum +
+      (item.payment_data?.original_cost
+        ? Number(item.payment_data.original_cost)
+        : Number(item.final_total) || Number(item.cost) || 0) *
+        (item.quantity || 1),
+    0
+  );
+
+  const getImageUrl = (item) => {
+    const image = item?.images?.[0]?.image;
+    if (!image || image === 'null') return '';
+    if (image.startsWith('http')) return image;
+    if (image.startsWith('/')) return `${BASE_URL}${image}`;
+    return `${BASE_URL}/${image}`;
+  };
 
   return (
     <div className="container py-5" style={{ minHeight: '80vh' }}>
-      <h1 className="text-center mb-5" style={{ fontWeight: 500, fontSize: '2.5rem' }}>POOJA SELECTIONS
-</h1>
+      <h1 className="text-center mb-5" style={{ fontWeight: 500, fontSize: '2.5rem' }}>
+        POOJA SELECTIONS
+      </h1>
       {cart.length === 0 ? (
         <div className="text-center">
           <p>Your cart is empty.</p>
@@ -78,19 +95,16 @@ const CartPage = () => {
                   <tr key={item.id} style={{ verticalAlign: 'middle' }}>
                     <td>
                       <img
-                        src={
-                          item.images?.[0]?.image && item.images?.[0]?.image !== 'null'
-                            ? (item.images[0].image.startsWith('http')
-                                ? item.images[0].image
-                                : item.images[0].image.startsWith('/media')
-                                  ? `https://beta.devalayas.com${item.images[0].image}`
-                                  : item.images[0].image.startsWith('/')
-                                    ? `https://beta.devalayas.com${item.images[0].image}`
-                                    : `https://beta.devalayas.com/${item.images[0].image}`)
-                            : ''
-                        }
+                        src={getImageUrl(item)}
                         alt={item.name}
-                        style={{ width: 110, height: 110, objectFit: 'contain', borderRadius: 8, background: '#fff', border: '1px solid #eee' }}
+                        style={{
+                          width: 110,
+                          height: 110,
+                          objectFit: 'contain',
+                          borderRadius: 8,
+                          background: '#fff',
+                          border: '1px solid #eee'
+                        }}
                         onError={e => {
                           e.target.onerror = null;
                           e.target.style.display = 'none';
@@ -101,7 +115,9 @@ const CartPage = () => {
                       <div style={{ fontWeight: 600, fontSize: '1.1rem' }}>{item.name}</div>
                       <div className="text-muted" style={{ fontSize: 15 }}>{item.details}</div>
                     </td>
-                    <td style={{ fontWeight: 500, fontSize: 18 }}>Rs.<br />{item.final_total || item.cost}</td>
+                    <td style={{ fontWeight: 500, fontSize: 18 }}>
+                      Rs.<br />{item.final_total || item.cost}
+                    </td>
                     <td>
                       <div className="d-flex align-items-center" style={{ maxWidth: 120 }}>
                         <button className="btn btn-outline-secondary btn-sm" onClick={() => decrement(item.id)}>-</button>
@@ -109,9 +125,16 @@ const CartPage = () => {
                         <button className="btn btn-outline-secondary btn-sm" onClick={() => increment(item.id)}>+</button>
                       </div>
                     </td>
-                    <td style={{ fontWeight: 500, fontSize: 18 }}>Rs.<br />{(item.final_total || item.cost) * item.quantity}</td>
+                    <td style={{ fontWeight: 500, fontSize: 18 }}>
+                      Rs.<br />{(item.final_total || item.cost) * item.quantity}
+                    </td>
                     <td>
-                      <button className="btn btn-link text-danger" onClick={() => removeItem(item.id)} title="Remove" style={{ fontSize: 22 }}>
+                      <button
+                        className="btn btn-link text-danger"
+                        onClick={() => removeItem(item.id)}
+                        title="Remove"
+                        style={{ fontSize: 22 }}
+                      >
                         <span role="img" aria-label="delete">🗑️</span>
                       </button>
                     </td>
@@ -132,12 +155,21 @@ const CartPage = () => {
             </div>
             <button
               className="btn btn-lg mt-4"
-              style={{ background: '#c44a1c', color: '#fff', fontWeight: 600, width: 320, fontSize: 20, borderRadius: 6 }}
+              style={{
+                background: '#c44a1c',
+                color: '#fff',
+                fontWeight: 600,
+                width: 320,
+                fontSize: 20,
+                borderRadius: 6
+              }}
               onClick={handleCheckout}
             >
               CHECKOUT
             </button>
-            <Link to="/" className="btn btn-link mt-2" style={{ color: '#222', fontWeight: 500, fontSize: 17 }}>Continue Shopping</Link>
+            <Link to="/" className="btn btn-link mt-2" style={{ color: '#222', fontWeight: 500, fontSize: 17 }}>
+              Continue Shopping
+            </Link>
           </div>
         </>
       )}
