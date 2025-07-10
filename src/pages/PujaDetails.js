@@ -10,6 +10,7 @@ const PujaDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('about');
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     const fetchPujaDetails = async () => {
@@ -17,7 +18,7 @@ const PujaDetails = () => {
         const response = await api.get(`/api/v1/devotee/pooja/${id}`);
         setPuja(response.data);
       } catch (err) {
-        setError('Failed to load puja details');
+        setError('❌ Failed to load puja details. Please try again later.');
         console.error('Error:', err.response?.data || err.message);
       } finally {
         setLoading(false);
@@ -27,14 +28,16 @@ const PujaDetails = () => {
     fetchPujaDetails();
   }, [id]);
 
-  if (loading) return <div className="loading">Loading...</div>;
+  if (loading) return <div className="loading">Loading Puja Details...</div>;
   if (error) return <div className="error">{error}</div>;
   if (!puja) return <div>No puja found</div>;
 
   const imageUrl =
-    puja.image ||
-    (puja.images?.length > 0 && puja.images[0].image) ||
-    'https://via.placeholder.com/500x300?text=No+Image+Available';
+    imageError
+      ? 'https://via.placeholder.com/500x300?text=Image+Not+Available'
+      : puja.image ||
+        (puja.images?.length > 0 && puja.images[0].image) ||
+        'https://via.placeholder.com/500x300?text=No+Image+Available';
 
   return (
     <div className="puja-details-container">
@@ -42,8 +45,15 @@ const PujaDetails = () => {
 
       <div className="puja-flex-wrapper">
         <div className="puja-image-box">
-          <img src={imageUrl} alt={puja.name} className="puja-main-image" />
+          <img
+            src={imageUrl}
+            alt={puja.name}
+            className="puja-main-image"
+            onError={() => setImageError(true)}
+            loading="lazy"
+          />
         </div>
+
         <div className="puja-text-box">
           <p><strong>Details:</strong> {puja.details || 'No details available'}</p>
           <p><strong>Included:</strong> {puja.included || 'N/A'}</p>

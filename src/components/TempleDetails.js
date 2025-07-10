@@ -1,3 +1,4 @@
+// src/pages/TempleDetails.js
 import React, { useEffect, useState } from 'react';
 import CartDrawer from './CartDrawer';
 import { useParams } from 'react-router-dom';
@@ -9,34 +10,28 @@ import api from '../api/api';
 const TempleDetails = () => {
   const { id } = useParams();
   const [temple, setTemple] = useState(null);
-  const [tabNo, setTabNo] = useState(2); // Default: Pooja
+  const [tabNo, setTabNo] = useState(2);
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState([]);
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const token = 'c91ae32509fa4ce4e8c21aa4a86118100f97c4f2';
+  const BASE_IMAGE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     const fetchTempleAndPoojas = async () => {
       try {
-        const templeRes = await api.get(`/api/v1/devotee/temple/${id}`, {
-          headers: { Authorization: `Token ${token}` },
-        });
+        const templeRes = await api.get(`/api/v1/devotee/temple/${id}`);
 
         let prasadamData = [];
         try {
-          const prasadamRes = await api.get(`/api/v1/devotee/prasadam/?temple=${id}`, {
-            headers: { Authorization: `Token ${token}` },
-          });
+          const prasadamRes = await api.get(`/api/v1/devotee/prasadam/?temple=${id}`);
           prasadamData = prasadamRes.data.results || [];
         } catch (prasadamErr) {
           console.warn('Failed to load prasadam:', prasadamErr);
         }
 
-        const poojaRes = await api.get(`/api/v1/devotee/pooja/?temple=${id}`, {
-          headers: { Authorization: `Token ${token}` },
-        });
+        const poojaRes = await api.get(`/api/v1/devotee/pooja/?temple=${id}`);
 
         setTemple({
           ...templeRes.data,
@@ -52,7 +47,7 @@ const TempleDetails = () => {
     };
 
     fetchTempleAndPoojas();
-  }, [id, token]);
+  }, [id]);
 
   const handleAddToCart = (item) => {
     let cart = [];
@@ -84,13 +79,16 @@ const TempleDetails = () => {
 
   const handleSearch = async (query = search) => {
     try {
-      const res = await api.get(`/api/v1/devotee/pooja/?temple=${id}&search=${query}`, {
-        headers: { Authorization: `Token ${token}` },
-      });
+      const res = await api.get(`/api/v1/devotee/pooja/?temple=${id}&search=${query}`);
       setFilteredData(res.data.results || []);
     } catch (err) {
       console.error('Search failed:', err);
     }
+  };
+
+  const getFullImageUrl = (imgPath) => {
+    if (!imgPath || imgPath === 'null') return require('../assets/Default.png');
+    return imgPath.startsWith('http') ? imgPath : `${BASE_IMAGE_URL}${imgPath.startsWith('/') ? '' : '/'}${imgPath}`;
   };
 
   const renderCards = (data) => {
@@ -105,18 +103,10 @@ const TempleDetails = () => {
           <div className="col-md-3 mb-2" key={p.id}>
             <div className="card h-100 shadow-sm border-0 rounded-3" style={{ background: '#ffe9d6' }}>
               <div className="card-body d-flex flex-column justify-content-between">
-                <h5 className="fw-bold text-danger">
-                  <span role="img" aria-label="flower">🌸</span> {p.name}
-                </h5>
+                <h5 className="fw-bold text-danger">🌸 {p.name}</h5>
                 <div className="text-center my-3">
                   <img
-                    src={
-                      p.images?.[0]?.image && p.images[0].image !== 'null'
-                        ? p.images[0].image.startsWith('http')
-                          ? p.images[0].image
-                          : `https://beta.devalayas.com ${p.images[0].image.startsWith('/') ? '' : '/'}${p.images[0].image}`
-                        : require('../assets/Default.png')
-                    }
+                    src={getFullImageUrl(p.images?.[0]?.image)}
                     alt={p.name}
                     className="img-fluid rounded"
                     style={{
@@ -139,11 +129,8 @@ const TempleDetails = () => {
                   <p><strong className="text-danger">Cost:</strong><br />₹ {p.final_total || p.cost || 'N/A'} /-</p>
                 </div>
                 <div className="d-flex justify-content-center mt-3">
-                  <button
-                    className="btn btn-warning px-4 fw-semibold shadow-sm"
-                    onClick={() => handleAddToCart(p)}
-                  >
-                    Participate <span className="ms-1">➜</span>
+                  <button className="btn btn-warning px-4 fw-semibold shadow-sm" onClick={() => handleAddToCart(p)}>
+                    Participate ➜
                   </button>
                 </div>
               </div>
@@ -170,18 +157,10 @@ const TempleDetails = () => {
           <div className="col-md-3 mb-2" key={p.id}>
             <div className="card h-100 shadow-sm border-0 rounded-3" style={{ background: '#ffe9d6' }}>
               <div className="card-body d-flex flex-column justify-content-between">
-                <h5 className="fw-bold text-danger">
-                  <span role="img" aria-label="prasadam">🍛</span> {p.name}
-                </h5>
+                <h5 className="fw-bold text-danger">🍛 {p.name}</h5>
                 <div className="text-center my-3">
                   <img
-                    src={
-                      p.image && p.image !== 'null'
-                        ? p.image.startsWith('http')
-                          ? p.image
-                          : `https://beta.devalayas.com ${p.image.startsWith('/') ? '' : '/'}${p.image}`
-                        : require('../assets/Default.png')
-                    }
+                    src={getFullImageUrl(p.image)}
                     alt={p.name}
                     className="img-fluid rounded"
                     style={{
@@ -204,11 +183,8 @@ const TempleDetails = () => {
                   <p><strong className="text-danger">Cost:</strong><br />₹ {p.cost || 'N/A'} /-</p>
                 </div>
                 <div className="d-flex justify-content-center mt-3">
-                  <button
-                    className="btn btn-success px-4 fw-semibold shadow-sm"
-                    onClick={() => handleAddToCart({ ...p, type: 'prasadam' })}
-                  >
-                    Add to Cart <span className="ms-1">➜</span>
+                  <button className="btn btn-success px-4 fw-semibold shadow-sm" onClick={() => handleAddToCart({ ...p, type: 'prasadam' })}>
+                    Add to Cart ➜
                   </button>
                 </div>
               </div>
@@ -219,13 +195,8 @@ const TempleDetails = () => {
     ));
   };
 
-  if (loading) {
-    return <p>Loading temple details...</p>;
-  }
-
-  if (!temple) {
-    return <p>No temple found.</p>;
-  }
+  if (loading) return <p>Loading temple details...</p>;
+  if (!temple) return <p>No temple found.</p>;
 
   return (
     <>
@@ -248,11 +219,12 @@ const TempleDetails = () => {
           >
             {temple.images?.map((img, idx) => (
               <div key={idx}>
-                <img src={img.image} alt={`Temple ${idx + 1}`} className="rounded temple-carousel-img" />
+                <img src={getFullImageUrl(img.image)} alt={`Temple ${idx + 1}`} className="rounded temple-carousel-img" />
               </div>
             ))}
           </Carousel>
 
+          {/* Tabs */}
           <ul className="nav nav-tabs justify-content-center mt-4 tab-list">
             <li className="nav-item" onClick={() => handleTabSwitch(2)}>
               <span className={`nav-link ${tabNo === 2 ? 'active' : ''}`}>Puja / Udi / Chadava</span>
@@ -312,7 +284,7 @@ const TempleDetails = () => {
                     {temple.images?.map((img, i) => (
                       <div className="col-md-4" key={i}>
                         <img
-                          src={img.image}
+                          src={getFullImageUrl(img.image)}
                           className="img-fluid rounded"
                           alt={`Temple ${i + 1}`}
                           style={{ padding: '8px', background: '#f8f9fa', borderRadius: '8px' }}

@@ -1,6 +1,3 @@
-
-
-
 // src/components/AppInfoSection.js
 import React from 'react';
 import '../styles/AppInfoSection.css';
