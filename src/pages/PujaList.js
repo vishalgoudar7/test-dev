@@ -1,4 +1,3 @@
-// // src/pages/PujaList.js
 // import React, { useEffect, useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
 // import api from '../api/api';
@@ -11,17 +10,9 @@
 //   const [error, setError] = useState('');
 //   const [searchTerm, setSearchTerm] = useState('');
 //   const navigate = useNavigate();
-//   const BASE_URL = 'https://live.devalayas.com';
+//   const BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
 
 //   useEffect(() => {
-//     const cachedData = localStorage.getItem('pujas');
-//     if (cachedData) {
-//       const parsedData = JSON.parse(cachedData);
-//       setPujas(parsedData);
-//       setFilteredPujas(parsedData);
-//       setLoading(false);
-//     }
-
 //     const fetchPujas = async () => {
 //       try {
 //         const token = localStorage.getItem('token');
@@ -30,6 +21,7 @@
 //           setLoading(false);
 //           return;
 //         }
+
 //         const response = await api.get('/api/v1/devotee/pooja/');
 //         const pujaList = response.data?.results || [];
 //         setPujas(pujaList);
@@ -57,8 +49,8 @@
 
 //   const handleSearch = () => {
 //     const filtered = pujas.filter((puja) =>
-//       puja.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//       (puja.included && puja.included.toLowerCase().includes(searchTerm.toLowerCase()))
+//       puja.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//       puja.included?.toLowerCase().includes(searchTerm.toLowerCase())
 //     );
 //     setFilteredPujas(filtered);
 //   };
@@ -108,6 +100,10 @@
 //                   alt={puja.name}
 //                   className="puja-image"
 //                   loading="lazy"
+//                   onError={(e) => {
+//                     e.target.onerror = null;
+//                     e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
+//                   }}
 //                 />
 //               ) : (
 //                 <div className="no-image">No Image</div>
@@ -148,13 +144,6 @@ const PujaList = () => {
   useEffect(() => {
     const fetchPujas = async () => {
       try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          setError('Authentication token missing. Please log in.');
-          setLoading(false);
-          return;
-        }
-
         const response = await api.get('/api/v1/devotee/pooja/');
         const pujaList = response.data?.results || [];
         setPujas(pujaList);
@@ -168,7 +157,8 @@ const PujaList = () => {
       }
     };
 
-    fetchPujas();
+    // Small timeout to ensure token is applied (avoids pending state)
+    setTimeout(fetchPujas, 100); 
   }, []);
 
   const getImageUrl = (imagePath) => {
