@@ -1,3 +1,4 @@
+// src/context/UserAuthContext.js
 import React, { createContext, useContext, useState, useEffect } from "react";
 import {
   getAuth,
@@ -26,7 +27,6 @@ export const UserAuthProvider = ({ children }) => {
         };
         localStorage.setItem("user", JSON.stringify(googleUser));
 
-        // Use environment token
         const apiToken = process.env.REACT_APP_API_TOKEN;
         if (apiToken) {
           localStorage.setItem("token", apiToken);
@@ -45,7 +45,8 @@ export const UserAuthProvider = ({ children }) => {
     return signInWithPopup(auth, provider);
   };
 
-  const logout = () => {
+  // ✅ Renamed to match usage in ProfilePage
+  const logOut = () => {
     const auth = getAuth();
     return signOut(auth).then(() => {
       setUser(null);
@@ -55,7 +56,7 @@ export const UserAuthProvider = ({ children }) => {
   };
 
   return (
-    <UserAuthContext.Provider value={{ user, setUser, googleSignIn, logout }}>
+    <UserAuthContext.Provider value={{ user, setUser, googleSignIn, logOut }}>
       {children}
     </UserAuthContext.Provider>
   );

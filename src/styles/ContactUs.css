@@ -93,13 +93,13 @@ button {
   bottom: 30px; /* overlaps form card */
   left: 460px;
   right: 50px;
-  bottom: 69px;
+  bottom: 70px;
   /* background-color: #b2a46d; */
   background-color: #baad78;
   color: black;
   display: flex;
   justify-content: space-around;
-  padding: 12px 8px;
+  padding: 2px 8px;
   z-index: 3;
   border-radius: 10px;
   font-size: 14px;
@@ -108,7 +108,7 @@ button {
 }
 
 .info-card h4 {
-  margin-bottom: 8px;
+  margin-bottom: 1px;
   font-size: 16px;
 }
 

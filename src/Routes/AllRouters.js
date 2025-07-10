@@ -69,7 +69,7 @@ import ContactUs from "../components/ContactUs";
 import PujaDetails from "../pages/PujaDetails";
 import ForgotPassword from "../components/ForgotPassword";
 import ProfilePage from "../pages/ProfilePage";
-import ProfileDetails from "../pages/ProfileDetails";
+// import ProfileDetails from "../pages/ProfileDetails";
 import MyBookings from "../pages/MyBookings";
 import SuggestTemple from "../pages/SuggestTemple";
 import EditProfile from "../pages/EditProfile";
@@ -104,7 +104,7 @@ const AllRouters = () => {
       <Route path="/temples" element={<TempleList />} />
       <Route path="/temples/:id" element={<TempleDetails />} />
       <Route path="/prasadam" element={<Prasadam />} />
-      <Route path="/profile/details" element={<ProfileDetails />} />
+      {/* <Route path="/profile/details" element={<ProfileDetails />} /> */}
       <Route path="/bookings" element={<MyBookings />} />
       <Route path="/suggest-temple" element={<SuggestTemple />} />
       <Route path="/cart" element={<CartPage />} />

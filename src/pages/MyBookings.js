@@ -1,6 +1,3 @@
-
-
-
 import React, { useEffect, useState } from "react";
 import api from "../api/api";
 import "../styles/MyBookings.css";
@@ -18,12 +15,12 @@ const MyBookings = () => {
 
   const [bookings, setBookings] = useState([]);
 
-  // useEffect(() => {
-  //   getBookings();
-  // }, [meta.page]);
   useEffect(() => {
-  getBookings();
-}, [getBookings]); // or disable warning if intentional
+    getBookings();
+  }, [meta.page]);
+//   useEffect(() => {
+//   getBookings();
+// }, [getBookings]); // or disable warning if intentional
 
 
   const getBookings = async () => {
