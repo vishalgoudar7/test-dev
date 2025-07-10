@@ -126,7 +126,7 @@ const TempleDetails = () => {
                   <p><strong className="text-danger">Details:</strong><br />{p.details}</p>
                   <p><strong className="text-danger">Includes:</strong><br />{p.included || 'N/A'}</p>
                   <p><strong className="text-danger">Benefits:</strong><br />{p.benefits || '-'}</p>
-                  <p><strong className="text-danger">Cost:</strong><br />₹ {p.final_total || p.cost || 'N/A'} /-</p>
+                  <p><strong className="text-danger">Cost:</strong><br />₹ {p.original_cost || p.cost || 'N/A'} /-</p>
                 </div>
                 <div className="d-flex justify-content-center mt-3">
                   <button className="btn btn-warning px-4 fw-semibold shadow-sm" onClick={() => handleAddToCart(p)}>
@@ -180,7 +180,7 @@ const TempleDetails = () => {
                   <p><strong className="text-danger">Details:</strong><br />{p.details || 'N/A'}</p>
                   <p><strong className="text-danger">Includes:</strong><br />{p.included || 'N/A'}</p>
                   <p><strong className="text-danger">Benefits:</strong><br />{p.benefits || '-'}</p>
-                  <p><strong className="text-danger">Cost:</strong><br />₹ {p.cost || 'N/A'} /-</p>
+                  <p><strong className="text-danger">Cost:</strong><br />₹ {p.original_cost || 'N/A'} /-</p>
                 </div>
                 <div className="d-flex justify-content-center mt-3">
                   <button className="btn btn-success px-4 fw-semibold shadow-sm" onClick={() => handleAddToCart({ ...p, type: 'prasadam' })}>

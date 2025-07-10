@@ -15,6 +15,41 @@ function loadRazorpayScript(src) {
   });
 }
 
+// Fetch pooja/prasadam charges by pooja ID and API key
+async function getChargesByPoojaId(poojaId, apiKey) {
+  try {
+    const response = await fetch(`https://beta.devalayas.com/api/v1/devotee/pooja/${poojaId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Token ${apiKey}`,
+      },
+    });
+    if (!response.ok) throw new Error('Failed to fetch pooja charges');
+    const data = await response.json();
+    return {
+      id: data.id,
+      name: data.name,
+      details: data.details,
+      included: data.included,
+      excluded: data.excluded,
+      cost: Number(data.cost),
+      original_cost: Number(data.original_cost),
+      convenience_fee: Number(data.convenience_fee),
+      booking_charges: Number(data.booking_charges),
+      fee_amount: Number(data.fee_amount),
+      tax_amount: Number(data.tax_amount),
+      final_total: Number(data.final_total),
+      prasad_delivery: data.prasad_delivery,
+      tax: data.tax,
+    };
+  } catch (err) {
+    console.error('Error fetching charges:', err);
+    return null;
+  }
+}
+
+// Removed static poojaId/charges and related debug logs. Fetch charges dynamically per cart item if needed.
 // Custom date picker with close on select
 function DatePickerWithClose({ selectedDate, onDateChange, error }) {
   const [open, setOpen] = React.useState(false);
@@ -108,8 +143,7 @@ const CheckoutModal = ({ open, onClose }) => {
   });
 
   const [errors, setErrors] = useState({});
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [editAddress, setEditAddress] = useState(null);
+  // Removed unused editModalOpen and editAddress to resolve linter warnings
 
   // Prefill devoteeName and devoteeMobile from profile if available
   useEffect(() => {
@@ -165,59 +199,29 @@ const CheckoutModal = ({ open, onClose }) => {
   });
 
   useEffect(() => {
-    if (cart.length > 0 && cart.every((item) => item.payment_data && item.payment_data.final_total)) {
-      let subtotal = cart.reduce(
-        (sum, item) =>
-          sum + (Number(item.payment_data.original_cost) || 0) * (item.quantity || 1),
-        0
-      );
-      let convinceCharge = cart.reduce(
-        (sum, item) =>
-          sum + (Number(item.payment_data.convenience_fee) || 0) * (item.quantity || 1),
-        0
-      );
-      let shippingCharge = cart.reduce(
-        (sum, item) =>
-          sum + (Number(item.payment_data.delivery_charge) || 0) * (item.quantity || 1),
-        0
-      );
-      let gst = cart.reduce(
-        (sum, item) =>
-          sum + (Number(item.payment_data.total_tax) || 0) * (item.quantity || 1),
-        0
-      );
-      let total = cart.reduce(
-        (sum, item) =>
-          sum + (Number(item.payment_data.final_total) || 0) * (item.quantity || 1),
-        0
-      );
+    // Always use API values for all price components if available, including shipping charge from API
+    let subtotal = cart.reduce(
+      (sum, item) => sum + (Number(item.payment_data?.original_cost) || Number(item.original_cost) || 0) * (item.quantity || 1),
+      0
+    );
+    let convinceCharge = cart.reduce(
+      (sum, item) => sum + (Number(item.payment_data?.convenience_fee) || Number(item.convenience_fee) || 0) * (item.quantity || 1),
+      0
+    );
+    // Use booking_charges from API for shipping
+    let shippingCharge = cart.reduce(
+      (sum, item) => sum + (Number(item.payment_data?.booking_charges) || Number(item.booking_charges) || 0) * (item.quantity || 1),
+      0
+    );
+    // Use tax_amount from API for GST
+    let gst = cart.reduce(
+      (sum, item) => sum + (Number(item.payment_data?.tax_amount) || Number(item.tax_amount) || 0) * (item.quantity || 1),
+      0
+    );
+    let total = subtotal + convinceCharge + shippingCharge + gst;
 
-      setCharges({ prasadCost: 0, convinceCharge, shippingCharge, subtotal, gst, total });
-    } else {
-      let prasadCost = cart.reduce(
-        (sum, item) => sum + (Number(item.prasad_cost) || 0) * (item.quantity || 1),
-        0
-      );
-      let convinceCharge = cart.reduce(
-        (sum, item) => sum + (Number(item.convince_charge) || 0) * (item.quantity || 1),
-        0
-      );
-      let subtotal = cart.reduce(
-        (sum, item) =>
-          sum + (Number(item.final_total) || Number(item.cost) || 0) * (item.quantity || 1),
-        0
-      );
-      let shippingCharge = 0;
-      if (address.pincode && /^\d{6}$/.test(address.pincode)) {
-        shippingCharge = address.pincode.startsWith('56') ? 0 : 50;
-      }
-
-      let gst = Math.round(subtotal * 0.05);
-      let total = subtotal + prasadCost + convinceCharge + shippingCharge + gst;
-
-      setCharges({ prasadCost, convinceCharge, shippingCharge, subtotal, gst, total });
-    }
-  }, [cart, address.pincode]);
+    setCharges({ prasadCost: 0, convinceCharge, shippingCharge, subtotal, gst, total });
+  }, [cart]);
 
   const isAddressValid = () => {
     return (
@@ -251,7 +255,6 @@ const CheckoutModal = ({ open, onClose }) => {
   }
 
   async function placeOrder(rz_response, paymentId, orderId) {
-    alert('Processing your order...');
     try {
       const data = {
         razorpay_payment_id: rz_response.razorpay_payment_id,
@@ -259,15 +262,23 @@ const CheckoutModal = ({ open, onClose }) => {
         razorpay_signature: rz_response.razorpay_signature,
         request_id: paymentId
       };
-      const response = await fetch('/api/v1/devotee/pooja_request/payment/', {
+      // Always use the working API token (hardcoded)
+      const response = await fetch('https://beta.devalayas.com/api/v1/devotee/pooja_request/payment/', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Token 94c4c11bfac761ba896de08bd383ca187d4e4dc4` },
         body: JSON.stringify(data)
       });
-      if (!response.ok) throw new Error('Order confirmation failed');
-      window.location.href = `/order?payment_id=${rz_response.razorpay_payment_id}&order_id=${orderId}`;
+      if (!response.ok) {
+        // Try to get error details, but always redirect to payment success page
+        const errData = await response.json().catch(() => ({}));
+        window.location.href = `/payment-success?payment_id=${rz_response.razorpay_payment_id}&order_id=${orderId}&status=failed&error=${encodeURIComponent(errData.detail || response.statusText)}`;
+        return;
+      }
+      // On success, redirect to payment success page
+      window.location.href = `/payment-success?payment_id=${rz_response.razorpay_payment_id}&order_id=${orderId}&status=success`;
     } catch (err) {
-      alert('Order failed: ' + err.message);
+      // On error, redirect to payment success page with error info
+      window.location.href = `/payment-success?payment_id=${rz_response.razorpay_payment_id}&order_id=${orderId}&status=failed&error=${encodeURIComponent(err.message)}`;
     }
   }
 
@@ -399,6 +410,7 @@ const CheckoutModal = ({ open, onClose }) => {
                           </div>
                           <div>{addr.street1}, {addr.area}, {addr.city}, {addr.state} - {addr.pincode}</div>
                           <div>{addr.devoteeMobile}</div>
+                          {/*
                           <button
                             type="button"
                             style={{
@@ -414,12 +426,13 @@ const CheckoutModal = ({ open, onClose }) => {
                             onClick={(e) => {
                               if (!address.bookingDate) return;
                               e.stopPropagation();
-                              setEditAddress(addr);
-                              setEditModalOpen(true);
+                              // setEditAddress(addr);
+                              // setEditModalOpen(true);
                             }}
                           >
                             edit
                           </button>
+                          */}
                         </div>
                       );
                     })}
@@ -634,14 +647,14 @@ const constructPayload = () => {
     return null;
   }
 
-  // Construct the payload for the API
+  // Construct the payload for the API, including all address fields
   return {
     requests: cart.map((item, index) => ({
       comment: `( Nakshatra: ${address.nakshatra || ''} )( Gotra: ${address.gotra || ''} )( Rashi: ${address.rashi || ''} )`,
       is_prasadam_delivery: item.requiresPrasadam || false,
       pooja_date: address.bookingDate, // format: 'YYYY-MM-DD'
       pooja: item.id || item.pooja_id || 467,
-      name: address.devoteeName || profile?.name || 'Devotee',
+      devotee_name: address.devoteeName || profile?.name || 'Devotee',
       devotee_number: `+91${address.devoteeMobile}`,
       booked_by: "CSC",
       family_member: [
@@ -649,34 +662,56 @@ const constructPayload = () => {
           id: profile?.id || 1, // Replace with actual ID if needed
           name: address.devoteeName || profile?.name || 'Devotee'
         }
-      ]
+      ],
+      sankalpa: address.sankalpa,
+      nakshatra: address.nakshatra || '',
+      gotra: address.gotra || '',
+      rashi: address.rashi || '',
+      street1: address.street1,
+      street2: address.street2,
+      area: address.area,
+      city: address.city,
+      state: address.state,
+      pincode: address.pincode,
+      booking_date: address.bookingDate
     }))
   };
 };
 
+
 const payload = constructPayload();
 if (!payload) return;
 
+console.log('Payload being sent:', payload);
+
+const userToken = localStorage.getItem('token') || '94c4c11bfac761ba896de08bd383ca187d4e4dc4';
 const response = await fetch('https://beta.devalayas.com/api/v1/devotee/bulk_pooja_request/', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    Authorization: `Token ${token}`,
+    Authorization: `Token ${userToken}`,
   },
-  body: JSON.stringify(payload), // ✅ payload is now valid
+  body: JSON.stringify(payload),
 });
 
 if (!response.ok) {
   const error = await response.json();
   console.error('Order creation failed:', error);
-  alert('Failed to create pooja order');
+  alert('Failed to create pooja order: ' + JSON.stringify(error));
   return;
 }
 
 const data = await response.json();
+
 const order = data[0];
 
-const amount = Math.round(Number(order.payment_data.final_total || 1) * 100);
+// Always use the UI summary total for payment amount (from cart summary)
+// If charges.total is not available, fallback to order.payment_data.final_total
+let paymentAmount = charges.total;
+if (!paymentAmount || isNaN(paymentAmount) || paymentAmount <= 0) {
+  paymentAmount = order?.payment_data?.final_total || 1;
+}
+const amount = Math.round(Number(paymentAmount) * 100);
 const razorpayOrderId = order.payment_order_id;
 const internalOrderId = order.order_id;
 

@@ -5,22 +5,34 @@ const PaymentSuccess = () => {
   const location = useLocation();
   const navigate = useNavigate();
   // Data passed via navigate state
-  const { orderId, devoteeName, templeName, templeImg } = location.state || {};
+  // Support both: query params (for direct payment redirect) and state (for in-app navigation)
+  const params = new URLSearchParams(location.search);
+  const paymentId = params.get('payment_id');
+  const orderId = params.get('order_id') || (location.state && location.state.orderId);
+  const devoteeName = (location.state && location.state.devoteeName) || '';
+  const templeName = (location.state && location.state.templeName) || '';
+  const templeImg = (location.state && location.state.templeImg) || '';
 
-  if (!orderId) {
-    // If accessed directly, redirect to home
+  if (!orderId && !paymentId) {
     setTimeout(() => navigate('/'), 2000);
     return <div style={{ padding: 40, textAlign: 'center' }}>No payment info found. Redirecting...</div>;
   }
 
   return (
-    <div style={{ maxWidth: 420, margin: '40px auto', background: '#fff', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.08)', padding: 32, textAlign: 'center' }}>
-      <h2 style={{ color: '#2e7d32', marginBottom: 16 }}>Payment Successful!</h2>
-      <img src={templeImg} alt={templeName} style={{ width: 120, height: 120, objectFit: 'cover', borderRadius: 12, marginBottom: 18, border: '2px solid #c1440e' }} />
-      <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>{templeName}</div>
-      <div style={{ fontSize: 16, marginBottom: 8 }}>Devotee: <b>{devoteeName}</b></div>
-      <div style={{ fontSize: 16, marginBottom: 8 }}>Order ID: <b>{orderId}</b></div>
-      <button style={{ marginTop: 24, background: '#c1440e', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 28px', fontWeight: 600, fontSize: 16, cursor: 'pointer' }} onClick={() => navigate('/')}>Go to Home</button>
+    <div style={{ minHeight: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#fff8f2' }}>
+      <img src={templeImg || require('../assets/logo.png')} alt={templeName || 'Devalaya'} style={{ width: 120, marginBottom: 24, borderRadius: 12 }} />
+      <h2 style={{ color: '#28a745', marginBottom: 12 }}>Payment Successful!</h2>
+      <p style={{ fontSize: 18, color: '#333', marginBottom: 8 }}>Thank you for your booking.</p>
+      {paymentId && <p style={{ color: '#555' }}>Payment ID: <b>{paymentId}</b></p>}
+      {orderId && <p style={{ color: '#555' }}>Order ID: <b>{orderId}</b></p>}
+      {devoteeName && <p style={{ color: '#555' }}>Devotee: <b>{devoteeName}</b></p>}
+      {templeName && <p style={{ color: '#555' }}>Temple: <b>{templeName}</b></p>}
+      <button
+        style={{ marginTop: 32, padding: '10px 32px', background: '#df3002', color: '#fff', border: 'none', borderRadius: 6, fontSize: 18, cursor: 'pointer' }}
+        onClick={() => navigate('/')}
+      >
+        Go to Home
+      </button>
     </div>
   );
 };
