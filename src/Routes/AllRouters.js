@@ -79,6 +79,8 @@ import TermsAndConditions from "../pages/TermsAndConditions"; // ✅ correct pat
 import CancellationPolicy from "../pages/CancellationPolicy";
 import RefundPolicy from "../pages/RefundPolicy";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
+import EventsPage from "../pages/EventsPage";
+import EventDetails from "../pages/EventDetails";
 
 
 // Components
@@ -104,6 +106,8 @@ const AllRouters = () => {
       <Route path="/temples" element={<TempleList />} />
       <Route path="/temples/:id" element={<TempleDetails />} />
       <Route path="/prasadam" element={<Prasadam />} />
+      <Route path="/events" element={<EventsPage />} />
+      <Route path="/events/:id" element={<EventDetails />} />
       {/* <Route path="/profile/details" element={<ProfileDetails />} /> */}
       <Route path="/bookings" element={<MyBookings />} />
       <Route path="/suggest-temple" element={<SuggestTemple />} />

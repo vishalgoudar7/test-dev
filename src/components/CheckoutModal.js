@@ -626,125 +626,130 @@ const CheckoutModal = ({ open, onClose }) => {
                     className="checkout-proceed-btn"
                     disabled={!isAddressValid()}
                     onClick={async () => {
+
                       if (!isAddressValid()) return;
 
+                      // --- Allow guest checkout: userToken/profile may be missing ---
+                      const userToken = localStorage.getItem('token') || '94c4c11bfac761ba896de08bd383ca187d4e4dc4';
+
                       const res = await loadRazorpayScript('https://checkout.razorpay.com/v1/checkout.js');
-if (!res) {
-  alert('Razorpay SDK failed to load.');
-  return;
-}
+                      if (!res) {
+                        alert('Razorpay SDK failed to load.');
+                        return;
+                      }
 
-const rzKey = await fetchRazorpayKey();
-if (!rzKey) return;
+                      const rzKey = await fetchRazorpayKey();
+                      if (!rzKey) return;
 
-const token = localStorage.getItem('token');
+                      // ✅ Step 1: Send POST to create pooja order
+                      const constructPayload = () => {
+                        // Validate address and cart
+                        if (!isAddressValid() || cart.length === 0) {
+                          alert('Please complete the address and cart details.');
+                          return null;
+                        }
 
-// ✅ Step 1: Send POST to create pooja order
-const constructPayload = () => {
-  // Validate address and cart
-  if (!isAddressValid() || cart.length === 0) {
-    alert('Please complete the address and cart details.');
-    return null;
-  }
+                        // Allow guest checkout: fallback to 'CSC' if no profile.id
+                        const bookedBy = (profile && profile.id) ? profile.id : 'CSC';
+                        const familyId = (profile && profile.id) ? profile.id : 1;
+                        const devoteeName = address.devoteeName || profile?.name || profile?.firstName || 'Devotee';
+                        const devoteeNumber = `+91${address.devoteeMobile || profile?.phone || ''}`;
+                        return {
+                          requests: cart.map((item, index) => ({
+                            comment: `( Nakshatra: ${address.nakshatra || ''} )( Gotra: ${address.gotra || ''} )( Rashi: ${address.rashi || ''} )`,
+                            is_prasadam_delivery: true,
+                            pooja_date: address.bookingDate, // format: 'YYYY-MM-DD'
+                            pooja: item.id || item.pooja_id || 467,
+                            devotee_name: devoteeName,
+                            devotee_number: devoteeNumber,
+                            booked_by: bookedBy,
+                            family_member: [
+                              {
+                                id: familyId,
+                                name: devoteeName
+                              }
+                            ],
+                            sankalpa: address.sankalpa,
+                            nakshatra: address.nakshatra || '',
+                            gotra: address.gotra || '',
+                            rashi: address.rashi || '',
+                            street1: address.street1,
+                            street2: address.street2,
+                            area: address.area,
+                            city: address.city,
+                            state: address.state,
+                            pincode: address.pincode,
+                            booking_date: address.bookingDate
+                          }))
+                        };
+                      };
 
-  // Construct the payload for the API, including all address fields
-  return {
-    requests: cart.map((item, index) => ({
-      comment: `( Nakshatra: ${address.nakshatra || ''} )( Gotra: ${address.gotra || ''} )( Rashi: ${address.rashi || ''} )`,
-      is_prasadam_delivery: item.requiresPrasadam || false,
-      pooja_date: address.bookingDate, // format: 'YYYY-MM-DD'
-      pooja: item.id || item.pooja_id || 467,
-      devotee_name: address.devoteeName || profile?.name || 'Devotee',
-      devotee_number: `+91${address.devoteeMobile}`,
-      booked_by: "CSC",
-      family_member: [
-        {
-          id: profile?.id || 1, // Replace with actual ID if needed
-          name: address.devoteeName || profile?.name || 'Devotee'
-        }
-      ],
-      sankalpa: address.sankalpa,
-      nakshatra: address.nakshatra || '',
-      gotra: address.gotra || '',
-      rashi: address.rashi || '',
-      street1: address.street1,
-      street2: address.street2,
-      area: address.area,
-      city: address.city,
-      state: address.state,
-      pincode: address.pincode,
-      booking_date: address.bookingDate
-    }))
-  };
-};
+                      const payload = constructPayload();
+                      if (!payload) return;
 
+                      console.log('Payload being sent:', payload);
 
-const payload = constructPayload();
-if (!payload) return;
+                      // Always use the user's token for authentication
+                      const response = await fetch('https://beta.devalayas.com/api/v1/devotee/bulk_pooja_request/', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                          Authorization: `Token ${userToken}`,
+                        },
+                        body: JSON.stringify(payload),
+                      });
 
-console.log('Payload being sent:', payload);
+                      if (!response.ok) {
+                        const error = await response.json();
+                        console.error('Order creation failed:', error);
+                        alert('Failed to create pooja order: ' + JSON.stringify(error));
+                        return;
+                      }
 
-const userToken = localStorage.getItem('token') || '94c4c11bfac761ba896de08bd383ca187d4e4dc4';
-const response = await fetch('https://beta.devalayas.com/api/v1/devotee/bulk_pooja_request/', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Token ${userToken}`,
-  },
-  body: JSON.stringify(payload),
-});
+                      const data = await response.json();
 
-if (!response.ok) {
-  const error = await response.json();
-  console.error('Order creation failed:', error);
-  alert('Failed to create pooja order: ' + JSON.stringify(error));
-  return;
-}
+                      const order = data[0];
 
-const data = await response.json();
+                      // Always use the UI summary total for payment amount (from cart summary)
+                      // If charges.total is not available, fallback to order.payment_data.final_total
+                      let paymentAmount = charges.total;
+                      if (!paymentAmount || isNaN(paymentAmount) || paymentAmount <= 0) {
+                        paymentAmount = order?.payment_data?.final_total || 1;
+                      }
+                      const amount = Math.round(Number(paymentAmount) * 100);
+                      const razorpayOrderId = order.payment_order_id;
+                      const internalOrderId = order.order_id;
 
-const order = data[0];
+                      // ✅ Step 2: Trigger Razorpay
+                      const options = {
+                        key: rzKey,
+                        amount,
+                        currency: 'INR',
+                        name: 'Devalaya',
+                        description: 'Payment towards Event Pooja',
+                        image: 'https://cdn.shopify.com/s/files/1/0735/5895/0166/files/unnamed_copy_ac3ece77-8a3a-44b7-b0f2-820c39455044.jpg?v=1679241399&width=500',
+                        order_id: razorpayOrderId,
+                        handler: function (rz_response) {
+                          placeOrder(rz_response, rz_response.razorpay_payment_id, internalOrderId);
+                        },
+                        prefill: {
+                          name: order.name,
+                          email: profile?.email || '',
+                          contact: order.devotee_number,
+                        },
+                        notes: {
+                          address: 'Devalaya',
+                        },
+                        theme: {
+                          color: '#df3002',
+                        },
+                      };
 
-// Always use the UI summary total for payment amount (from cart summary)
-// If charges.total is not available, fallback to order.payment_data.final_total
-let paymentAmount = charges.total;
-if (!paymentAmount || isNaN(paymentAmount) || paymentAmount <= 0) {
-  paymentAmount = order?.payment_data?.final_total || 1;
-}
-const amount = Math.round(Number(paymentAmount) * 100);
-const razorpayOrderId = order.payment_order_id;
-const internalOrderId = order.order_id;
-
-// ✅ Step 2: Trigger Razorpay
-const options = {
-  key: rzKey,
-  amount,
-  currency: 'INR',
-  name: 'Devalaya',
-  description: 'Payment towards Event Pooja',
-  image: 'https://cdn.shopify.com/s/files/1/0735/5895/0166/files/unnamed_copy_ac3ece77-8a3a-44b7-b0f2-820c39455044.jpg?v=1679241399&width=500',
-  order_id: razorpayOrderId,
-  handler: function (rz_response) {
-    placeOrder(rz_response, rz_response.razorpay_payment_id, internalOrderId);
-  },
-  prefill: {
-    name: order.name,
-    email: profile?.email || '',
-    contact: order.devotee_number,
-  },
-  notes: {
-    address: 'Devalaya',
-  },
-  theme: {
-    color: '#df3002',
-  },
-};
-
-const rzp1 = new window.Razorpay(options);
-rzp1.on('payment.failed', function (response) {
-  alert(JSON.stringify(response.error));
-});
-rzp1.open();
+                      const rzp1 = new window.Razorpay(options);
+                      rzp1.on('payment.failed', function (response) {
+                        alert(JSON.stringify(response.error));
+                      });
+                      rzp1.open();
                     }}
                   >
                     Proceed to Checkout / Make Payment
