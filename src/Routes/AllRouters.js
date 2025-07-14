@@ -87,6 +87,7 @@ import EventDetails from "../pages/EventDetails";
 import TempleDetails from "../components/TempleDetails";
 import TempleList from "../components/TempleList";
 import Prasadam from "../components/Prasadam";
+import SpecialPooja from "../components/SpecialPooja";
 
 
 
@@ -117,6 +118,7 @@ const AllRouters = () => {
       <Route path="/CancellationPolicy" element={<CancellationPolicy/>} />
       <Route path="/RefundPolicy" element={<RefundPolicy/>} />
       <Route path="/PrivacyPolicy" element={<PrivacyPolicy/>} />
+      <Route path="/special-pooja/:id" element={<SpecialPooja />} />
     </Routes>
   );
 };

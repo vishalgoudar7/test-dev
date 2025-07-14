@@ -15,13 +15,6 @@
 //   useEffect(() => {
 //     const fetchPujas = async () => {
 //       try {
-//         const token = localStorage.getItem('token');
-//         if (!token) {
-//           setError('Authentication token missing. Please log in.');
-//           setLoading(false);
-//           return;
-//         }
-
 //         const response = await api.get('/api/v1/devotee/pooja/');
 //         const pujaList = response.data?.results || [];
 //         setPujas(pujaList);
@@ -35,7 +28,8 @@
 //       }
 //     };
 
-//     fetchPujas();
+//     // Small timeout to ensure token is applied (avoids pending state)
+//     setTimeout(fetchPujas, 100); 
 //   }, []);
 
 //   const getImageUrl = (imagePath) => {
@@ -127,8 +121,11 @@
 
 
 
+
+
+
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../api/api';
 import '../styles/PujaList.css';
 
@@ -139,12 +136,20 @@ const PujaList = () => {
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
+
+  // Get temple id from URL query param ?temple=1
+  const templeId = searchParams.get('temple');
 
   useEffect(() => {
     const fetchPujas = async () => {
       try {
-        const response = await api.get('/api/v1/devotee/pooja/');
+        let url = '/api/v1/devotee/pooja/';
+        if (templeId) {
+          url += `?temple=${templeId}`;
+        }
+        const response = await api.get(url);
         const pujaList = response.data?.results || [];
         setPujas(pujaList);
         setFilteredPujas(pujaList);
@@ -157,9 +162,8 @@ const PujaList = () => {
       }
     };
 
-    // Small timeout to ensure token is applied (avoids pending state)
-    setTimeout(fetchPujas, 100); 
-  }, []);
+    setTimeout(fetchPujas, 100);
+  }, [templeId]);
 
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
@@ -172,8 +176,8 @@ const PujaList = () => {
 
   const handleSearch = () => {
     const filtered = pujas.filter((puja) =>
-      puja.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      puja.included?.toLowerCase().includes(searchTerm.toLowerCase())
+      (puja.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      puja.included?.toLowerCase().includes(searchTerm.toLowerCase()))
     );
     setFilteredPujas(filtered);
   };
