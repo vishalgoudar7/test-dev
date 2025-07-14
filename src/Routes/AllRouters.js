@@ -79,15 +79,12 @@ import TermsAndConditions from "../pages/TermsAndConditions"; // ✅ correct pat
 import CancellationPolicy from "../pages/CancellationPolicy";
 import RefundPolicy from "../pages/RefundPolicy";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
-import EventsPage from "../pages/EventsPage";
-import EventDetails from "../pages/EventDetails";
 
 
 // Components
 import TempleDetails from "../components/TempleDetails";
 import TempleList from "../components/TempleList";
 import Prasadam from "../components/Prasadam";
-import SpecialPooja from "../components/SpecialPooja";
 
 
 
@@ -107,8 +104,6 @@ const AllRouters = () => {
       <Route path="/temples" element={<TempleList />} />
       <Route path="/temples/:id" element={<TempleDetails />} />
       <Route path="/prasadam" element={<Prasadam />} />
-      <Route path="/events" element={<EventsPage />} />
-      <Route path="/events/:id" element={<EventDetails />} />
       {/* <Route path="/profile/details" element={<ProfileDetails />} /> */}
       <Route path="/bookings" element={<MyBookings />} />
       <Route path="/suggest-temple" element={<SuggestTemple />} />
@@ -118,7 +113,6 @@ const AllRouters = () => {
       <Route path="/CancellationPolicy" element={<CancellationPolicy/>} />
       <Route path="/RefundPolicy" element={<RefundPolicy/>} />
       <Route path="/PrivacyPolicy" element={<PrivacyPolicy/>} />
-      <Route path="/special-pooja/:id" element={<SpecialPooja />} />
     </Routes>
   );
 };
