@@ -231,14 +231,28 @@
 // src/api/api.js
 import axios from 'axios';
 
-// ✅ Centralized BASE_URL and TOKEN
-const BASE_URL = 'https://beta.devalayas.com';
-// const LIVE_TOKEN = '46c1e874b116778356a8f7dca5420b2e740d9ac7'; 
-const LIVE_TOKEN = 'c91ae32509fa4ce4e8c21aa4a86118100f97c4f2';
+// ✅ Dynamic environment config
+const API_CONFIG = {
+  servers: {
+    beta: {
+      base: "https://beta.devalayas.com",
+      token: "94c4c11bfac761ba896de08bd383ca187d4e4dc4"
+    },
+    live: {
+      base: "https://live.devalayas.com",
+      token: "18a6c4adbef1a4398a1869347358a926689bbdb8"
+    }
+  },
+  // 🔁 Switch between 'beta' or 'live' here
+  current: 'beta'
+};
+
+// ✅ Get current server settings
+const { base, token } = API_CONFIG.servers[API_CONFIG.current];
 
 // ✅ Create Axios instance
 const api = axios.create({
-  baseURL: BASE_URL,
+  baseURL: base,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -247,7 +261,7 @@ const api = axios.create({
 // ✅ Attach token to every request
 api.interceptors.request.use(
   (config) => {
-    config.headers['Authorization'] = `Token ${LIVE_TOKEN}`;
+    config.headers['Authorization'] = `Token ${token}`;
     return config;
   },
   (error) => Promise.reject(error)
@@ -326,3 +340,4 @@ export const loginWithEmail = async (email, otp) => {
 };
 
 export default api;
+

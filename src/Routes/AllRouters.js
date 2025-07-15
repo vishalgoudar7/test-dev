@@ -79,6 +79,8 @@ import TermsAndConditions from "../pages/TermsAndConditions"; // ✅ correct pat
 import CancellationPolicy from "../pages/CancellationPolicy";
 import RefundPolicy from "../pages/RefundPolicy";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
+import EventsPage from "../pages/EventsPage";
+import EventDetails from "../pages/EventDetails";
 
 
 // Components
@@ -113,6 +115,8 @@ const AllRouters = () => {
       <Route path="/CancellationPolicy" element={<CancellationPolicy/>} />
       <Route path="/RefundPolicy" element={<RefundPolicy/>} />
       <Route path="/PrivacyPolicy" element={<PrivacyPolicy/>} />
+      <Route path="/events" element={<EventsPage />} />
+      <Route path="/events/:id" element={<EventDetails />} />
     </Routes>
   );
 };

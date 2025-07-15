@@ -183,7 +183,7 @@ const TempleDetails = () => {
                   <p><strong className="text-danger">Cost:</strong><br />₹ {p.original_cost || 'N/A'} /-</p>
                 </div>
                 <div className="d-flex justify-content-center mt-3">
-                  <button className="btn btn-success px-4 fw-semibold shadow-sm" onClick={() => handleAddToCart({ ...p, type: 'prasadam' })}>
+                  <button className="btn btn-success px-4 fw-semibold shadow-sm" onClick={() => handleAddToCart({ ...p, type: 'prasadam', cost: p.original_cost || 'N/A' })}>
                     Add to Cart ➜
                   </button>
                 </div>
