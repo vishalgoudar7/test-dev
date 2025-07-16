@@ -1,6 +1,6 @@
 // src/components/OrderDetails.js
 import React from 'react';
-import '../../styles/OrderDetails.css';
+import '../styles/OrderDetails.css';
 
 const OrderDetails = ({ payment, booking, razorpayPayment, closeDialog }) => {
   return (

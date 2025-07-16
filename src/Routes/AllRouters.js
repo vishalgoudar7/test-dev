@@ -87,6 +87,9 @@ import EventDetails from "../pages/EventDetails";
 import TempleDetails from "../components/TempleDetails";
 import TempleList from "../components/TempleList";
 import Prasadam from "../components/Prasadam";
+import SubCategoryPage from "../pages/SubCategoryPage";
+import SplpujaDetails from "../pages/SplpujaDetails";
+
 
 
 
@@ -117,8 +120,19 @@ const AllRouters = () => {
       <Route path="/PrivacyPolicy" element={<PrivacyPolicy/>} />
       <Route path="/events" element={<EventsPage />} />
       <Route path="/events/:id" element={<EventDetails />} />
+      <Route path="/category/:categoryId" element={<SubCategoryPage />} />
+      <Route path="/List/category/:categoryId/sub_category/:subCategoryId" element={<SplpujaDetails />} />
+
     </Routes>
   );
 };
 
 export default AllRouters;
+
+
+
+
+
+
+
+
