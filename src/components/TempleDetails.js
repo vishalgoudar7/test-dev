@@ -101,7 +101,7 @@ const TempleDetails = () => {
       <div className="row" key={rowIdx}>
         {row.map((p) => (
           <div className="col-md-3 mb-2" key={p.id}>
-            <div className="card h-100 shadow-sm border-0 rounded-3" style={{ background: '#ffe9d6' }}>
+            <div className="card h-100 shadow-lg border-0 rounded-3" style={{ background: '#ffe9d6' }}>
               <div className="card-body d-flex flex-column justify-content-between">
                 <h5 className="fw-bold text-danger">🌸 {p.name}</h5>
                 <div className="text-center my-3">
@@ -155,10 +155,10 @@ const TempleDetails = () => {
       <div className="row" key={rowIdx}>
         {row.map((p) => (
           <div className="col-md-3 mb-2" key={p.id}>
-            <div className="card h-100 shadow-sm border-0 rounded-3" style={{ background: '#ffe9d6' }}>
+            <div className="card h-100 shadow-lg border-0 rounded-3" style={{ background: '#ffe9d6' }}>
               <div className="card-body d-flex flex-column justify-content-between">
                 <h5 className="fw-bold text-danger">🍛 {p.name}</h5>
-                <div className="text-center my-3">
+                <div className="text-left my-3">
                   <img
                     src={getFullImageUrl(p.image)}
                     alt={p.name}
@@ -183,8 +183,8 @@ const TempleDetails = () => {
                   <p><strong className="text-danger">Cost:</strong><br />₹ {p.original_cost || 'N/A'} /-</p>
                 </div>
                 <div className="d-flex justify-content-center mt-3">
-                  <button className="btn btn-success px-4 fw-semibold shadow-sm" onClick={() => handleAddToCart({ ...p, type: 'prasadam', cost: p.original_cost || 'N/A' })}>
-                    Add to Cart ➜
+                  <button className="btn btn-warning px-4 fw-semibold shadow-sm" onClick={() => handleAddToCart({ ...p, type: 'prasadam', cost: p.original_cost || 'N/A' })}>
+                    Participate ➜
                   </button>
                 </div>
               </div>
