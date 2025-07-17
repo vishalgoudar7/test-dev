@@ -88,51 +88,41 @@
 
 
 
-/* src/styles/SpecialPooja.css */
-
 .special-pooja-main {
-  background-color: #fde5d1;
-  padding: 2rem 0;
+  background-color: #fce0c4;
+  padding: 2rem 1rem;
 }
 
 .section-title {
-  color: #f17300;
-  font-weight: 700;
-  font-size: 28px;
-  margin-bottom: 10px;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #f26a1b;
 }
 
 .section-subtitle {
   color: #333;
-  font-size: 16px;
-  max-width: 600px;
-  margin: 0 auto;
+  font-size: 1rem;
+  margin-bottom: 2rem;
 }
 
-.pooja-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 10px;
-  cursor: pointer;
-  transition: transform 0.2s ease-in-out;
+.circle-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.pooja-card:hover {
-  transform: scale(1.05);
-}
-
-.pooja-image {
-  width: 100%;
+.circle-image {
+  width: 120px;
   height: 120px;
   object-fit: cover;
   border-radius: 50%;
-  border: 3px solid #f17300;
-  padding: 5px;
+  border: 3px solid #f26a1b;
   background-color: #fff;
 }
 
 .pooja-name {
+  font-size: 16px;
   font-weight: 600;
   color: #000;
+  margin-top: 10px;
 }
-

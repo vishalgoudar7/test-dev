@@ -69,38 +69,45 @@
 
 
 
-// src/pages/SpecialPooja.js
+
+
+
+
+
+
+
+
+
+
 
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import "../styles/SpecialPooja.css";
 
 const fallbackImage = "/assets/images/placeholder.png";
 
 const SpecialPooja = () => {
-  const { id } = useParams();
+  const [categoryList, setCategoryList] = useState([]);
   const navigate = useNavigate();
-  const [subCategories, setSubCategories] = useState([]);
 
   useEffect(() => {
-    if (id) fetchCategoryDetails();
-  }, [id]);
+    fetchInitialCategories();
+  }, []);
 
-  const fetchCategoryDetails = async () => {
+  const fetchInitialCategories = async () => {
     try {
-      const res = await api.get(`category/?id=${id}`);
-      const category = res.data.results.find((cat) => cat.id === parseInt(id));
-      if (category?.sub_categories?.length) {
-        setSubCategories(category.sub_categories);
-      }
+      const res = await api.get("/api/v1/category/category/");
+      const allCategories = res.data.results;
+      const firstFive = allCategories.slice(0, 5);
+      setCategoryList(firstFive);
     } catch (error) {
-      console.error("API fetch error:", error);
+      console.error("Failed to fetch categories", error);
     }
   };
 
-  const handleViewDetails = (categoryId, subId) => {
-    navigate(`/List/category/${categoryId}/sub_category/${subId}`);
+  const handleCategoryClick = (categoryId) => {
+    navigate(`/category/${categoryId}`);
   };
 
   return (
@@ -114,22 +121,21 @@ const SpecialPooja = () => {
       </div>
 
       <div className="container mt-4">
-        <div className="row">
-          {subCategories.map((item) => (
+        <div className="row justify-content-center">
+          {categoryList.map((category) => (
             <div
-              className="col-6 col-md-4 col-lg-3 mb-4"
-              key={item.id}
-              onClick={() =>
-                handleViewDetails(item.category[0], item.id)
-              }
+              key={category.id}
+              className="col-6 col-md-4 col-lg-2 mb-4 text-center"
+              onClick={() => handleCategoryClick(category.id)}
+              style={{ cursor: "pointer" }}
             >
-              <div className="pooja-card text-center shadow-sm">
+              <div className="circle-card">
                 <img
-                  src={item.image || fallbackImage}
-                  className="pooja-image"
-                  alt={item.name}
+                  src={category.image || fallbackImage}
+                  alt={category.name}
+                  className="circle-image"
                 />
-                <h6 className="mt-2 pooja-name">{item.name}</h6>
+                <h6 className="mt-2 pooja-name">{category.name}</h6>
               </div>
             </div>
           ))}
