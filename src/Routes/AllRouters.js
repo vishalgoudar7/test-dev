@@ -122,6 +122,8 @@ const AllRouters = () => {
       <Route path="/events/:id" element={<EventDetails />} />
       <Route path="/category/:categoryId" element={<SubCategoryPage />} />
       <Route path="/List/category/:categoryId/sub_category/:subCategoryId" element={<SplpujaDetails />} />
+      <Route path="/splpujadetails/:category/:sub_category" element={<SplpujaDetails />} />
+      <Route path="/splpujadetails" element={<SplpujaDetails />} />
 
     </Routes>
   );

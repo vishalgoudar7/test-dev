@@ -90,7 +90,7 @@ const ProfilePage = () => {
       {/* Logout Button */}
       <div className="logout-center">
         <button className="logout-text-btn" onClick={() => setShowConfirm(true)}>
-          [-> Logout
+        Logout
         </button>
       </div>
 

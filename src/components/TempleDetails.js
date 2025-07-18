@@ -225,7 +225,7 @@ const TempleDetails = () => {
           </Carousel>
 
           {/* Tabs */}
-          <ul className="nav nav-tabs justify-content-center mt-4 tab-list">
+          <ul className="nav nav-tabs justify-content-left mt-4 tab-list">
             <li className="nav-item" onClick={() => handleTabSwitch(2)}>
               <span className={`nav-link ${tabNo === 2 ? 'active' : ''}`}>Puja / Udi / Chadava</span>
             </li>
@@ -243,7 +243,7 @@ const TempleDetails = () => {
           <div className="tab-content mt-4">
             {tabNo === 2 && (
               <>
-                <div className="row mb-4">
+                {/* <div className="row mb-4">
                   <div className="col-md-6 col-12 mx-auto d-flex align-items-center gap-2">
                     <input
                       type="text"
@@ -253,11 +253,11 @@ const TempleDetails = () => {
                       onChange={(e) => setSearch(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                     />
-                    <button className="btn btn-lg btn-primary" onClick={handleSearch}>
+                    <button className="btn btn-lg btn-danger" onClick={handleSearch}>
                       Search
                     </button>
                   </div>
-                </div>
+                </div> */}
                 <div className="row">
                   {filteredData.length > 0 ? renderCards(filteredData) : <p className="text-center">No items found.</p>}
                 </div>
