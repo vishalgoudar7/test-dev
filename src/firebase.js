@@ -59,13 +59,13 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDhNOVISD9DH7HjQkPiM5sMKKWka7F7XvY",
-  authDomain: "devalayas-project.firebaseapp.com",
-  projectId: "devalayas-project",
-  storageBucket: "devalayas-project.appspot.com", // ✅ Fixed typo here
-  messagingSenderId: "713471432921",
-  appId: "1:713471432921:web:ab790ba93d6c55708986c8",
-  measurementId: "G-LPVTXV1718",
+apiKey: "AIzaSyDtv0fNj2JuvVppvCmyOvZGaqSn8-QPPsk",
+  authDomain: "devotee-7c463.firebaseapp.com",
+  projectId: "devotee-7c463",
+  storageBucket: "devotee-7c463.appspot.com",
+  messagingSenderId: "196593785407",
+  appId: "1:196593785407:web:2ee5c24de0b8668a46368a",
+  measurementId: "G-1NHD2B13X0"
 };
 
 const app = initializeApp(firebaseConfig);
