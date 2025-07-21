@@ -1,5 +1,5 @@
 // import React, { useEffect, useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
+// import { useNavigate, useSearchParams } from 'react-router-dom';
 // import api from '../api/api';
 // import '../styles/PujaList.css';
 
@@ -10,12 +10,20 @@
 //   const [error, setError] = useState('');
 //   const [searchTerm, setSearchTerm] = useState('');
 //   const navigate = useNavigate();
+//   const [searchParams] = useSearchParams();
 //   const BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
+
+//   // Get temple id from URL query param ?temple=1
+//   const templeId = searchParams.get('temple');
 
 //   useEffect(() => {
 //     const fetchPujas = async () => {
 //       try {
-//         const response = await api.get('/api/v1/devotee/pooja/');
+//         let url = '/api/v1/devotee/pooja/';
+//         if (templeId) {
+//           url += `?temple=${templeId}`;
+//         }
+//         const response = await api.get(url);
 //         const pujaList = response.data?.results || [];
 //         setPujas(pujaList);
 //         setFilteredPujas(pujaList);
@@ -28,9 +36,8 @@
 //       }
 //     };
 
-//     // Small timeout to ensure token is applied (avoids pending state)
-//     setTimeout(fetchPujas, 100); 
-//   }, []);
+//     setTimeout(fetchPujas, 100);
+//   }, [templeId]);
 
 //   const getImageUrl = (imagePath) => {
 //     if (!imagePath) return null;
@@ -43,8 +50,8 @@
 
 //   const handleSearch = () => {
 //     const filtered = pujas.filter((puja) =>
-//       puja.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//       puja.included?.toLowerCase().includes(searchTerm.toLowerCase())
+//       (puja.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//       puja.included?.toLowerCase().includes(searchTerm.toLowerCase()))
 //     );
 //     setFilteredPujas(filtered);
 //   };
@@ -124,68 +131,63 @@
 
 
 
+
+
+
+
+
+
+
+
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import api from '../api/api';
 import '../styles/PujaList.css';
 
 const PujaList = () => {
   const [pujas, setPujas] = useState([]);
-  const [filteredPujas, setFilteredPujas] = useState([]);
+  const [uniquePujas, setUniquePujas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
-
-  // Get temple id from URL query param ?temple=1
-  const templeId = searchParams.get('temple');
 
   useEffect(() => {
     const fetchPujas = async () => {
       try {
-        let url = '/api/v1/devotee/pooja/';
-        if (templeId) {
-          url += `?temple=${templeId}`;
-        }
-        const response = await api.get(url);
+        const response = await api.get('/api/v1/devotee/pooja/');
         const pujaList = response.data?.results || [];
         setPujas(pujaList);
-        setFilteredPujas(pujaList);
-        localStorage.setItem('pujas', JSON.stringify(pujaList));
+
+        // Get unique puja names
+        const map = {};
+        pujaList.forEach((puja) => {
+          if (!map[puja.name]) {
+            map[puja.name] = puja;
+          }
+        });
+        setUniquePujas(Object.values(map));
       } catch (err) {
-        console.error('API Error:', err);
         setError('Failed to load puja list');
       } finally {
         setLoading(false);
       }
     };
+    fetchPujas();
+  }, []);
 
-    setTimeout(fetchPujas, 100);
-  }, [templeId]);
-
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return null;
-    return imagePath.startsWith('http') ? imagePath : `${BASE_URL}${imagePath}`;
+  const handlePujaClick = (pujaName) => {
+    // Navigate to a new page with pujaName as param
+    navigate(`/puja-temples?puja=${encodeURIComponent(pujaName)}`);
   };
 
-  const handlePujaClick = (id) => {
-    navigate(`/puja/${id}`);
-  };
-
-  const handleSearch = () => {
-    const filtered = pujas.filter((puja) =>
-      (puja.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      puja.included?.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
-    setFilteredPujas(filtered);
-  };
+  const filteredPujas = uniquePujas.filter((puja) =>
+    puja.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="puja-list-container">
       <h2 className="puja-heading">AVAILABLE PUJA'S</h2>
-
       <div className="search-box">
         <input
           type="text"
@@ -194,22 +196,14 @@ const PujaList = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="search-input"
         />
-        <button onClick={handleSearch} className="search-button">
-          Search
-        </button>
+        <button className="search-button">Search</button>
       </div>
-
       {error && <p className="error">{error}</p>}
-
       <div className="puja-cards">
         {loading ? (
           [...Array(6)].map((_, index) => (
             <div className="puja-card skeleton" key={index}>
-              <div className="puja-image skeleton-img" />
               <h3 className="skeleton-text">Loading...</h3>
-              <p className="skeleton-text">Fetching description...</p>
-              <p className="skeleton-text">Loading price...</p>
-              <button className="book-button skeleton-button">Loading...</button>
             </div>
           ))
         ) : filteredPujas.length === 0 ? (
@@ -218,27 +212,11 @@ const PujaList = () => {
           filteredPujas.map((puja) => (
             <div
               className="puja-card"
-              key={puja.id}
-              onClick={() => handlePujaClick(puja.id)}
+              key={puja.name}
+              onClick={() => handlePujaClick(puja.name)}
+              style={{ cursor: 'pointer' }}
             >
-              {puja.images && puja.images[0]?.image ? (
-                <img
-                  src={getImageUrl(puja.images[0].image)}
-                  alt={puja.name}
-                  className="puja-image"
-                  loading="lazy"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
-                  }}
-                />
-              ) : (
-                <div className="no-image">No Image</div>
-              )}
-              <h3>{puja.name || 'Untitled Puja'}</h3>
-              <p>{puja.included || 'No description available.'}</p>
-              <p><strong>Price:</strong> ₹{puja.cost || 'N/A'}</p>
-              <button className="book-button">PARTICIPATE</button>
+              <div className="puja-name">{puja.name}</div>
             </div>
           ))
         )}

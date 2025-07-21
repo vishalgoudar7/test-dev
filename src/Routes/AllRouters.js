@@ -89,6 +89,7 @@ import TempleList from "../components/TempleList";
 import Prasadam from "../components/Prasadam";
 import SubCategoryPage from "../pages/SubCategoryPage";
 import SplpujaDetails from "../pages/SplpujaDetails";
+import PujaTemples from "../pages/PujaTemples";
 
 
 
@@ -124,7 +125,8 @@ const AllRouters = () => {
       <Route path="/List/category/:categoryId/sub_category/:subCategoryId" element={<SplpujaDetails />} />
       <Route path="/splpujadetails/:category/:sub_category" element={<SplpujaDetails />} />
       <Route path="/splpujadetails" element={<SplpujaDetails />} />
-
+<Route path="/puja-temples" element={<PujaTemples />} />
+<Route path="/puja-details/:id" element={<PujaDetails />} />
     </Routes>
   );
 };
