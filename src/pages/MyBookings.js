@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/api";
 import "../styles/MyBookings.css";
-import Pagination from "../components/Pagination";
 
 const MyBookings = () => {
   const [meta, setMeta] = useState({
@@ -18,18 +17,16 @@ const MyBookings = () => {
   useEffect(() => {
     getBookings();
   }, [meta.page]);
-//   useEffect(() => {
-//   getBookings();
-// }, [getBookings]); // or disable warning if intentional
-
 
   const getBookings = async () => {
     try {
       const response = await api.get(
-        `/devotee/pooja_request/list/?page=${meta.page}&size=${meta.size}&search=${meta.search}`
+        `/api/v1/devotee/pooja_request/list/?page=${meta.page}&size=${meta.size}&search=${meta.search}`
       );
       const count = response.data.count;
-      setBookings(response.data.results);
+      const bookingsData = response.data.results;
+      setBookings(bookingsData);
+      
       setMeta((prev) => ({
         ...prev,
         count: count,
@@ -41,9 +38,7 @@ const MyBookings = () => {
     }
   };
 
-  const onPageChange = (page) => {
-    setMeta((prev) => ({ ...prev, page }));
-  };
+
 
   const handleSearch = (e) => {
     if (e.key === "Enter") {
@@ -54,7 +49,7 @@ const MyBookings = () => {
 
   const videoPlay = async (id) => {
     try {
-      const response = await api.get(`/devotee/pooja_request/${id}`);
+      const response = await api.get(`/api/v1/devotee/pooja_request/${id}`);
       const videoUrl = response.data.videos[0].video;
       const newTab = window.open(videoUrl, "_blank");
       if (!newTab) alert("Please allow popups.");
@@ -63,97 +58,272 @@ const MyBookings = () => {
     }
   };
 
+  const downloadInvoice = async (invoiceUrl, orderId) => {
+    try {
+      if (invoiceUrl) {
+        const link = document.createElement('a');
+        link.href = invoiceUrl;
+        link.download = `Invoice_${orderId}.pdf`;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        alert('Invoice not available for download');
+      }
+    } catch (error) {
+      console.warn("Failed to download invoice", error);
+      alert('Failed to download invoice');
+    }
+  };
+
   return (
     <div className="my-bookings-page">
       <div className="bookings-container">
-        <h2 className="bookings-title">BOOKINGS</h2>
-
-        <div className="search-container">
-          <button className="search-btn">
-            <i className="fas fa-search"></i>
-          </button>
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Search"
-            value={meta.search}
-            onChange={(e) => setMeta({ ...meta, search: e.target.value })}
-            onKeyDown={handleSearch}
-          />
+        <div className="bookings-header">
+          <h2 className="bookings-title">🕉️ MY BOOKINGS</h2>
+          <p className="bookings-subtitle">Track your spiritual journey and pooja bookings</p>
         </div>
 
-        <div className="table-responsive">
+        <div className="search-container-my-bookings">
+          <div className="search-wrapper-my-bookings">
+            <i className="fas fa-search search-icon-my-bookings"></i>
+            <input
+              type="text"
+              className="search-input-my-bookings"
+              placeholder="Search by order ID, devotee name, or temple..."
+              value={meta.search}
+              onChange={(e) => setMeta({ ...meta, search: e.target.value })}
+              onKeyDown={handleSearch}
+            />
+          </div>
+        </div>
+
+        {/* Desktop Table View */}
+        <div className="table-responsive desktop-view">
           <table className="bookings-table">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Order ID</th>
-                <th>Payment Order ID</th>
-                <th>Devotee</th>
-                <th>Mobile No</th>
-                <th>Pooja Date</th>
-                <th>Status</th>
+                <th>Temple & Pooja</th>
+                <th>Order Details</th>
+                <th>Devotee Info</th>
+                <th>Date & Status</th>
                 <th>Amount</th>
-                <th>Action</th>
-                <th>Pooja Video</th>
+                <th>Actions / Invoice</th>
               </tr>
             </thead>
             <tbody>
-              {bookings.map((b, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{b.order_id}</td>
-                  <td>{b.payment_order_id}</td>
-                  <td>{b.name}</td>
-                  <td>{b.devotee_number}</td>
-                  <td>{b.pooja_date}</td>
-                  <td>
-                    <span
-                      className={`badge ${
-                        b.status === "Pending"
-                          ? "bg-warning"
-                          : b.status === "Completed"
-                          ? "bg-success"
-                          : b.status === "Expired"
-                          ? "bg-danger"
-                          : "bg-secondary"
-                      }`}
-                    >
-                      {b.status}
-                    </span>
-                  </td>
-                  <td>{b.total_cost}</td>
-                  <td>
-                    <a
-                      href={b.invoice}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="btn-action"
-                    >
-                      Invoice
-                    </a>
-                  </td>
-                  <td>
-                    {b.status === "Completed" && (
-                      <button className="btn-action" onClick={() => videoPlay(b.id)}>
-                        Play
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
+              {bookings.map((b, index) => {
+                const templeImage = b.temple?.images?.[0]?.image || require('../assets/Default.png');
+                
+                return (
+                  <tr key={index} className="booking-row">
+                    <td className="temple-cell">
+                      <div className="temple-info">
+                        <img 
+                          src={templeImage}
+                          alt={b.temple?.name || 'Temple'}
+                          className="temple-image-small"
+                          onError={(e) => {
+                            e.target.src = require('../assets/Default.png');
+                          }}
+                        />
+                        <div className="temple-details">
+                          <div className="temple-name-mybookings">{b.temple?.name || 'Temple'}</div>
+                          <div className="pooja-name">{b.pooja?.name || 'Pooja'}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="order-details">
+                      <div className="order-id">{b.order_id}</div>
+                      <div className="booking-date">Booked: {new Date(b.created_at || b.pooja_date).toLocaleDateString()}</div>
+                    </td>
+                    <td className="devotee-info">
+                      <div className="devotee-name">{b.name}</div>
+                      <div className="devotee-mobile">{b.devotee_number}</div>
+                    </td>
+                    <td className="date-status">
+                      <div className="pooja-date">📅 {new Date(b.pooja_date).toLocaleDateString()}</div>
+                      <span
+                        className={`status-badge ${
+                          b.status === "Pending"
+                            ? "status-pending"
+                            : b.status === "Completed"
+                            ? "status-completed"
+                            : b.status === "Expired"
+                            ? "status-expired"
+                            : "status-default"
+                        }`}
+                      >
+                        {b.status}
+                      </span>
+                    </td>
+                    <td className="amount">₹{parseFloat(b.total_cost).toLocaleString('en-IN')}</td>
+                    <td className="actions-cell">
+                      <div className="action-buttons">
+                        <button
+                          className="btn-action btn-download"
+                          onClick={() => downloadInvoice(b.invoice, b.order_id)}
+                          title="Download Invoice"
+                        >
+                          <i className="fas fa-download"></i>
+                        </button>
+                        
+                        {b.invoice && (
+                          <a
+                            href={b.invoice}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="btn-action btn-view"
+                            title="View Invoice"
+                          >
+                            <i className="fas fa-eye"></i>
+                          </a>
+                        )}
+                        
+                        {b.status === "Completed" && (
+                          <button 
+                            className="btn-action btn-video" 
+                            onClick={() => videoPlay(b.id)}
+                            title="Play Pooja Video"
+                          >
+                            <i className="fas fa-play"></i>
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
 
-        <div className="pagination-wrapper">
-          <Pagination
-            currentPage={meta.page}
-            totalPages={meta.lastPage}
-            maxPage={meta.maxPage}
-            onPageChange={onPageChange}
-          />
+        {/* Mobile Card View */}
+        <div className="mobile-view">
+          {bookings.map((b, index) => {
+            const templeImage = b.temple?.images?.[0]?.image || require('../assets/Default.png');
+            
+            return (
+              <div key={index} className="booking-card">
+                <div className="card-header">
+                  <div className="temple-info-mobile">
+                    <img 
+                      src={templeImage}
+                      alt={b.temple?.name || 'Temple'}
+                      className="temple-image-mobile"
+                      onError={(e) => {
+                        e.target.src = require('../assets/Default.png');
+                      }}
+                    />
+                    <div className="temple-details-mobile">
+                      <div className="temple-name-mobile">{b.temple?.name || 'Temple'}</div>
+                      <div className="pooja-name-mobile">{b.pooja?.name || 'Pooja'}</div>
+                    </div>
+                  </div>
+                  <span
+                    className={`status-badge-mobile ${
+                      b.status === "Pending"
+                        ? "status-pending"
+                        : b.status === "Completed"
+                        ? "status-completed"
+                        : b.status === "Expired"
+                        ? "status-expired"
+                        : "status-default"
+                    }`}
+                  >
+                    {b.status}
+                  </span>
+                </div>
+                
+                <div className="card-body">
+                  <div className="booking-info-row">
+                    <div className="info-item">
+                      <span className="info-label">Order ID:</span>
+                      <span className="info-value order-id-mobile">{b.order_id}</span>
+                    </div>
+                    <div className="info-item">
+                      <span className="info-label">Amount:</span>
+                      <span className="info-value amount-mobile">₹{parseFloat(b.total_cost).toLocaleString('en-IN')}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="booking-info-row">
+                    <div className="info-item">
+                      <span className="info-label">Devotee:</span>
+                      <span className="info-value">{b.name}</span>
+                    </div>
+                    <div className="info-item">
+                      <span className="info-label">Mobile:</span>
+                      <span className="info-value">{b.devotee_number}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="booking-info-row">
+                    <div className="info-item">
+                      <span className="info-label">Pooja Date:</span>
+                      <span className="info-value">📅 {new Date(b.pooja_date).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="card-footer">
+                  <div className="action-buttons-mobile">
+                    <button
+                      className="btn-action-mobile btn-download"
+                      onClick={() => downloadInvoice(b.invoice, b.order_id)}
+                    >
+                      <i className="fas fa-download"></i>
+                      <span>Invoice</span>
+                    </button>
+                    
+                    {b.invoice && (
+                      <a
+                        href={b.invoice}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn-action-mobile btn-view"
+                      >
+                        <i className="fas fa-eye"></i>
+                        
+                        <span>View</span>
+                      </a>
+                    )}
+                    
+                    {b.status === "Completed" && (
+                      <button 
+                        className="btn-action-mobile btn-video" 
+                        onClick={() => videoPlay(b.id)}
+                      >
+                        <i className="fas fa-play"></i>
+                        <span>Video</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
+
+        {bookings.length === 0 && (
+          <div className="no-bookings">
+            <div className="no-bookings-icon">🕉️</div>
+            <h3>No Bookings Found</h3>
+            <p>You haven't made any pooja bookings yet. Start your spiritual journey today!</p>
+          </div>
+        )}
+
+        {/* {bookings.length > 0 && meta.lastPage > 1 && (
+          <div className="pagination-wrapper">
+            <Pagination
+              currentPage={meta.page}
+              totalPages={meta.lastPage}
+              maxPage={meta.maxPage}
+              onPageChange={onPageChange}
+            />
+          </div>
+        )} */}
       </div>
     </div>
   );

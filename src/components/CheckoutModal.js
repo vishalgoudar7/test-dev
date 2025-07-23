@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
+import { useNavigate } from 'react-router-dom';
 import { useUserAuth } from '../context/UserAuthContext';
 import '../styles/CheckoutModal.css';
 
@@ -115,6 +116,7 @@ function DatePickerWithClose({ selectedDate, onDateChange, error }) {
 
 const CheckoutModal = ({ open, onClose }) => {
   const { profile } = useUserAuth();
+  const navigate = useNavigate();
   const [showConfirm, setShowConfirm] = useState(false);
   const [showAddressConfirmation, setShowAddressConfirmation] = useState(false);
   const [cart, setCart] = useState([]);
@@ -123,6 +125,7 @@ const CheckoutModal = ({ open, onClose }) => {
     devoteeName: '',
     devoteeMobile: '',
     sankalpa: '',
+    nakshatra: '',
     street1: '',
     street2: '',
     area: '',
@@ -145,6 +148,7 @@ const CheckoutModal = ({ open, onClose }) => {
             : profile.firstName || '',
         devoteeMobile: profile.phone || '',
         sankalpa: '',
+        nakshatra: '',
         street1: '',
         street2: '',
         area: '',
@@ -190,6 +194,8 @@ const CheckoutModal = ({ open, onClose }) => {
     total: 0
   });
 
+  const [showCalculatedCost, setShowCalculatedCost] = useState(false);
+
   useEffect(() => {
     let subtotal = cart.reduce(
       (sum, item) => sum + (Number(item.payment_data?.original_cost) || Number(item.original_cost) || 0) * (item.quantity || 1),
@@ -207,30 +213,30 @@ const CheckoutModal = ({ open, onClose }) => {
       (sum, item) => sum + (Number(item.payment_data?.tax_amount) || Number(item.tax_amount) || 0) * (item.quantity || 1),
       0
     );
-    // Override with orderData values if available
-    if (orderData) {
-      convinceCharge = Number(orderData.payment_data?.convenience_fee || 0);
-      shippingCharge = Number(orderData.payment_data?.delivery_charge || 0);
-      gst = Number(orderData.payment_data?.total_tax || 0);
-      subtotal = Number(orderData.payment_data?.original_cost || 0);
+    
+    // Override with orderData values if available (after address submission)
+    // Calculate total from all items in the response array for bulk requests
+    if (orderData && showCalculatedCost) {
+      // If orderData is an array (bulk response), sum all payment_data
+      if (Array.isArray(orderData)) {
+        convinceCharge = orderData.reduce((sum, order) => sum + Number(order.payment_data?.convenience_fee || 0), 0);
+        shippingCharge = orderData.reduce((sum, order) => sum + Number(order.payment_data?.delivery_charge || order.payment_data?.booking_charges || 0), 0);
+        gst = orderData.reduce((sum, order) => sum + Number(order.payment_data?.total_tax || order.payment_data?.tax_amount || 0), 0);
+        subtotal = orderData.reduce((sum, order) => sum + Number(order.payment_data?.original_cost || 0), 0);
+      } else {
+        // Single order response
+        convinceCharge = Number(orderData.payment_data?.convenience_fee || 0);
+        shippingCharge = Number(orderData.payment_data?.delivery_charge || orderData.payment_data?.booking_charges || 0);
+        gst = Number(orderData.payment_data?.total_tax || orderData.payment_data?.tax_amount || 0);
+        subtotal = Number(orderData.payment_data?.original_cost || 0);
+      }
     }
+    
     let total = subtotal + convinceCharge + shippingCharge + gst;
 
     setCharges({ prasadCost: 0, convinceCharge, shippingCharge, subtotal, gst, total });
-  }, [cart, orderData]);
+  }, [cart, orderData, showCalculatedCost]);
 
-  const isAddressValid = () => {
-    return (
-      address.bookingDate &&
-      address.devoteeName &&
-      /^\d{10}$/.test(address.devoteeMobile) &&
-      address.street1 &&
-      address.area &&
-      address.city &&
-      address.state &&
-      /^\d{6}$/.test(address.pincode)
-    );
-  };
 
   async function fetchRazorpayKey() {
     try {
@@ -248,29 +254,63 @@ const CheckoutModal = ({ open, onClose }) => {
     }
   }
 
-  async function placeOrder(rz_response, paymentId, orderId) {
+  const placeOrder = async (rz_response, paymentId, orderId) => {
     try {
       const data = {
-        razorpay_payment_id: rz_response.razorpay_payment_id,
-        razorpay_order_id: rz_response.razorpay_order_id,
-        razorpay_signature: rz_response.razorpay_signature,
-        request_id: paymentId
+        razorpay_response: {
+          razorpay_payment_id: rz_response?.razorpay_payment_id,
+          razorpay_order_id: rz_response?.razorpay_order_id,
+          razorpay_signature: rz_response?.razorpay_signature
+        },
+        request_id: paymentId,
+        billing_address: {
+          name: address.devoteeName || profile?.name || profile?.firstName || 'Devotee',
+          street_address_1: address.street1 || profile?.street_address_1 || profile?.address?.street_address_1 || '',
+          street_address_2: address.street2 || profile?.street_address_2 || profile?.address?.street_address_2 || '',
+          area: address.area || profile?.area || profile?.address?.area || '',
+          city: address.city || profile?.city || profile?.address?.city || '',
+          state: address.state || profile?.state || profile?.address?.state || '',
+          pincode: address.pincode || profile?.pincode || profile?.address?.pincode || '',
+          phone_number: address.devoteeMobile || profile?.phone || profile?.mobile || ''
+        }
       };
+
       const response = await fetch('https://beta.devalayas.com/api/v1/devotee/pooja_request/payment/', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Token ${API_TOKEN}` },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Token ${API_TOKEN}`
+        },
         body: JSON.stringify(data)
       });
+
+      let responseData = {};
+      try {
+        responseData = await response.json();
+      } catch (jsonErr) {
+        console.warn("Failed to parse response JSON:", jsonErr);
+      }
+
+      // Close the checkout modal first
+      onClose();
+
       if (!response.ok) {
-        const errData = await response.json().catch(() => ({}));
-        window.location.href = `/payment-success?payment_id=${rz_response.razorpay_payment_id}&order_id=${orderId}&status=failed&error=${encodeURIComponent(errData.detail || response.statusText)}`;
+        const errorMessage = responseData?.detail || response.statusText || "Unknown error";
+        navigate(`/payment-success?payment_id=${rz_response?.razorpay_payment_id || ''}&order_id=${orderId}&status=failed&error=${encodeURIComponent(errorMessage)}`);
         return;
       }
-      window.location.href = `/payment-success?payment_id=${rz_response.razorpay_payment_id}&order_id=${orderId}&status=success`;
+
+      if (responseData?.success === true) {
+        navigate(`/payment-success?payment_id=${rz_response?.razorpay_payment_id}&order_id=${orderId}&status=success`);
+      } else {
+        navigate(`/payment-success?payment_id=${rz_response?.razorpay_payment_id}&order_id=${orderId}&status=failed&error=${encodeURIComponent('Payment verification failed')}`);
+      }
     } catch (err) {
-      window.location.href = `/payment-success?payment_id=${rz_response.razorpay_payment_id}&order_id=${orderId}&status=failed&error=${encodeURIComponent(err.message)}`;
+      console.error("placeOrder error:", err);
+      onClose();
+      navigate(`/payment-success?payment_id=${rz_response?.razorpay_payment_id || ''}&order_id=${orderId}&status=failed&error=${encodeURIComponent(err.message)}`);
     }
-  }
+  };
 
   const handleAddressSubmit = async (e) => {
     e.preventDefault();
@@ -289,42 +329,70 @@ const CheckoutModal = ({ open, onClose }) => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      const userToken = localStorage.getItem('token') || API_TOKEN;
-      const payload = {
-        requests: cart.map((item) => ({
-          comment: `( Nakshatra: ${address.nakshatra || ''} )( Gotra: ${address.gotra || ''} )( Rashi: ${address.rashi || ''} )`,
-          is_prasadam_delivery: true,
-          pooja_date: address.bookingDate,
-          pooja: item.id || item.pooja_id,
-          devotee_name: address.devoteeName || profile?.name || profile?.firstName || 'Devotee',
-          devotee_number: `+91${address.devoteeMobile || profile?.phone || ''}`,
-          booked_by: (profile && profile.id) ? profile.id : 'CSC',
-          family_member: [
-            {
-              id: (profile && profile.id) ? profile.id : 1,
-              name: address.devoteeName || profile?.name || profile?.firstName || 'Devotee'
+      // Create individual requests for each quantity of each item
+      const requests = [];
+      cart.forEach((item) => {
+        const quantity = item.quantity || 1;
+        for (let i = 0; i < quantity; i++) {
+          requests.push({
+            comment: `( Nakshatra: ${address.nakshatra || ''} )( Gotra: ${address.gotra || ''} )( Rashi: ${address.rashi || ''} )`,
+            is_prasadam_delivery: true,
+            pooja_date: address.bookingDate,
+            pooja: item.id || item.pooja_id,
+            name: address.devoteeName || profile?.name || profile?.firstName || 'Devotee',
+            devotee_name: address.devoteeName || profile?.name || profile?.firstName || 'Devotee',
+            devotee_number: `+91${address.devoteeMobile || profile?.phone || ''}`,
+            booked_by: (profile && profile.id) ? profile.id : 'CSC',
+            family_member: [
+              {
+                id: (profile && profile.id) ? profile.id : 1,
+                name: address.devoteeName || profile?.name || profile?.firstName || 'Devotee'
+              }
+            ],
+            sankalpa: address.sankalpa,
+            nakshatra: address.nakshatra || '',
+            gotra: address.gotra || '',
+            rashi: address.rashi || '',
+            street1: address.street1,
+            street2: address.street2,
+            area: address.area,
+            city: address.city,
+            state: address.state,
+            pincode: address.pincode,
+            booking_date: address.bookingDate,
+            status: `${address.street1}, ${address.street2 ? `${address.street2}, ` : ''}${address.area}, ${address.city}, ${address.state} - ${address.pincode}`,
+            billing_address: {
+              name: address.devoteeName || profile?.name || profile?.firstName || 'Devotee',
+              street_address_1: address.street1 || profile?.street_address_1 || profile?.address?.street_address_1 || '',
+              street_address_2: address.street2 || profile?.street_address_2 || profile?.address?.street_address_2 || '',
+              area: address.area || profile?.area || profile?.address?.area || '',
+              city: address.city || profile?.city || profile?.address?.city || '',
+              state: address.state || profile?.state || profile?.address?.state || '',
+              pincode: address.pincode || profile?.pincode || profile?.address?.pincode || '',
+              phone_number: address.devoteeMobile || profile?.phone || profile?.mobile || ''
+            },
+            prasadam_address: {
+              name: address.devoteeName || profile?.name || profile?.firstName || 'Devotee',
+              street_address_1: address.street1,
+              street_address_2: address.street2 || '',
+              area: address.area,
+              city: address.city,
+              state: address.state,
+              pincode: address.pincode,
+              phone_number: address.devoteeMobile || profile?.phone || ''
             }
-          ],
-          sankalpa: address.sankalpa,
-          nakshatra: address.nakshatra || '',
-          gotra: address.gotra || '',
-          rashi: address.rashi || '',
-          street1: address.street1,
-          street2: address.street2,
-          area: address.area,
-          city: address.city,
-          state: address.state,
-          pincode: address.pincode,
-          booking_date: address.bookingDate
-        }))
-      };
+          });
+        }
+      });
+
+      const payload = { requests };
 
       try {
         const response = await fetch('https://beta.devalayas.com/api/v1/devotee/bulk_pooja_request/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Token ${userToken}`,
+            Authorization: `Token ${API_TOKEN}`,
           },
           body: JSON.stringify(payload),
         });
@@ -337,7 +405,43 @@ const CheckoutModal = ({ open, onClose }) => {
         }
 
         const data = await response.json();
-        setOrderData(data[0]);
+        
+        // Update billing address for invoice generation for all created orders
+        if (data && data.length > 0) {
+          try {
+            // Update billing address for each order
+            const billingUpdatePromises = data.map(order => 
+              fetch(`https://beta.devalayas.com/api/v1/devotee/pooja_request/${order.id}/`, {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Token ${API_TOKEN}`,
+                },
+                body: JSON.stringify({
+                  billing_address: {
+                    name: address.devoteeName || profile?.name || profile?.firstName || 'Devotee',
+                    street_address_1: address.street1 || profile?.street_address_1 || profile?.address?.street_address_1 || '',
+                    street_address_2: address.street2 || profile?.street_address_2 || profile?.address?.street_address_2 || '',
+                    area: address.area || profile?.area || profile?.address?.area || '',
+                    city: address.city || profile?.city || profile?.address?.city || '',
+                    state: address.state || profile?.state || profile?.address?.state || '',
+                    pincode: address.pincode || profile?.pincode || profile?.address?.pincode || '',
+                    phone_number: address.devoteeMobile || profile?.phone || profile?.mobile || ''
+                  }
+                }),
+              })
+            );
+            
+            await Promise.all(billingUpdatePromises);
+            console.log('Billing address updated successfully for all orders');
+          } catch (billingError) {
+            console.warn('Error updating billing address for orders:', billingError);
+          }
+        }
+        
+        // Store the entire response array for bulk calculations
+        setOrderData(data);
+        setShowCalculatedCost(true);
         setShowAddressConfirmation(true);
       } catch (err) {
         console.error('Error submitting order:', err);
@@ -360,11 +464,19 @@ const CheckoutModal = ({ open, onClose }) => {
 
     let paymentAmount = charges.total;
     if (!paymentAmount || isNaN(paymentAmount) || paymentAmount <= 0) {
-      paymentAmount = Number(orderData.payment_data?.final_total || 1);
+      // Calculate total from all orders if orderData is an array
+      if (Array.isArray(orderData)) {
+        paymentAmount = orderData.reduce((sum, order) => sum + Number(order.payment_data?.final_total || 0), 0);
+      } else {
+        paymentAmount = Number(orderData.payment_data?.final_total || 1);
+      }
     }
     const amount = Math.round(Number(paymentAmount) * 100);
-    const razorpayOrderId = orderData.payment_order_id;
-    const internalOrderId = orderData.order_id;
+    
+    // Use the first order's payment details for Razorpay (all orders should have same payment_order_id for bulk)
+    const firstOrder = Array.isArray(orderData) ? orderData[0] : orderData;
+    const razorpayOrderId = firstOrder.payment_order_id;
+    const internalOrderId = firstOrder.order_id;
 
     const options = {
       key: rzKey,
@@ -378,9 +490,9 @@ const CheckoutModal = ({ open, onClose }) => {
         placeOrder(rz_response, rz_response.razorpay_payment_id, internalOrderId);
       },
       prefill: {
-        name: orderData.name,
+        name: firstOrder.name,
         email: profile?.email || '',
-        contact: orderData.devotee_number,
+        contact: firstOrder.devotee_number,
       },
       notes: {
         address: 'Devalaya',
@@ -464,20 +576,6 @@ const CheckoutModal = ({ open, onClose }) => {
                   <strong>Sankalpa:</strong> {address.sankalpa || 'N/A'}<br />
                   <strong>Booking Date:</strong> {address.bookingDate}
                 </div>
-                <div className="checkout-confirm-actions">
-                  <button
-                    className="btn btn-primary me-2"
-                    onClick={handleConfirmPayment}
-                  >
-                    Confirm & Proceed to Payment
-                  </button>
-                  <button
-                    className="btn btn-secondary"
-                    onClick={() => setShowAddressConfirmation(false)}
-                  >
-                    Edit Address
-                  </button>
-                </div>
               </div>
             ) : (
               <>
@@ -499,7 +597,7 @@ const CheckoutModal = ({ open, onClose }) => {
                 <div className="checkout-modal-left-scroll">
                   <form onSubmit={handleAddressSubmit}>
                     <div className="mb-2">
-                      <label>Devotee Name *</label>
+                      <label>Devotee Name <span className="required-asterisk">*</span></label>
                       <input
                         type="text"
                         value={address.devoteeName}
@@ -511,7 +609,7 @@ const CheckoutModal = ({ open, onClose }) => {
                     </div>
 
                     <div className="mb-2">
-                      <label>Devotee Mobile Number *</label>
+                      <label>Devotee Mobile Number <span className="required-asterisk">*</span></label>
                       <input
                         type="tel"
                         maxLength={10}
@@ -528,7 +626,7 @@ const CheckoutModal = ({ open, onClose }) => {
                     </div>
 
                     <div className="mb-2">
-                      <label>Sankalpa (optional)</label>
+                      <label>Sankalpa </label>
                       <input
                         type="text"
                         value={address.sankalpa}
@@ -539,7 +637,18 @@ const CheckoutModal = ({ open, onClose }) => {
                     </div>
 
                     <div className="mb-2">
-                      <label>Street Address 1 *</label>
+                      <label>Rashi,Nakshatra,Gotra</label>
+                      <input
+                        type="text"
+                        value={address.nakshatra}
+                        onChange={(e) => setAddress({ ...address, nakshatra: e.target.value })}
+                        className="form-control"
+                        placeholder="Rashi,Nakshatra,Gotra"
+                      />
+                    </div>
+
+                    <div className="mb-2">
+                      <label>Street Address 1 <span className="required-asterisk">*</span></label>
                       <input
                         type="text"
                         value={address.street1}
@@ -562,7 +671,7 @@ const CheckoutModal = ({ open, onClose }) => {
                     </div>
 
                     <div className="mb-2">
-                      <label>Area *</label>
+                      <label>Area <span className="required-asterisk">*</span></label>
                       <input
                         type="text"
                         value={address.area}
@@ -574,7 +683,7 @@ const CheckoutModal = ({ open, onClose }) => {
                     </div>
 
                     <div className="mb-2">
-                      <label>City *</label>
+                      <label>City <span className="required-asterisk">*</span></label>
                       <input
                         type="text"
                         value={address.city}
@@ -586,7 +695,7 @@ const CheckoutModal = ({ open, onClose }) => {
                     </div>
 
                     <div className="mb-2">
-                      <label>State *</label>
+                      <label>State <span className="required-asterisk">*</span></label>
                       <input
                         type="text"
                         value={address.state}
@@ -598,12 +707,12 @@ const CheckoutModal = ({ open, onClose }) => {
                     </div>
 
                     <div className="mb-2">
-                      <label>Pincode * (6-digit Pincode)</label>
+                      <label>Pincode <span className="required-asterisk">*</span> (6-digit Pincode)</label>
                       <input
                         type="text"
                         value={address.pincode}
                         maxLength={6}
-                        onChange={(e) => setAddress({ ...address, pincode: e.target.value.replace(/[^0-9]/g, '')})}
+                        onChange={(e) => setAddress({ ...address, pincode: e.target.value.replace(/[^0-9]/g, '') })}
                         className="form-control"
                         placeholder="Pincode"
                       />
@@ -638,7 +747,7 @@ const CheckoutModal = ({ open, onClose }) => {
                   <div className="checkout-cart-info">
                     <div className="checkout-cart-title">{item.name}</div>
                     <div className="checkout-cart-qty">
-                      {item.quantity} x ₹{(item.quantity * Number(item.final_total || item.cost)).toLocaleString('en-IN')}
+                      {item.quantity} x ₹{Number(item.original_cost || item.cost).toLocaleString('en-IN')} = ₹{(item.quantity * Number(item.original_cost || item.cost)).toLocaleString('en-IN')}
                     </div>
                   </div>
                 </div>
@@ -646,27 +755,71 @@ const CheckoutModal = ({ open, onClose }) => {
             </div>
 
             <div className="checkout-cart-summary">
-              <div className="checkout-summary-row">
-                <span>Subtotal</span>
-                <span>₹{charges.subtotal}</span>
-              </div>
-              <div className="checkout-summary-row">
-                <span>Convenience Charge</span>
-                <span>₹{charges.convinceCharge}</span>
-              </div>
-              <div className="checkout-summary-row">
-                <span>Shipping Charge</span>
-                <span>₹{charges.shippingCharge}</span>
-              </div>
-              <div className="checkout-summary-row">
-                <span>GST</span>
-                <span>₹{charges.gst}</span>
-              </div>
-              <div className="checkout-summary-row checkout-summary-total">
-                <span>Total (inc. all taxes)</span>
-                <span>₹{charges.total}</span>
-              </div>
+              {!showCalculatedCost ? (
+                <>
+                  <div className="checkout-summary-row">
+                    <span>Subtotal</span>
+                    <span>₹{charges.subtotal}</span>
+                  </div>
+                  <div className="checkout-summary-row">
+                    <span>Convenience Charge</span>
+                    <span className="cost-to-be-calculated">To be calculated</span>
+                  </div>
+                  <div className="checkout-summary-row">
+                    <span>Shipping Charge</span>
+                    <span className="cost-to-be-calculated">To be calculated</span>
+                  </div>
+                  <div className="checkout-summary-row">
+                    <span>GST</span>
+                    <span className="cost-to-be-calculated">To be calculated</span>
+                  </div>
+                  <div className="checkout-summary-row checkout-summary-total">
+                    <span>Total (inc. all taxes)</span>
+                    <span className="cost-to-be-calculated">To be calculated</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="checkout-summary-row">
+                    <span>Subtotal</span>
+                    <span>₹{charges.subtotal}</span>
+                  </div>
+                  <div className="checkout-summary-row">
+                    <span>Convenience Charge</span>
+                    <span>₹{charges.convinceCharge}</span>
+                  </div>
+                  <div className="checkout-summary-row">
+                    <span>Shipping Charge</span>
+                    <span>₹{charges.shippingCharge}</span>
+                  </div>
+                  <div className="checkout-summary-row">
+                    <span>GST</span>
+                    <span>₹{charges.gst}</span>
+                  </div>
+                  <div className="checkout-summary-row checkout-summary-total">
+                    <span>Total (inc. all taxes)</span>
+                    <span>₹{charges.total}</span>
+                  </div>
+                </>
+              )}
             </div>
+
+            {showAddressConfirmation && (
+              <div className="checkout-confirm-actions" style={{ marginTop: '20px' }}>
+                <button
+                  className="btn btn-orange me-2"
+                  onClick={handleConfirmPayment}
+                >
+                  Confirm & Proceed to Payment
+                </button>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowAddressConfirmation(false)}
+                >
+                  Edit Address
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,86 +1,629 @@
 .my-bookings-page {
-  background-color: #fef5ec;
+  background: linear-gradient(135deg, #fef5ec 0%, #fff8f3 100%);
   min-height: 100vh;
-  padding: 40px 0;
+  padding: 40px 20px;
 }
 
 .bookings-container {
-  max-width: 1100px;
+  max-width: 1400px;
   margin: auto;
   background: white;
-  padding: 20px 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.bookings-header {
+  text-align: center;
+  margin-bottom: 40px;
 }
 
 .bookings-title {
-  font-size: 24px;
+  font-size: 32px;
   font-weight: bold;
-  text-align: center;
-  margin-bottom: 20px;
+  color: #ef5b0c;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.search-container {
+.bookings-subtitle {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+.search-container-my-bookings {
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.search-wrapper-my-bookings {
   position: relative;
-  margin-bottom: 20px;
-  width: 1200px;
-}
-
-.search-input {
   width: 100%;
-  padding: 10px 40px 10px 36px;
-  border: 1px solid #ef5b0c;
-  border-radius: 10px;
-  font-size: 14px;
+  max-width: 500px;
 }
 
-.search-btn {
+.search-input-my-bookings {
+  width: 100%;
+  padding: 15px 20px 15px 50px;
+  border: 2px solid #ef5b0c;
+  border-radius: 25px;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(239, 91, 12, 0.1);
+}
+
+.search-input:focus {
+  border-color: #d94d0a;
+  box-shadow: 0 4px 20px rgba(239, 91, 12, 0.2);
+}
+
+.search-icon-my-bookings {
   position: absolute;
-  left: 165px;
+  right: 18px;
   top: 50%;
   transform: translateY(-50%);
-  background: none;
-  border: none;
   color: #ef5b0c;
-  font-size: 16px;
-  cursor: pointer;
-  z-index: 2;
+  font-size: 18px;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  margin-bottom: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .bookings-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
 }
 
-.bookings-table th,
-.bookings-table td {
-  border: 1px solid #eee;
-  padding: 12px;
-  text-align: center;
-  font-size: 14px;
+.bookings-table thead {
+  background: linear-gradient(135deg, #ef5b0c 0%, #d94d0a 100%);
 }
 
 .bookings-table th {
-  background-color: #fff5f0;
+  padding: 20px 15px;
+  text-align: center;
+  font-weight: 600;
+  color: white;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+}
+
+.bookings-table tbody tr {
+  transition: all 0.3s ease;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.bookings-table tbody tr:hover {
+  background: linear-gradient(135deg, #fff8f3 0%, #fef5ec 100%);
+  transform: scale(1.01);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.bookings-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.bookings-table td {
+  padding: 20px 15px;
+  vertical-align: middle;
+  border: none;
+}
+
+.temple-cell {
+  min-width: 200px;
+}
+
+.temple-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.temple-image-small {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ef5b0c;
+  box-shadow: 0 2px 8px rgba(239, 91, 12, 0.3);
+}
+
+.temple-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.temple-name-mybookings {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.pooja-name {
+  font-size: 12px;
+  color: #666;
+}
+
+.order-id {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #ef5b0c;
+  font-size: 13px;
+}
+
+.amount {
   font-weight: bold;
+  color: #ef5b0c;
+  font-size: 16px;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+
+.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.status-completed {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.status-expired {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.status-default {
+  background-color: #e2e3e5;
+  color: #383d41;
+  border: 1px solid #d6d8db;
+}
+
+.actions-cell {
+  min-width: 150px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .btn-action {
-  background-color: #ef5b0c;
-  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
   border: none;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 13px;
+  border-radius: 8px;
+  font-size: 14px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: white;
 }
 
-.btn-action:hover {
-  background-color: #d94d0a;
+.btn-download {
+  background: linear-gradient(135deg, #ef5b0c 0%, #d94d0a 100%);
+}
+
+.btn-download:hover {
+  background: linear-gradient(135deg, #d94d0a 0%, #c44309 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 91, 12, 0.4);
+}
+
+.btn-view {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.btn-view:hover {
+  background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+.btn-video {
+  background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+}
+
+.btn-video:hover {
+  background: linear-gradient(135deg, #e83e8c 0%, #fd7e14 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(111, 66, 193, 0.4);
+}
+
+.no-bookings {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.no-bookings-icon {
+  font-size: 80px;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.no-bookings h3 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.no-bookings p {
+  font-size: 16px;
+  margin: 0;
 }
 
 .pagination-wrapper {
   display: flex;
   justify-content: center;
+  margin-top: 30px;
+}
+
+/* Desktop and Mobile View Toggle */
+.desktop-view {
+  display: block;
+}
+
+.mobile-view {
+  display: none;
+}
+
+/* Enhanced Desktop Styles */
+.order-details {
+  min-width: 140px;
+}
+
+.order-id {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #ef5b0c;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.booking-date {
+  font-size: 11px;
+  color: #666;
+}
+
+.devotee-info {
+  min-width: 120px;
+}
+
+.devotee-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.devotee-mobile {
+  font-size: 12px;
+  color: #666;
+}
+
+.date-status {
+  min-width: 140px;
+}
+
+.pooja-date {
+  font-size: 13px;
+  color: #333;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+/* Mobile Card Styles */
+.booking-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid #f0f0f0;
+}
+
+.booking-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  background: linear-gradient(135deg, #fef5ec 0%, #fff8f3 100%);
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.temple-info-mobile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.temple-image-mobile {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ef5b0c;
+  box-shadow: 0 2px 8px rgba(239, 91, 12, 0.3);
+}
+
+.temple-details-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.temple-name-mobile {
+  font-weight: 600;
+  color: #333;
+  font-size: 16px;
+}
+
+.pooja-name-mobile {
+  font-size: 13px;
+  color: #666;
+}
+
+.status-badge-mobile {
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+
+.card-body {
+  padding: 15px;
+}
+
+.booking-info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.booking-info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.info-label {
+  font-size: 11px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.order-id-mobile {
+  font-family: 'Courier New', monospace;
+  color: #ef5b0c;
+  font-weight: 600;
+}
+
+.amount-mobile {
+  color: #ef5b0c;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.card-footer {
+  background: #f8f9fa;
+  padding: 15px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.action-buttons-mobile {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.btn-action-mobile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: white;
+  min-width: 70px;
+  gap: 4px;
+}
+
+.btn-action-mobile i {
+  font-size: 16px;
+}
+
+.btn-action-mobile span {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .bookings-container {
+    padding: 20px;
+  }
+  
+  .bookings-table th,
+  .bookings-table td {
+    padding: 15px 10px;
+  }
+}
+
+@media (max-width: 992px) {
+  .desktop-view {
+    display: none;
+  }
+  
+  .mobile-view {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .my-bookings-page {
+    padding: 20px 10px;
+  }
+  
+  .bookings-title {
+    font-size: 24px;
+  }
+  
+  .bookings-container {
+    padding: 15px;
+  }
+  
+  .temple-image-mobile {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .temple-name-mobile {
+    font-size: 15px;
+  }
+  
+  .pooja-name-mobile {
+    font-size: 12px;
+  }
+  
+  .booking-info-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .info-item {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .action-buttons-mobile {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .btn-action-mobile {
+    flex: 1;
+    min-width: 60px;
+    padding: 8px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-wrapper-my-bookings {
+    max-width: 100%;
+  }
+  
+  .search-input-my-bookings {
+    padding: 12px 15px 12px 40px;
+    font-size: 14px;
+  }
+  
+  .card-header {
+    padding: 12px;
+  }
+  
+  .card-body {
+    padding: 12px;
+  }
+  
+  .card-footer {
+    padding: 12px;
+  }
+  
+  .temple-image-mobile {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .temple-name-mobile {
+    font-size: 14px;
+  }
+  
+  .pooja-name-mobile {
+    font-size: 11px;
+  }
+  
+  .info-value {
+    font-size: 13px;
+  }
+  
+  .amount-mobile {
+    font-size: 15px;
+  }
+  
+  .action-buttons-mobile {
+    gap: 6px;
+  }
+  
+  .btn-action-mobile {
+    min-width: 55px;
+    padding: 6px 8px;
+  }
+  
+  .btn-action-mobile i {
+    font-size: 14px;
+  }
+  
+  .btn-action-mobile span {
+    font-size: 9px;
+  }
 }

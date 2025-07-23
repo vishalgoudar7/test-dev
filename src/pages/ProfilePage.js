@@ -1,4 +1,3 @@
-// src/pages/ProfilePage.js
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserAuth } from "../context/UserAuthContext";
@@ -6,7 +5,7 @@ import { FaUser, FaPhone, FaPen } from "react-icons/fa";
 import "../styles/ProfilePage.css";
 
 const ProfilePage = () => {
-  const { user, profile, logOut } = useUserAuth();
+  const { profile, logOut } = useUserAuth(); // 'user' removed
   const [localProfile, setLocalProfile] = useState(profile || {});
   const [showConfirm, setShowConfirm] = useState(false);
   const navigate = useNavigate();
@@ -90,7 +89,7 @@ const ProfilePage = () => {
       {/* Logout Button */}
       <div className="logout-center">
         <button className="logout-text-btn" onClick={() => setShowConfirm(true)}>
-        Logout
+          Logout
         </button>
       </div>
 

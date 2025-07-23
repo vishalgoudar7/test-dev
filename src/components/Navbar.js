@@ -24,35 +24,24 @@ const Navbar = () => {
 
   const dropdownRef = useRef();
 
-  // 👇 Auto-close dropdown and menu on route change
-  useEffect(() => {
-    setDropdownOpen(false);
-    setMenuOpen(false);
-  }, [location]);
-
-  // 👇 Auto-close dropdown if click outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  // Update cart count from localStorage
+  const updateCartCount = () => {
+    try {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      setCartCount(cart.length);
+    } catch {
+      setCartCount(0);
+    }
+  };
 
   useEffect(() => {
-    const updateCartCount = () => {
-      try {
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        setCartCount(cart.length);
-      } catch {
-        setCartCount(0);
-      }
-    };
     updateCartCount();
     window.addEventListener("storage", updateCartCount);
-    return () => window.removeEventListener("storage", updateCartCount);
+    window.addEventListener("cartUpdated", updateCartCount); // ✅ custom event
+    return () => {
+      window.removeEventListener("storage", updateCartCount);
+      window.removeEventListener("cartUpdated", updateCartCount);
+    };
   }, []);
 
   useEffect(() => {
@@ -74,6 +63,21 @@ const Navbar = () => {
       }
     }, 500);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    setDropdownOpen(false);
+    setMenuOpen(false);
+  }, [location]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleLogout = () => {
