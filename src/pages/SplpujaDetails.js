@@ -77,9 +77,10 @@
 
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link,useParams } from 'react-router-dom';
 import api from '../api/api';
 import '../styles/SplpujaDetails.css';
+
 
 const SplpujaDetails = () => {
   const { categoryId, subCategoryId } = useParams();
@@ -130,12 +131,16 @@ const SplpujaDetails = () => {
                 ))}
               </ul>
               <div className="splpuja-bottom">
-                <span className="splpuja-price">₹ {pooja.original_cost}</span>
-                {/* <button className="splpuja-button">+ Participate</button> */}
-                <button className="splpuja-button">
-                  <span className="plus-icon">+</span> Participate
-                </button>
-              </div>
+  <span className="splpuja-price">₹ {pooja.original_cost}</span>
+  <Link
+    to={`/book?pujaName=${encodeURIComponent(pooja.name)}`}
+    className="splpuja-button"
+  >
+    Participate
+  </Link>
+</div>
+
+
             </div>
           </div>
         ))

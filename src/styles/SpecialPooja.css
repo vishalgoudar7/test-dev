@@ -1,12 +1,12 @@
 .special-pooja-main {
-  background-color: #fce0c4;
+  background-color:#fef5ec;
   padding: 2rem 1rem;
 }
 
 .section-title {
-  font-size: 2rem;
+  font-size: 2.3rem;
   font-weight: bold;
-  color: #f26a1b;
+  color: #f44336;
 }
 
 .section-subtitle {
@@ -19,6 +19,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+   margin-bottom: 1rem;
 }
 
 .special-pooja-card-image {
