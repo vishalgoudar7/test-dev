@@ -1,67 +1,229 @@
+
+
+
+
+
+// import React from 'react';
+
+// import bannerImage from '../assets/banner.png';
+// import '../styles/HomePage.css';
+// import '../styles/CardSection.css';
+
+// import TempleList from '../components/TempleList';
+
+// import carouselImage1 from '../assets/d1.png';
+// import carouselImage2 from '../assets/d2.png';
+// import carouselImage3 from '../assets/d3.png';
+
+// import googlePlay from '../assets/googlePlay.png';
+// import appStore from '../assets/appStore.png';
+
+// const HomePage = () => {
+//   return (
+//     <div className="homepage">
+//       <img src={require('../assets/background.png')} alt="Background" className="bg-img" />
+//       <div className="homepage-row">
+//         {/* Left: Full Image Cards */}
+//         <div className="homepage-left">
+//           <h2 className="section-title text-center">
+//             <span className="highlight-letter">D</span>ivine access. Anytime
+//           </h2>
+//           <div className="image-card-overlap">
+//             <img src={carouselImage1} alt="Event 1" className="event-img img-left" />
+//             <img src={carouselImage2} alt="Event 2" className="event-img img-center" />
+//             <img src={carouselImage3} alt="Event 3" className="event-img img-right" />
+//           </div>
+//         </div>
+
+//         {/* Right: Banner Image and App Buttons */}
+//         <div className="homepage-right">
+//           <img src={bannerImage} alt="Phone Display" className="banner-img" />
+//           <div className="download-buttons">
+//             <a
+//               href="https://play.google.com/store/apps/details?id=com.devalaya.devotee"
+//               target="_blank"
+//               rel="noopener noreferrer"
+//             >
+//               <img src={googlePlay} alt="Google Play" />
+//             </a>
+//             <a
+//               href="https://play.google.com/store/apps/details?id=com.devalaya.devotee"
+//               target="_blank"
+//               rel="noopener noreferrer"
+//             >
+//               <img src={appStore} alt="App Store" />
+//             </a>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Temple List */}
+//       <TempleList />
+//     </div>
+//   );
+// };
+
+// export default HomePage;
+
+
+
+
+
+
+
+
+
+
+
+// import React from 'react';
+
+// import bannerImage from '../assets/banner.png';
+// import '../styles/HomePage.css';
+// import '../styles/CardSection.css';
+
+// import TempleList from '../components/TempleList';
+
+// import carouselImage1 from '../assets/d1.png';
+// import carouselImage2 from '../assets/d2.png';
+// import carouselImage3 from '../assets/d3.png';
+
+// import googlePlay from '../assets/googlePlay.png';
+// import appStore from '../assets/appStore.png';
+
+// const HomePage = () => {
+//   return (
+//     <div className="homepage">
+//       <div className="homepage-content">
+//         <div className="homepage-row">
+//           {/* Left: Carousel */}
+//           <div className="homepage-left">
+//             <h2 className="section-title text-center">
+//               <span className="highlight-letter">D</span>ivine access. Anytime
+//             </h2>
+//             <div className="image-card-overlap">
+//               <img src={carouselImage1} alt="Event 1" className="event-img img-left" />
+//               <img src={carouselImage2} alt="Event 2" className="event-img img-center" />
+//               <img src={carouselImage3} alt="Event 3" className="event-img img-right" />
+//             </div>
+//           </div>
+
+//           {/* Right: Banner + Download buttons */}
+//           <div className="homepage-right">
+//             <img src={bannerImage} alt="Phone Display" className="banner-img" />
+//             <div className="download-buttons">
+//               <a
+//                 href="https://play.google.com/store/apps/details?id=com.devalaya.devotee"
+//                 target="_blank"
+//                 rel="noopener noreferrer"
+//               >
+//                 <img src={googlePlay} alt="Google Play" />
+//               </a>
+//               <a
+//                 href="https://play.google.com/store/apps/details?id=com.devalaya.devotee"
+//                 target="_blank"
+//                 rel="noopener noreferrer"
+//               >
+//                 <img src={appStore} alt="App Store" />
+//               </a>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* Temple List */}
+//         <TempleList />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default HomePage;
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React from 'react';
-import bannerImage from '../assets/banner.png';
+
+import bannerImage from '../assets/banner.png'; // Phone image
+import backgroundImage from '../assets/background.png'; // Orange pattern background
 import '../styles/HomePage.css';
-import '../styles/CardSection.css';
+import '../styles/CardSection.css'; // Keep if you have card-specific styles
+
 import TempleList from '../components/TempleList';
-import carouselImage from '../assets/11.jpg';
-import carouselImage1 from '../assets/22.jpg';
-import carouselImage2 from '../assets/33.jpg';
+
+import carouselImage1 from '../assets/d1.png';
+import carouselImage2 from '../assets/d2.png';
+import carouselImage3 from '../assets/d3.png';
+
 import googlePlay from '../assets/googlePlay.png';
 import appStore from '../assets/appStore.png';
 
 const HomePage = () => {
   return (
-    <>
-      <div className="homepage">
-        <div className="homepage-row">
-          {/* Left: Carousel */}
-          <div className="homepage-left">
-            <h2 className="section-title">Ongoing Event's</h2>
-            <div className="event-carousel-box">
-              <div id="eventCarousel" className="carousel slide" data-bs-ride="carousel">
-                <div className="carousel-inner">
-                  <div className="carousel-item active">
-                    <img src={carouselImage} className="d-block w-100" alt="Slide 1" />
-                  </div>
-                  <div className="carousel-item">
-                    <img src={carouselImage1} className="d-block w-100" alt="Slide 2" />
-                  </div>
-                  <div className="carousel-item">
-                    <img src={carouselImage2} className="d-block w-100" alt="Slide 3" />
-                  </div>
-                </div>
+    <div className="homepage">
+      {/* Hero Section with Background */}
+      <div className="homepage-hero-section">
+        {/* This div now controls the max-width and centering of the content within the hero section */}
+        <div className="homepage-content">
+          <div className="homepage-row">
+            {/* Left: Carousel and Text */}
+            <div className="homepage-left">
+              <h2 className="section-title">
+                <span className="highlight-letter">D</span>ivine access. Anytime
+              </h2>
+              {/* This is the descriptive text you want to keep as is */}
+              <p>Book Puja and Darshan with ease and Devotion. Deliver the Blessing from Temple to your home.</p>
+              <div className="image-card-overlap">
+                <img src={carouselImage1} alt="Temple 1" className="event-img img-left" />
+                <img src={carouselImage2} alt="Temple 2" className="event-img img-center" />
+                <img src={carouselImage3} alt="Temple 3" className="event-img img-right" />
+              </div>
+            </div>
+
+            {/* Right: Banner + Download buttons */}
+            <div className="homepage-right">
+              <img src={bannerImage} alt="Phone Display" className="banner-img" />
+              {/* This is the "Trusted by 50000+ people" text */}
+              {/* <p className="trust-text">Trusted by 50000+ people</p> */}
+              <div className="download-buttons">
+                <a
+                  href="https://play.google.com/store/apps/details?id=com.devalaya.devotee"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img src={googlePlay} alt="Google Play" />
+                </a>
+                <a
+                  href="https://play.google.com/store/apps/details?id=com.devalaya.devotee"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img src={appStore} alt="App Store" />
+                </a>
               </div>
             </div>
           </div>
-
-          {/* Right: Banner Image and App Buttons */}
-          <div className="homepage-right">
-            <img src={bannerImage} alt="Phone Display" className="banner-img" />
-            <div className="download-buttons">
-              <a
-                href="https://play.google.com/store/apps/details?id=com.devalaya.devotee"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <img src={googlePlay} alt="Google Play" />
-              </a>
-              <a
-                href="https://play.google.com/store/apps/details?id=com.devalaya.devotee"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <img src={appStore} alt="App Store" />
-              </a>
-            </div>
-          </div>
         </div>
-
-        {/* Temple List */}
-        <TempleList />
       </div>
-    </>
+
+      {/* Temple List Section */}
+      <div className="temple-list-section">
+        {/* Use homepage-content to center this section too */}
+        <div className="homepage-content">
+           
+            <TempleList />
+        </div>
+      </div>
+    </div>
   );
 };
 
 export default HomePage;
-

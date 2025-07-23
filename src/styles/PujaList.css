@@ -1,138 +1,21 @@
-/* 
-.puja-list-container {
-  padding: 20px;
+
+.puja-heading{
   text-align: center;
+  font-weight: 150px;
+  margin-top: 18px;
 }
-
-.puja-heading {
-  font-size: 40px;
-  margin-bottom: 20px;
-}
-
-.puja-cards {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.puja-card {
-  width: 250px;
-  background: #fff;
-  border-radius: 12px;
-  padding: 15px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 350px; 
-}
-
-.puja-image {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-
-.no-image {
-  width: 100%;
-  height: 160px;
-  background-color: #eee;
-  border-radius: 8px;
-  line-height: 160px;
-  color: #777;
-  font-weight: bold;
-}
-
-.puja-card h3 {
-  font-size: 18px;
-  margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.puja-card p {
-  font-size: 14px;
-  margin: 5px 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap; 
-}
-
-.book-button {
-  margin-top: auto; 
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  text-align: center;
-}
-
-.search-box {
-  margin-top: 40px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.search-input {
-  padding: 10px;
-  width: 50%; 
-  font-size: 16px;
-  border-radius: 5px;
-  border: 2px solid #ccc;
-  height: 48px; 
-}
-
-.search-button {
-  padding: 12px 20px; 
-  margin-left: 10px;
-  background-color: #f44336;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-  height: 48px;
-  width: 86px; 
-  text-align: center;
-  display: flex;
-  justify-content: center; 
-  align-items: center; 
-}
-
-.search-button:hover {
-  background-color: #0056b3;
-} */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 .puja-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(4, 1fr); /* Force 4 cards per row */
   gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(160px, 1fr)); /* smaller card width */
+  gap: 20px;
+  padding: 0 40px; /* optional: adds side padding to reduce total width */
+  justify-content: center; /* centers the grid if there is extra space */
 }
+
 .puja-card {
   background: #fff;
   border: 1px solid #e0e0e0;

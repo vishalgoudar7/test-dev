@@ -95,6 +95,8 @@ import PujaTemples from "../pages/PujaTemples";
 
 
 
+
+
 const AllRouters = () => {
   return (
     <Routes>
@@ -125,8 +127,9 @@ const AllRouters = () => {
       <Route path="/List/category/:categoryId/sub_category/:subCategoryId" element={<SplpujaDetails />} />
       <Route path="/splpujadetails/:category/:sub_category" element={<SplpujaDetails />} />
       <Route path="/splpujadetails" element={<SplpujaDetails />} />
-<Route path="/puja-temples" element={<PujaTemples />} />
-<Route path="/puja-details/:id" element={<PujaDetails />} />
+      <Route path="/puja-temples" element={<PujaTemples />} />
+      <Route path="/puja-details/:id" element={<PujaDetails />} />
+    
     </Routes>
   );
 };

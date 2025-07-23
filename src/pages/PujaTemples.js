@@ -38,9 +38,10 @@
 //     navigate(`/puja-details/${pujaId}`);
 //   };
 
-//   const handleParticipate = (temple) => {
-//     alert(`Participate clicked for ${temple.name}`);
-//   };
+//  const handleParticipate = (temple) => {
+//   navigate('/cart', { state: { item: temple } });
+// };
+
 
 //   return (
 //     <div style={styles.container}>
@@ -73,13 +74,13 @@
 //               </div>
 //               <div style={styles.buttonGroup}>
 //                 <button
-//                   style={styles.button}
+//                   style={styles.viewButton}
 //                   onClick={() => handleViewDetails(temple.pujaId)}
 //                 >
 //                   View Details
 //                 </button>
 //                 <button
-//                   style={{ ...styles.button, backgroundColor: '#28a745' }}
+//                   style={styles.participateButton}
 //                   onClick={() => handleParticipate(temple)}
 //                 >
 //                   Participate
@@ -97,12 +98,14 @@
 //   container: {
 //     padding: '20px',
 //     fontFamily: 'Arial, sans-serif',
+//     backgroundColor: '#fef5ec',
+//     minHeight: '100vh',
 //   },
 //   heading: {
 //     textAlign: 'center',
 //     marginBottom: '20px',
-//     fontSize: '22px',
-//     color: '#444',
+//     fontSize: '35px',
+//     color: 'black',
 //   },
 //   cardsWrapper: {
 //     display: 'grid',
@@ -167,7 +170,7 @@
 //     fontSize: '14px',
 //     borderRadius: '6px',
 //     border: 'none',
-//     backgroundColor: '#ff9933', // saffron
+//     backgroundColor: '#ff9933', // Saffron (Hindu color)
 //     color: '#fff',
 //     cursor: 'pointer',
 //     transition: 'background-color 0.3s ease',
@@ -178,14 +181,15 @@
 //     fontSize: '14px',
 //     borderRadius: '6px',
 //     border: 'none',
-//     backgroundColor: '#d63384', // dark pink
+//     backgroundColor: '#f44336', // Dark pink
 //     color: '#fff',
 //     cursor: 'pointer',
 //     transition: 'background-color 0.3s ease',
 //   },
 // };
 
-// export default styles;
+// export default PujaTemples;
+
 
 
 
@@ -217,7 +221,7 @@ const PujaTemples = () => {
             puja.temple.id &&
             puja.temple.name
           ) {
-            templeMap[puja.temple.id] = { ...puja.temple, pujaId: puja.id };
+            templeMap[puja.temple.id] = { ...puja.temple, pujaId: puja.id, cost: puja.amount || 100 };
           }
         });
         setTemples(Object.values(templeMap));
@@ -228,12 +232,29 @@ const PujaTemples = () => {
     fetchTemples();
   }, [pujaName]);
 
-  const handleViewDetails = (pujaId) => {
-    navigate(`/puja-details/${pujaId}`);
-  };
-
+  // ✅ UPDATED LINE: Store selected temple in cart and navigate to /cart
   const handleParticipate = (temple) => {
-    alert(`Participate clicked for ${temple.name}`);
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    const alreadyExists = cart.find(item => item.id === temple.id);
+    if (!alreadyExists) {
+      const item = {
+        id: temple.id,
+        name: temple.name,
+        city: temple.city,
+        district: temple.district,
+        images: temple.images,
+        quantity: 1,
+        cost: temple.cost || 100,
+        final_total: temple.cost || 100,
+        details: `${temple.city}, ${temple.district}`
+      };
+      cart.push(item);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      window.dispatchEvent(new Event('storage'));
+    }
+
+    navigate('/cart');
   };
 
   return (
@@ -268,7 +289,7 @@ const PujaTemples = () => {
               <div style={styles.buttonGroup}>
                 <button
                   style={styles.viewButton}
-                  onClick={() => handleViewDetails(temple.pujaId)}
+                  onClick={() => navigate(`/puja-details/${temple.pujaId}`)}
                 >
                   View Details
                 </button>
@@ -297,8 +318,8 @@ const styles = {
   heading: {
     textAlign: 'center',
     marginBottom: '20px',
-    fontSize: '24px',
-    color: '#5a3e1b',
+    fontSize: '35px',
+    color: 'black',
   },
   cardsWrapper: {
     display: 'grid',
@@ -363,7 +384,7 @@ const styles = {
     fontSize: '14px',
     borderRadius: '6px',
     border: 'none',
-    backgroundColor: '#ff9933', // Saffron (Hindu color)
+    backgroundColor: '#ff9933',
     color: '#fff',
     cursor: 'pointer',
     transition: 'background-color 0.3s ease',
@@ -374,7 +395,7 @@ const styles = {
     fontSize: '14px',
     borderRadius: '6px',
     border: 'none',
-    backgroundColor: '#f44336', // Dark pink
+    backgroundColor: '#f44336',
     color: '#fff',
     cursor: 'pointer',
     transition: 'background-color 0.3s ease',
