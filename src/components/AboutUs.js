@@ -70,7 +70,7 @@ const AboutUs = () => {
       </div>
 
       <div className="cardio">
-        <div className="row" style={{ justifyContent: 'flex-start' }}>
+        <div className="row-aboutus" style={{ justifyContent: 'flex-start' }}>
           <div className="column">
             <div className="team-img">
               <img
