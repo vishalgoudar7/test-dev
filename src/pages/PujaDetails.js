@@ -134,7 +134,7 @@ const PujaDetails = () => {
 
         <div className="puja-text-box">
           {/* <p><strong>Details:</strong> {puja.details || 'No details available'}</p> */}
-          <p><strong>Temple:</strong> {puja.included || 'N/A'}</p>
+          <p><strong>Temple:</strong> {puja.temple.name|| 'N/A'}</p>
           <p><strong>Included:</strong> {puja.included || 'N/A'}</p>
           <p><strong>Excluded:</strong> {puja.excluded || 'N/A'}</p>
           <p><strong>Price:</strong> ₹{Number(puja.original_cost || puja.cost || 0).toLocaleString('en-IN', {

@@ -1,42 +1,103 @@
-.spl-puja-details {
-  padding: 40px 15px;
-  background-color: #fff7f0;
-  border-radius: 12px;
+.splpuja-wrapper {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  background: #ffe3cb;
+  min-height: 100vh;
 }
 
-.spl-puja-image {
+/* Card container */
+.splpuja-card {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
   width: 100%;
-  max-height: 400px;
-  object-fit: contain;
-  border-radius: 12px;
-  background-color: #f3f3f3;
-  padding: 10px;
+  max-width: 950px;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 500px;
 }
 
-.spl-puja-title {
-  font-size: 28px;
-  font-weight: 700;
+/* Image styling */
+.splpuja-image {
+  width: 350px;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+/* Content inside the card */
+.splpuja-content {
+  text-align: left;
+  width: 100%;
+}
+
+/* Puja title */
+.splpuja-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Puja description as bullet points */
+.splpuja-description {
   color: #333;
-  margin-bottom: 20px;
+  font-size: 15px;
+  margin-bottom: 15px;
+  padding-left: 25px;
 }
 
-.spl-puja-description {
-  font-size: 16px;
-  line-height: 1.6;
-  color: #555;
+.splpuja-description li {
+  margin-bottom: 8px;
 }
 
-.spl-book-btn {
-  background: linear-gradient(to right, #ff7e5f, #feb47b);
+/* Bottom row with price and button */
+.splpuja-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  width: 100%;
+}
+
+/* Price text */
+.splpuja-price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+}
+
+/* Participate button */
+.splpuja-button {
+  background: linear-gradient(to right, #ff8a00, #ff512f);
   color: white;
   border: none;
-  padding: 10px 20px;
-  font-weight: 600;
+  padding: 10px 24px;
   border-radius: 25px;
+  width: 160px;
+  font-weight: bold;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: 0.3s ease;
+  text-transform: uppercase;
+  box-shadow: 0 4px 6px rgba(255, 138, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
-.spl-book-btn:hover {
-  background: linear-gradient(to right, #ff5f6d, #ffc371);
+.splpuja-button:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+/* "+" icon inside button */
+.splpuja-button .plus-icon {
+  font-size: 20px;
+  font-weight: bold;
 }
