@@ -3,7 +3,13 @@ import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { useNavigate } from 'react-router-dom';
 import { useUserAuth } from '../context/UserAuthContext';
+import api from '../api/api';
 import '../styles/CheckoutModal.css';
+
+// Get API base URL from the centralized config
+const getApiBaseUrl = () => {
+  return api.defaults.baseURL;
+};
 
 // Razorpay script loader
 function loadRazorpayScript(src) {
@@ -16,18 +22,11 @@ function loadRazorpayScript(src) {
   });
 }
 
-// Fetch pooja/prasadam charges by pooja ID and API key
-async function getChargesByPoojaId(poojaId, apiKey) {
+// Fetch pooja/prasadam charges by pooja ID using centralized API
+async function getChargesByPoojaId(poojaId) {
   try {
-    const response = await fetch(`https://beta.devalayas.com/api/v1/devotee/pooja/${poojaId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Token ${apiKey}`,
-      },
-    });
-    if (!response.ok) throw new Error('Failed to fetch pooja charges');
-    const data = await response.json();
+    const response = await api.get(`/api/v1/devotee/pooja/${poojaId}`);
+    const data = response.data;
     return {
       id: data.id,
       name: data.name,
@@ -142,7 +141,6 @@ const CheckoutModal = ({ open, onClose }) => {
   });
   const [errors, setErrors] = useState({});
   const [orderData, setOrderData] = useState(null);
-  const API_TOKEN = '9e65dcf08308a3f623c34491a92b282707edbe2c';
 
   // Prefill devoteeName and devoteeMobile from profile if available
   useEffect(() => {
@@ -175,7 +173,7 @@ const CheckoutModal = ({ open, onClose }) => {
           stored = stored.map((item) => ({ ...item, quantity: item.quantity || 1 }));
           const updatedCart = await Promise.all(
             stored.map(async (item) => {
-              const charges = await getChargesByPoojaId(item.id || item.pooja_id, API_TOKEN);
+              const charges = await getChargesByPoojaId(item.id || item.pooja_id);
               if (charges) {
                 return { ...item, ...charges };
               }
@@ -247,14 +245,8 @@ const CheckoutModal = ({ open, onClose }) => {
 
   async function fetchRazorpayKey() {
     try {
-      const response = await fetch('https://beta.devalayas.com/api/v1/devotee/payment_key/', {
-        headers: {
-          Authorization: `Token ${API_TOKEN}`
-        }
-      });
-      if (!response.ok) throw new Error('Failed to fetch Razorpay key');
-      const data = await response.json();
-      return data.key;
+      const response = await api.get('/api/v1/devotee/payment_key/');
+      return response.data.key;
     } catch (err) {
       alert('Unable to fetch payment key.');
       return null;
@@ -263,7 +255,7 @@ const CheckoutModal = ({ open, onClose }) => {
 
   const placeOrder = async (rz_response, paymentId, orderId) => {
     try {
-      const data = {
+      const requestData = {
         razorpay_response: {
           razorpay_payment_id: rz_response?.razorpay_payment_id,
           razorpay_order_id: rz_response?.razorpay_order_id,
@@ -282,32 +274,12 @@ const CheckoutModal = ({ open, onClose }) => {
         }
       };
 
-      const response = await fetch('https://beta.devalayas.com/api/v1/devotee/pooja_request/payment/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${API_TOKEN}`
-        },
-        body: JSON.stringify(data)
-      });
-
-      let responseData = {};
-      try {
-        responseData = await response.json();
-      } catch (jsonErr) {
-        console.warn("Failed to parse response JSON:", jsonErr);
-      }
+      const response = await api.post('/api/v1/devotee/pooja_request/payment/', requestData);
 
       // Close the checkout modal first
       onClose();
 
-      if (!response.ok) {
-        const errorMessage = responseData?.detail || response.statusText || "Unknown error";
-        navigate(`/payment-success?payment_id=${rz_response?.razorpay_payment_id || ''}&order_id=${orderId}&status=failed&error=${encodeURIComponent(errorMessage)}`);
-        return;
-      }
-
-      if (responseData?.success === true) {
+      if (response.data?.success === true) {
         navigate(`/payment-success?payment_id=${rz_response?.razorpay_payment_id}&order_id=${orderId}&status=success`);
       } else {
         navigate(`/payment-success?payment_id=${rz_response?.razorpay_payment_id}&order_id=${orderId}&status=failed&error=${encodeURIComponent('Payment verification failed')}`);
@@ -315,7 +287,8 @@ const CheckoutModal = ({ open, onClose }) => {
     } catch (err) {
       console.error("placeOrder error:", err);
       onClose();
-      navigate(`/payment-success?payment_id=${rz_response?.razorpay_payment_id || ''}&order_id=${orderId}&status=failed&error=${encodeURIComponent(err.message)}`);
+      const errorMessage = err.response?.data?.detail || err.message || "Unknown error";
+      navigate(`/payment-success?payment_id=${rz_response?.razorpay_payment_id || ''}&order_id=${orderId}&status=failed&error=${encodeURIComponent(errorMessage)}`);
     }
   };
 
@@ -410,47 +383,25 @@ const CheckoutModal = ({ open, onClose }) => {
       const payload = { requests };
 
       try {
-        const response = await fetch('https://beta.devalayas.com/api/v1/devotee/bulk_pooja_request/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Token ${API_TOKEN}`,
-          },
-          body: JSON.stringify(payload),
-        });
-
-        if (!response.ok) {
-          const error = await response.json();
-          console.error('Order creation failed:', error);
-          alert('Failed to create pooja order: ' + JSON.stringify(error));
-          return;
-        }
-
-        const data = await response.json();
+        const response = await api.post('/api/v1/devotee/bulk_pooja_request/', payload);
+        const data = response.data;
 
         // Update billing address for invoice generation for all created orders
         if (data && data.length > 0) {
           try {
             // Update billing address for each order
             const billingUpdatePromises = data.map(order =>
-              fetch(`https://beta.devalayas.com/api/v1/devotee/pooja_request/${order.id}/`, {
-                method: 'PATCH',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Token ${API_TOKEN}`,
-                },
-                body: JSON.stringify({
-                  billing_address: {
-                    name: address.devoteeName || profile?.name || profile?.firstName || 'Devotee',
-                    street_address_1: address.street1 || profile?.street_address_1 || profile?.address?.street_address_1 || '',
-                    street_address_2: address.street2 || profile?.street_address_2 || profile?.address?.street_address_2 || '',
-                    area: address.area || profile?.area || profile?.address?.area || '',
-                    city: address.city || profile?.city || profile?.address?.city || '',
-                    state: address.state || profile?.state || profile?.address?.state || '',
-                    pincode: address.pincode || profile?.pincode || profile?.address?.pincode || '',
-                    phone_number: address.devoteeMobile || profile?.phone || profile?.mobile || ''
-                  }
-                }),
+              api.patch(`/api/v1/devotee/pooja_request/${order.id}/`, {
+                billing_address: {
+                  name: address.devoteeName || profile?.name || profile?.firstName || 'Devotee',
+                  street_address_1: address.street1 || profile?.street_address_1 || profile?.address?.street_address_1 || '',
+                  street_address_2: address.street2 || profile?.street_address_2 || profile?.address?.street_address_2 || '',
+                  area: address.area || profile?.area || profile?.address?.area || '',
+                  city: address.city || profile?.city || profile?.address?.city || '',
+                  state: address.state || profile?.state || profile?.address?.state || '',
+                  pincode: address.pincode || profile?.pincode || profile?.address?.pincode || '',
+                  phone_number: address.devoteeMobile || profile?.phone || profile?.mobile || ''
+                }
               })
             );
 
@@ -467,7 +418,8 @@ const CheckoutModal = ({ open, onClose }) => {
         setShowAddressConfirmation(true);
       } catch (err) {
         console.error('Error submitting order:', err);
-        alert('Error submitting order: ' + err.message);
+        const errorMessage = err.response?.data || err.message || 'Unknown error';
+        alert('Failed to create pooja order: ' + JSON.stringify(errorMessage));
       }
     }
   };
@@ -773,7 +725,7 @@ const CheckoutModal = ({ open, onClose }) => {
                       src={
                         item.images[0].image.startsWith('http')
                           ? item.images[0].image
-                          : `https://beta.devalayas.com${item.images[0].image}`
+                          : `${getApiBaseUrl()}${item.images[0].image}`
                       }
                       alt={item.name}
                       className="checkout-cart-img"

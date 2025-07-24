@@ -141,7 +141,7 @@
 }
 
 .pagination-container .btn {
-  min-width: 45px;
+  width: 45px;
   height: 45px;
   padding: 0;
   font-size: 1rem;
