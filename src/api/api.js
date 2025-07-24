@@ -6,11 +6,11 @@ const API_CONFIG = {
   servers: {
     beta: {
       base: "https://beta.devalayas.com",
-      token: "94c4c11bfac761ba896de08bd383ca187d4e4dc4"
+      token: "9e65dcf08308a3f623c34491a92b282707edbe2c"
     },
     live: {
       base: "https://live.devalayas.com",
-      token: "18a6c4adbef1a4398a1869347358a926689bbdb8"
+      token: "e52a308c58887782d13a6fce7ae0258f8b6dfde1"
     }
   },
   // 🔁 Switch between 'beta' or 'live' here
@@ -107,6 +107,17 @@ export const loginWithEmail = async (email, otp) => {
   );
 
   return response.data;
+};
+
+// ✅ Get devotee profile data
+export const getDevoteeProfile = async () => {
+  try {
+    const response = await api.get('/api/v1/devotee/profile/');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching devotee profile:', error);
+    throw error;
+  }
 };
 
 export default api;

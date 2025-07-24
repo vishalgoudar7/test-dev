@@ -104,7 +104,13 @@ function DatePickerWithClose({ selectedDate, onDateChange, error }) {
                 setOpen(false);
               }
             }}
-            fromDate={new Date()}
+            hidden={{
+              before: (() => {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                return today;
+              })()
+            }}
             required
           />
         </div>
@@ -125,6 +131,7 @@ const CheckoutModal = ({ open, onClose }) => {
     devoteeName: '',
     devoteeMobile: '',
     sankalpa: '',
+    zodiacSign: '',
     nakshatra: '',
     street1: '',
     street2: '',
@@ -135,7 +142,7 @@ const CheckoutModal = ({ open, onClose }) => {
   });
   const [errors, setErrors] = useState({});
   const [orderData, setOrderData] = useState(null);
-  const API_TOKEN = '94c4c11bfac761ba896de08bd383ca187d4e4dc4';
+  const API_TOKEN = '9e65dcf08308a3f623c34491a92b282707edbe2c';
 
   // Prefill devoteeName and devoteeMobile from profile if available
   useEffect(() => {
@@ -213,7 +220,7 @@ const CheckoutModal = ({ open, onClose }) => {
       (sum, item) => sum + (Number(item.payment_data?.tax_amount) || Number(item.tax_amount) || 0) * (item.quantity || 1),
       0
     );
-    
+
     // Override with orderData values if available (after address submission)
     // Calculate total from all items in the response array for bulk requests
     if (orderData && showCalculatedCost) {
@@ -231,7 +238,7 @@ const CheckoutModal = ({ open, onClose }) => {
         subtotal = Number(orderData.payment_data?.original_cost || 0);
       }
     }
-    
+
     let total = subtotal + convinceCharge + shippingCharge + gst;
 
     setCharges({ prasadCost: 0, convinceCharge, shippingCharge, subtotal, gst, total });
@@ -329,6 +336,21 @@ const CheckoutModal = ({ open, onClose }) => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
+      // Store checkout data in localStorage for ProfilePage to access
+      const checkoutData = {
+        devoteeName: address.devoteeName,
+        devoteeMobile: address.devoteeMobile,
+        bookingDate: address.bookingDate,
+        sankalpa: address.sankalpa,
+        nakshatra: address.nakshatra,
+        street1: address.street1,
+        street2: address.street2,
+        area: address.area,
+        city: address.city,
+        state: address.state,
+        pincode: address.pincode
+      };
+      localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
       // Create individual requests for each quantity of each item
       const requests = [];
       cart.forEach((item) => {
@@ -405,12 +427,12 @@ const CheckoutModal = ({ open, onClose }) => {
         }
 
         const data = await response.json();
-        
+
         // Update billing address for invoice generation for all created orders
         if (data && data.length > 0) {
           try {
             // Update billing address for each order
-            const billingUpdatePromises = data.map(order => 
+            const billingUpdatePromises = data.map(order =>
               fetch(`https://beta.devalayas.com/api/v1/devotee/pooja_request/${order.id}/`, {
                 method: 'PATCH',
                 headers: {
@@ -431,14 +453,14 @@ const CheckoutModal = ({ open, onClose }) => {
                 }),
               })
             );
-            
+
             await Promise.all(billingUpdatePromises);
             console.log('Billing address updated successfully for all orders');
           } catch (billingError) {
             console.warn('Error updating billing address for orders:', billingError);
           }
         }
-        
+
         // Store the entire response array for bulk calculations
         setOrderData(data);
         setShowCalculatedCost(true);
@@ -472,7 +494,7 @@ const CheckoutModal = ({ open, onClose }) => {
       }
     }
     const amount = Math.round(Number(paymentAmount) * 100);
-    
+
     // Use the first order's payment details for Razorpay (all orders should have same payment_order_id for bulk)
     const firstOrder = Array.isArray(orderData) ? orderData[0] : orderData;
     const razorpayOrderId = firstOrder.payment_order_id;
@@ -574,6 +596,8 @@ const CheckoutModal = ({ open, onClose }) => {
                   <strong>Mobile:</strong> +91{address.devoteeMobile}<br />
                   <strong>Address:</strong> {address.street1}, {address.street2 ? `${address.street2}, ` : ''}{address.area}, {address.city}, {address.state} - {address.pincode}<br />
                   <strong>Sankalpa:</strong> {address.sankalpa || 'N/A'}<br />
+                  <strong>Zodiac Sign:</strong> {address.zodiacSign || 'N/A'}<br />
+                  <strong>Rashi,Nakshatra,Gotra:</strong> {address.nakshatra || 'N/A'}<br />
                   <strong>Booking Date:</strong> {address.bookingDate}
                 </div>
               </div>
@@ -633,6 +657,17 @@ const CheckoutModal = ({ open, onClose }) => {
                         onChange={(e) => setAddress({ ...address, sankalpa: e.target.value })}
                         className="form-control"
                         placeholder="Sankalpa"
+                      />
+                    </div>
+
+                    <div className="mb-2">
+                      <label>Zodiac Sign</label>
+                      <input
+                        type="text"
+                        value={address.zodiacSign}
+                        onChange={(e) => setAddress({ ...address, zodiacSign: e.target.value })}
+                        className="form-control"
+                        placeholder="Zodiac Sign"
                       />
                     </div>
 

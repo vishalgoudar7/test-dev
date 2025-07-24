@@ -1,28 +1,55 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserAuth } from "../context/UserAuthContext";
+import { getDevoteeProfile } from "../api/api";
 import { FaUser, FaPhone, FaPen } from "react-icons/fa";
 import "../styles/ProfilePage.css";
 
 const ProfilePage = () => {
   const { profile, logOut } = useUserAuth(); // 'user' removed
   const [localProfile, setLocalProfile] = useState(profile || {});
+  const [apiProfile, setApiProfile] = useState(null);
+  const [checkoutData, setCheckoutData] = useState({});
   const [showConfirm, setShowConfirm] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Get profile data from API
+    const fetchApiProfile = async () => {
+      try {
+        const data = await getDevoteeProfile();
+        setApiProfile(data);
+      } catch (err) {
+        console.error('Error fetching API profile:', err);
+      }
+    };
+
+    fetchApiProfile();
+
+    // Get stored profile data from localStorage (from checkout/other forms)
     const stored = localStorage.getItem("profile");
     if (stored) {
       setLocalProfile(JSON.parse(stored));
     }
+
+    // Get checkout data if available
+    const checkoutStored = localStorage.getItem("checkoutData");
+    if (checkoutStored) {
+      setCheckoutData(JSON.parse(checkoutStored));
+    }
   }, [profile]);
 
-  const fullName =
-    localProfile.firstName || localProfile.lastName
+  // Get name from checkout data or local profile, fallback to API profile
+  const fullName = 
+    checkoutData.devoteeName || 
+    (localProfile.firstName || localProfile.lastName
       ? `${localProfile.firstName || ""} ${localProfile.lastName || ""}`.trim()
-      : "Your Name";
+      : apiProfile?.name || "Your Name");
 
-  const phoneDisplay = localProfile?.phone ? `+91${localProfile.phone}` : "Not set";
+  // Get mobile number from API profile first, then fallback to local data
+  const phoneDisplay = apiProfile?.mobile_number 
+    ? apiProfile.mobile_number 
+    : (localProfile?.phone ? `+91${localProfile.phone}` : "Not set");
 
   const confirmLogout = async () => {
     await logOut();
