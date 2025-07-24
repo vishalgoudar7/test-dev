@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import CheckoutModal from '../components/CheckoutModal';
+import { useNavigate } from 'react-router-dom';
 
 const CartPage = () => {
   const [cart, setCart] = useState([]);
   const [showCheckout, setShowCheckout] = useState(false);
+  const navigate = useNavigate();
 
   const BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
 
@@ -45,8 +47,13 @@ const CartPage = () => {
   };
 
   const handleCheckout = () => {
-    setShowCheckout(true);
-  };
+  const token = localStorage.getItem('token');
+  if (!token) {
+    navigate('/login?redirect=/cart'); // redirect to login if not logged in
+  } else {
+    setShowCheckout(true); // proceed to checkout if logged in
+  }
+};
 
   const subtotal = cart.reduce(
     (sum, item) =>

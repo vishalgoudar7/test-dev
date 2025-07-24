@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import CheckoutModal from './CheckoutModal';
 import '../styles/CartDrawer.css';
+import { useNavigate } from 'react-router-dom';
 
 const CartDrawer = ({ open, onClose }) => {
   const [cart, setCart] = useState([]);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const navigate = useNavigate();
+
 
   const BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
 
@@ -152,7 +155,14 @@ const CartDrawer = ({ open, onClose }) => {
               className="btn btn-danger flex-fill"
               style={{ minWidth: 0 }}
               disabled={cart.length === 0}
-              onClick={() => setCheckoutOpen(true)}
+              onClick={() => {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                  navigate('/login?redirect=/cart&reopenCart=true');
+                } else {
+                  setCheckoutOpen(true);
+                }
+              }}
             >
               Checkout
             </button>
