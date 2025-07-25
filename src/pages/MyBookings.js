@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/api";
 import "../styles/MyBookings.css";
+import Pagination from "../components/Pagination";
 
 const MyBookings = () => {
   const [meta, setMeta] = useState({
@@ -314,16 +315,19 @@ const MyBookings = () => {
           </div>
         )}
 
-        {/* {bookings.length > 0 && meta.lastPage > 1 && (
+        {bookings.length > 0 && meta.lastPage > 1 && (
           <div className="pagination-wrapper">
             <Pagination
               currentPage={meta.page}
               totalPages={meta.lastPage}
-              maxPage={meta.maxPage}
-              onPageChange={onPageChange}
+              onPageChange={(page) => {
+                if (page >= 1 && page <= meta.lastPage) {
+                  setMeta((prev) => ({ ...prev, page }));
+                }
+              }}
             />
           </div>
-        )} */}
+        )}
       </div>
     </div>
   );

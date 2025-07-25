@@ -1,26 +1,21 @@
-// src/api/api.js
 import axios from 'axios';
 
-// ✅ Dynamic environment config
+// 🔧 Config
 const API_CONFIG = {
   servers: {
     beta: {
       base: "https://beta.devalayas.com",
-      token: "9e65dcf08308a3f623c34491a92b282707edbe2c"
     },
     live: {
       base: "https://live.devalayas.com",
-      token: "e52a308c58887782d13a6fce7ae0258f8b6dfde1"
-    }
+    },
   },
-  // 🔁 Switch between 'beta' or 'live' here
-  current: 'beta'
+  current: 'beta',
 };
 
-// ✅ Get current server settings
-const { base, token } = API_CONFIG.servers[API_CONFIG.current];
+const { base } = API_CONFIG.servers[API_CONFIG.current];
 
-// ✅ Create Axios instance
+// ✅ Axios instance
 const api = axios.create({
   baseURL: base,
   headers: {
@@ -28,20 +23,69 @@ const api = axios.create({
   },
 });
 
-// ✅ Attach token to every request
+// ✅ Inject token into every request
 api.interceptors.request.use(
   (config) => {
-    config.headers['Authorization'] = `Token ${token}`;
+    const userToken = localStorage.getItem('authToken');
+    const isAuthEndpoint =
+      config.url.includes('/api/v1/auth/') ||
+      config.url.includes('/api/v1/devotee/login/');
+
+    if (!isAuthEndpoint && userToken) {
+      config.headers['Authorization'] = `Token ${userToken}`;
+    }
+
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// ✅ Helper: Convert object to x-www-form-urlencoded
+// ✅ Helper: x-www-form-urlencoded encoder
 const toFormUrlEncoded = (obj) =>
   Object.keys(obj)
     .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
     .join('&');
+
+// ✅ Auto-generate token on app initialization
+export const autoGenerateToken = async () => {
+  const storedMobileNumber = localStorage.getItem('mobileNumber');
+  const mobileNumber =
+    storedMobileNumber &&
+    storedMobileNumber !== 'null' &&
+    storedMobileNumber !== '+919080706050'
+      ? storedMobileNumber
+      : '+919080706050';
+
+  const payload = {
+    mobile_number: mobileNumber,
+    login_token: '123',
+    app_version: '1',
+    device_model: 'Browser',
+    user_type: 'Devotee',
+    lang: 'en',
+  };
+
+  try {
+    const response = await api.post('/api/v1/auth/', toFormUrlEncoded(payload), {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
+
+    const data = response.data;
+
+    if (data?.token) {
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('devoteeProfile', JSON.stringify(data));
+      if (mobileNumber !== '+919080706050') {
+        localStorage.setItem('mobileNumber', mobileNumber);
+      }
+    }
+
+    return data;
+  } catch (error) {
+    console.error('❌ Auto token generation failed:', error.response?.data || error.message);
+    throw error;
+  }
+};
 
 // ✅ Send mobile OTP
 export const sendMobileOtp = async (mobile_number) => {
@@ -54,21 +98,23 @@ export const sendMobileOtp = async (mobile_number) => {
     lang: 'en',
   };
 
-  const response = await api.post(
-    '/api/v1/auth/',
-    toFormUrlEncoded(payload),
-    {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    }
-  );
+  const response = await api.post('/api/v1/auth/', toFormUrlEncoded(payload), {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  });
 
-  return response.data;
+  const data = response.data;
+
+  if (data?.token) {
+    localStorage.setItem('authToken', data.token);
+    localStorage.setItem('devoteeProfile', JSON.stringify(data));
+  }
+
+  return data;
 };
 
-// ✅ Verify mobile login
-export const loginWithMobile = async (mobile_number, otp) => {
+// ✅ Login with mobile/email OTP
+export const loginWithOtp = async ({ mobile_number, email, otp }) => {
   const payload = {
-    mobile_number,
     otp,
     login_token: '123',
     app_version: '1',
@@ -76,49 +122,47 @@ export const loginWithMobile = async (mobile_number, otp) => {
     user_type: 'Devotee',
   };
 
-  const response = await api.post(
-    '/api/v1/devotee/login/',
-    toFormUrlEncoded(payload),
-    {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    }
-  );
+  if (mobile_number) payload.mobile_number = mobile_number;
+  if (email) payload.email = email;
 
-  return response.data;
+  const response = await api.post('/api/v1/devotee/login/', toFormUrlEncoded(payload), {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  });
+
+  const data = response?.data?.data;
+
+  if (data?.token) {
+    localStorage.setItem('authToken', data.token);
+    localStorage.setItem('devoteeProfile', JSON.stringify(data));
+  }
+
+  return data;
 };
 
-// ✅ Verify email login
-export const loginWithEmail = async (email, otp) => {
-  const payload = {
-    email,
-    otp,
-    login_token: '123',
-    app_version: '1',
-    device_model: 'Browser',
-    user_type: 'Devotee',
-  };
-
-  const response = await api.post(
-    '/api/v1/devotee/login/',
-    toFormUrlEncoded(payload),
-    {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    }
-  );
-
-  return response.data;
-};
-
-// ✅ Get devotee profile data
+// ✅ Get devotee profile
 export const getDevoteeProfile = async () => {
   try {
     const response = await api.get('/api/v1/devotee/profile/');
     return response.data;
   } catch (error) {
-    console.error('Error fetching devotee profile:', error);
+    console.error('❌ Error fetching profile:', error.response?.data || error.message);
     throw error;
   }
 };
 
-export default api;
+// ✅ Logout user
+export const logout = async () => {
+  try {
+    // Logout from server
+    await api.get('/api/v1/auth/logout/');
+  } catch (error) {
+    console.warn('⚠️ Logout request failed, continuing with client logout.');
+  }
 
+  // Client-side cleanup
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('devoteeProfile');
+  localStorage.removeItem('mobileNumber');
+};
+
+export default api;

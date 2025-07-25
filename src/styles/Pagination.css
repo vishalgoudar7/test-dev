@@ -35,3 +35,10 @@
   font-size: 14px;
   color: #333;
 }
+.page-btn.active {
+  background-color: #ef5b0c;  /* Active color */
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}

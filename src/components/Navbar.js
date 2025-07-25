@@ -21,10 +21,8 @@ const Navbar = () => {
   const { user, logout } = useUserAuth();
   const navigate = useNavigate();
   const location = useLocation();
-
   const dropdownRef = useRef();
 
-  // Update cart count from localStorage
   const updateCartCount = () => {
     try {
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
