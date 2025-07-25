@@ -96,7 +96,7 @@ const Navbar = () => {
       <nav className="navbar">
         <div className="nav-left">
           <img src={extraLogo} alt="Extra Logo" className="extra-logo" />
-          <Link to="/about">
+          <Link to="/">
             <img src={logo} alt="Devalaya Logo" className="logo" />
           </Link>
         </div>
@@ -118,8 +118,8 @@ const Navbar = () => {
 
           {!user ? (
             <>
-              <Link to="/login" className="nav-button">
-                <FaUser className="icon" />
+              <Link to="/login" className="nav-button login-text-btn">
+                Login
               </Link>
               <button
                 className="nav-button"
@@ -133,7 +133,7 @@ const Navbar = () => {
           ) : (
             <>
               <div className="profile-dropdown-container" ref={dropdownRef}>
-                <button className="profile-avatar" onClick={toggleDropdown}>
+                <button className="profile-avatar orange-avatar" onClick={toggleDropdown}>
                   <FaUser className="icon" />
                 </button>
                 {dropdownOpen && (

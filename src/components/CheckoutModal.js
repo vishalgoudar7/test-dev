@@ -386,32 +386,6 @@ const CheckoutModal = ({ open, onClose }) => {
         const response = await api.post('/api/v1/devotee/bulk_pooja_request/', payload);
         const data = response.data;
 
-        // Update billing address for invoice generation for all created orders
-        if (data && data.length > 0) {
-          try {
-            // Update billing address for each order
-            const billingUpdatePromises = data.map(order =>
-              api.patch(`/api/v1/devotee/pooja_request/${order.id}/`, {
-                billing_address: {
-                  name: address.devoteeName || profile?.name || profile?.firstName || 'Devotee',
-                  street_address_1: address.street1 || profile?.street_address_1 || profile?.address?.street_address_1 || '',
-                  street_address_2: address.street2 || profile?.street_address_2 || profile?.address?.street_address_2 || '',
-                  area: address.area || profile?.area || profile?.address?.area || '',
-                  city: address.city || profile?.city || profile?.address?.city || '',
-                  state: address.state || profile?.state || profile?.address?.state || '',
-                  pincode: address.pincode || profile?.pincode || profile?.address?.pincode || '',
-                  phone_number: address.devoteeMobile || profile?.phone || profile?.mobile || ''
-                }
-              })
-            );
-
-            await Promise.all(billingUpdatePromises);
-            console.log('Billing address updated successfully for all orders');
-          } catch (billingError) {
-            console.warn('Error updating billing address for orders:', billingError);
-          }
-        }
-
         // Store the entire response array for bulk calculations
         setOrderData(data);
         setShowCalculatedCost(true);

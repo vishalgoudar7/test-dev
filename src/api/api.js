@@ -9,7 +9,7 @@ const API_CONFIG = {
     },
     live: {
       base: "https://live.devalayas.com",
-      presetToken: "e18a6c4adbef1...", // replace if using live
+      presetToken: "e52a308c58887782d13a6fce7ae0258f8b6dfde1", 
     },
   },
   current: 'beta',
