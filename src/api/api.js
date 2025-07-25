@@ -5,15 +5,17 @@ const API_CONFIG = {
   servers: {
     beta: {
       base: "https://beta.devalayas.com",
+      presetToken: "9e65dcf08308a3f623c34491a92b282707edbe2c", // 🟢 Guest token
     },
     live: {
       base: "https://live.devalayas.com",
+      presetToken: "e18a6c4adbef1...", // replace if using live
     },
   },
   current: 'beta',
 };
 
-const { base } = API_CONFIG.servers[API_CONFIG.current];
+const { base, presetToken } = API_CONFIG.servers[API_CONFIG.current];
 
 // ✅ Axios instance
 const api = axios.create({
@@ -23,16 +25,18 @@ const api = axios.create({
   },
 });
 
-// ✅ Inject token into every request
+// ✅ Add token to every request
 api.interceptors.request.use(
   (config) => {
     const userToken = localStorage.getItem('authToken');
+    const token = userToken || presetToken;
+
     const isAuthEndpoint =
       config.url.includes('/api/v1/auth/') ||
       config.url.includes('/api/v1/devotee/login/');
 
-    if (!isAuthEndpoint && userToken) {
-      config.headers['Authorization'] = `Token ${userToken}`;
+    if (!isAuthEndpoint && token) {
+      config.headers['Authorization'] = `Token ${token}`;
     }
 
     return config;
@@ -40,20 +44,20 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ✅ Helper: x-www-form-urlencoded encoder
+// ✅ x-www-form-urlencoded helper
 const toFormUrlEncoded = (obj) =>
   Object.keys(obj)
     .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
     .join('&');
 
-// ✅ Auto-generate token on app initialization
+// ✅ Auto token generation (guest only)
 export const autoGenerateToken = async () => {
-  const storedMobileNumber = localStorage.getItem('mobileNumber');
+  const storedMobile = localStorage.getItem('mobileNumber');
   const mobileNumber =
-    storedMobileNumber &&
-    storedMobileNumber !== 'null' &&
-    storedMobileNumber !== '+919080706050'
-      ? storedMobileNumber
+    storedMobile &&
+    storedMobile !== 'null' &&
+    storedMobile !== '+919080706050'
+      ? storedMobile
       : '+919080706050';
 
   const payload = {
@@ -87,7 +91,7 @@ export const autoGenerateToken = async () => {
   }
 };
 
-// ✅ Send mobile OTP
+// ✅ Send OTP to mobile
 export const sendMobileOtp = async (mobile_number) => {
   const payload = {
     mobile_number,
@@ -105,14 +109,15 @@ export const sendMobileOtp = async (mobile_number) => {
   const data = response.data;
 
   if (data?.token) {
-    localStorage.setItem('authToken', data.token);
+    localStorage.setItem('authToken', data.token); // 🔁 Replace guest token
     localStorage.setItem('devoteeProfile', JSON.stringify(data));
+    localStorage.setItem('mobileNumber', mobile_number);
   }
 
   return data;
 };
 
-// ✅ Login with mobile/email OTP
+// ✅ Login with OTP
 export const loginWithOtp = async ({ mobile_number, email, otp }) => {
   const payload = {
     otp,
@@ -132,7 +137,7 @@ export const loginWithOtp = async ({ mobile_number, email, otp }) => {
   const data = response?.data?.data;
 
   if (data?.token) {
-    localStorage.setItem('authToken', data.token);
+    localStorage.setItem('authToken', data.token); // 🔁 Replace guest token
     localStorage.setItem('devoteeProfile', JSON.stringify(data));
   }
 
@@ -150,19 +155,18 @@ export const getDevoteeProfile = async () => {
   }
 };
 
-// ✅ Logout user
+// ✅ Logout (remove only real token)
 export const logout = async () => {
   try {
-    // Logout from server
     await api.get('/api/v1/auth/logout/');
   } catch (error) {
-    console.warn('⚠️ Logout request failed, continuing with client logout.');
+    console.warn('⚠️ Server logout failed:', error.response?.data || error.message);
   }
 
-  // Client-side cleanup
+  // 🧹 Only clear real token, fallback to guest
   localStorage.removeItem('authToken');
   localStorage.removeItem('devoteeProfile');
-  localStorage.removeItem('mobileNumber');
+  // mobileNumber is retained for fallback
 };
 
 export default api;
