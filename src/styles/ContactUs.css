@@ -75,7 +75,7 @@
   height: 100px;
 }
 
-button {
+.button-contact {
   background-color: #b2a46d;
   color: hsl(0, 0%, 0%);
   padding: 12px;

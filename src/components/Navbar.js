@@ -93,7 +93,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="navbar">
+      <nav className="navbar container-fluid">
         <div className="nav-left">
           <img src={extraLogo} alt="Extra Logo" className="extra-logo" />
           <Link to="/">
