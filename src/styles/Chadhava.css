@@ -1,0 +1,22 @@
+/* src/styles/Chadhava.css */
+.coming-soon-wrapper {
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  background: #fef5ec;
+  text-align: center;
+}
+
+.coming-soon-title {
+  font-size: 2.5rem;
+  color: #f26a1b;
+  margin-bottom: 1rem;
+}
+
+.coming-soon-text {
+  font-size: 2.5rem;
+  color: #272727;
+}
