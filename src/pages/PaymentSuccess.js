@@ -217,7 +217,7 @@ const PaymentSuccess = () => {
                   }}
                 />
               </div>
-              <h3 className="temple-name">{bookingDetails?.temple?.name || displayTempleName}</h3>
+              <h3 className="temple-namepay">{bookingDetails?.temple?.name || displayTempleName}</h3>
             </div>
 
             <div className="column details-column">

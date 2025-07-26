@@ -140,10 +140,10 @@
   }
 }
 
-.temple-name {
+.temple-namepay {
   font-size: 1.3rem;
-  font-weight: 600;
-  color: #333;
+  font-weight: bold;
+  color: #ff5722;
   margin: 0;
 }
 
