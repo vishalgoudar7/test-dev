@@ -30,9 +30,15 @@
   }
 }
 /* Orange profile icon when logged in */
+<<<<<<< HEAD
 /* .orange-avatar .icon {
   color: #ef5b0c !important;
 } */
+=======
+.orange-avatar .icon {
+  color: #0b0b0b !important;
+}
+>>>>>>> 975444d1661ca3980ea969b0f9720178b9c86fc5
 /* ✅ Navbar container */
 .navbar {
   display: flex;
