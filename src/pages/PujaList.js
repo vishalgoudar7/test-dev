@@ -18,13 +18,15 @@ const PujaList = () => {
         const pujaList = response.data?.results || [];
         setPujas(pujaList);
 
-        // Get unique puja names
         const map = {};
         pujaList.forEach((puja) => {
           if (!map[puja.name]) {
-            map[puja.name] = puja;
+            map[puja.name] = { ...puja, count: 1 };
+          } else {
+            map[puja.name].count += 1;
           }
         });
+
         setUniquePujas(Object.values(map));
       } catch (err) {
         setError('Failed to load puja list');
@@ -36,7 +38,6 @@ const PujaList = () => {
   }, []);
 
   const handlePujaClick = (pujaName) => {
-    // Navigate to a new page with pujaName as param
     navigate(`/puja-temples?puja=${encodeURIComponent(pujaName)}`);
   };
 
@@ -73,9 +74,9 @@ const PujaList = () => {
               className="puja-card"
               key={puja.name}
               onClick={() => handlePujaClick(puja.name)}
-              style={{ cursor: 'pointer' }}
             >
               <div className="puja-name">{puja.name}</div>
+              <span className="puja-count">{puja.count}</span>
             </div>
           ))
         )}

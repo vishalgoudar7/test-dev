@@ -334,7 +334,7 @@ import React, { useEffect, useState } from 'react';
 import CartDrawer from './CartDrawer';
 import { useParams } from 'react-router-dom';
 import '../styles/TempleDetails.css'; // Ensure this path is correct
-import api from '../api/api'; // Ensure this path is correct
+import api from '../api/api'; // Ensure this path is correct              
 
 const TempleDetails = () => {
   const { id } = useParams();
