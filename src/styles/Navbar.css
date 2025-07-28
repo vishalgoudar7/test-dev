@@ -10,13 +10,13 @@
     background: #f5f5f5;
     border-radius: 20px;
     padding: 2px 12px;
-    min-width: 70px;
+    min-width: 100px;
     min-height: 28px;
     font-size: 13px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.07);
     margin-right: 8px;
     margin-left: 0;
-    max-width: 120px;
+    max-width: 130px;
     overflow: hidden;
   }
   #google-language-container .language-select {
@@ -30,9 +30,9 @@
   }
 }
 /* Orange profile icon when logged in */
-.orange-avatar .icon {
+/* .orange-avatar .icon {
   color: #ef5b0c !important;
-}
+} */
 /* ✅ Navbar container */
 .navbar {
   display: flex;
@@ -40,7 +40,7 @@
   align-items: center;
   background-color: #fff;
   padding: 8px 40px;
-  height: 64px;
+  height: 50px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
@@ -164,7 +164,7 @@
   margin-right: 5px;
   display: flex;
   align-items: center;
-  height: 36px;
+  height: 30px;
 }
 
 .language-select {
@@ -239,7 +239,7 @@
 /* ✅ Responsive styles */
 @media (max-width: 992px) {
   .navbar {
-    padding: 8px 20px;
+    padding: 5px 20px;
   }
 
   .nav-center {

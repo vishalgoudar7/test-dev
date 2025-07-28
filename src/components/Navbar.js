@@ -93,9 +93,20 @@ const Navbar = () => {
 
   return (
     <>
+     <div className="d-block d-lg-none py-1 bg-white">
+  <div className="d-flex justify-content-between align-items-center px-3">
+    <img
+      src={extraLogo}
+      alt="Mobile Logo"
+      className="img-fluid"
+      style={{ height: "40px" }}
+    />
+    <div id="google-language-container" />
+  </div>
+</div>
       <nav className="navbar container-fluid">
         <div className="nav-left">
-          <img src={extraLogo} alt="Extra Logo" className="extra-logo" />
+        <img src={extraLogo} alt="Extra Logo" className="extra-logo d-none d-lg-block" />
           <Link to="/">
             <img src={logo} alt="Devalaya Logo" className="logo" />
           </Link>
@@ -114,7 +125,7 @@ const Navbar = () => {
         </div>
 
         <div className="nav-right">
-          <div id="google-language-container" />
+          
 
           {!user ? (
             <>
