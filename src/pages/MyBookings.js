@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import api from "../api/api";
 import "../styles/MyBookings.css";
 import Pagination from "../components/Pagination";
@@ -15,11 +15,7 @@ const MyBookings = () => {
 
   const [bookings, setBookings] = useState([]);
 
-  useEffect(() => {
-    getBookings();
-  }, [meta.page]);
-
-  const getBookings = async () => {
+  const getBookings = useCallback(async () => {
     try {
       const response = await api.get(
         `/api/v1/devotee/pooja_request/list/?page=${meta.page}&size=${meta.size}&search=${meta.search}`
@@ -27,24 +23,26 @@ const MyBookings = () => {
       const count = response.data.count;
       const bookingsData = response.data.results;
       setBookings(bookingsData);
-      
+
       setMeta((prev) => ({
         ...prev,
         count: count,
-        lastPage: Math.ceil(count / meta.size),
-        maxPage: Math.ceil(count / meta.size) >= 3 ? 3 : Math.ceil(count / meta.size),
+        lastPage: Math.ceil(count / prev.size),
+        maxPage:
+          Math.ceil(count / prev.size) >= 3 ? 3 : Math.ceil(count / prev.size),
       }));
     } catch (error) {
       console.warn("Failed to load bookings", error);
     }
-  };
+  }, [meta.page, meta.size, meta.search]);
 
-
+  useEffect(() => {
+    getBookings();
+  }, [getBookings]);
 
   const handleSearch = (e) => {
     if (e.key === "Enter") {
       setMeta((prev) => ({ ...prev, page: 1 }));
-      getBookings();
     }
   };
 
@@ -94,7 +92,7 @@ const MyBookings = () => {
               className="search-input-my-bookings"
               placeholder="Search by order ID, devotee name, or temple..."
               value={meta.search}
-              onChange={(e) => setMeta({ ...meta, search: e.target.value })}
+              onChange={(e) => setMeta((prev) => ({ ...prev, search: e.target.value }))}
               onKeyDown={handleSearch}
             />
           </div>

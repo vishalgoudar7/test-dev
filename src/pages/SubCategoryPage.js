@@ -1,6 +1,6 @@
 // src/pages/SubCategoryPage.js
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useState, useCallback } from "react";
+import { useParams, Link } from "react-router-dom";
 import api from "../api/api";
 import "../styles/SubCategoryPage.css";
 import Pagination from "../components/Pagination";
@@ -9,7 +9,6 @@ const fallbackImage = "https://placehold.co/400x300/E0E0E0/333333?text=No+Image"
 
 const SubCategoryPage = () => {
   const { categoryId } = useParams();
-  const navigate = useNavigate();
 
   const [specialPooja, setSpecialPooja] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,47 +23,46 @@ const SubCategoryPage = () => {
   });
   const [splCategory, setSplCategory] = useState("");
 
+  const fetchSpecialPoojas = useCallback(
+    async (page) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await api.get(
+          `/api/v1/category/sub_category/?category=${categoryId}&page=${page}&page_size=${meta.size}`
+        );
+        setSpecialPooja(response.data.results);
+        setMeta((prevMeta) => ({
+          ...prevMeta,
+          count: response.data.count,
+          lastPage: Math.ceil(response.data.count / prevMeta.size),
+          page: page,
+        }));
+        if (
+          response.data.results.length > 0 &&
+          response.data.results[0].category &&
+          response.data.results[0].category.length > 0
+        ) {
+          setSplCategory(response.data.results[0].category[0]);
+        } else {
+          setSplCategory("");
+        }
+      } catch (err) {
+        console.error("Failed to fetch special poojas:", err);
+        setError("Failed to load special poojas. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [categoryId, meta.size]
+  );
+
   useEffect(() => {
     if (categoryId) {
       fetchSpecialPoojas(meta.page);
     }
     window.scrollTo(0, 0);
-  }, [categoryId, meta.page]);
-
-  const fetchSpecialPoojas = async (page) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await api.get(
-        `/api/v1/category/sub_category/?category=${categoryId}&page=${page}&page_size=${meta.size}`
-      );
-      setSpecialPooja(response.data.results);
-      setMeta((prevMeta) => ({
-        ...prevMeta,
-        count: response.data.count,
-        lastPage: Math.ceil(response.data.count / prevMeta.size),
-        page: page,
-      }));
-      if (
-        response.data.results.length > 0 &&
-        response.data.results[0].category &&
-        response.data.results[0].category.length > 0
-      ) {
-        setSplCategory(response.data.results[0].category[0]);
-      } else {
-        setSplCategory("");
-      }
-    } catch (err) {
-      console.error("Failed to fetch special poojas:", err);
-      setError("Failed to load special poojas. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const onViewSplEvent = (category, itemId) => {
-    navigate(`/List/category/${category}/sub_category/${itemId}`);
-  };
+  }, [categoryId, meta.page, fetchSpecialPoojas]);
 
   const onPageChange = (newPage) => {
     if (newPage >= 1 && newPage <= meta.lastPage) {
@@ -90,13 +88,9 @@ const SubCategoryPage = () => {
             <div className="row g-4">
               {specialPooja.map((item) => (
                 <div key={item.id} className="col-sm-6 col-lg-4 col-xl-3">
-                  <a
-                    href="#"
+                  <Link
+                    to={`/List/category/${splCategory}/sub_category/${item.id}`}
                     className="spl-subcat-card shadow h-100"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onViewSplEvent(splCategory, item.id);
-                    }}
                   >
                     <div className="position-relative">
                       <img
@@ -120,7 +114,7 @@ const SubCategoryPage = () => {
                         </button>
                       </div>
                     </div>
-                  </a>
+                  </Link>
                 </div>
               ))}
 

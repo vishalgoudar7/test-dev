@@ -26,20 +26,6 @@ const PaymentSuccess = () => {
   const isSuccess = status === 'success' || (!status && !error);
 
   useEffect(() => {
-  localStorage.setItem("cart", JSON.stringify([]));
-  window.dispatchEvent(new Event("cartUpdated"));
-}, []);
-
-  useEffect(() => {
-    if (orderId) {
-      fetchBookingDetails();
-    } else {
-      setLoading(false);
-    }
-  }, [orderId]);
-
-  // ⛔ Safe redirection if no payment/order ID
-  useEffect(() => {
     if (!orderId && !paymentId) {
       setTimeout(() => navigate('/'), 2000);
     }
@@ -56,10 +42,13 @@ const PaymentSuccess = () => {
 
       // LocalStorage
       localStorage.removeItem('cart');
+      // Notify other components (like navbar cart count) that cart has changed
+      window.dispatchEvent(new Event("cartUpdated"));
     }
   }, [isSuccess, orderId]);
 
   const fetchBookingDetails = useCallback(async () => {
+    setLoading(true);
     try {
       const listResponse = await api.get(`/api/v1/devotee/pooja_request/list/?search=${orderId}`);
       if (listResponse.data.results && listResponse.data.results.length > 0) {
@@ -107,7 +96,15 @@ const PaymentSuccess = () => {
     } finally {
       setLoading(false);
     }
-  }, [orderId]);
+  }, [orderId]); // setLoading is a stable function from useState, not needed as a dependency
+
+  useEffect(() => {
+    if (orderId) {
+      fetchBookingDetails();
+    } else {
+      setLoading(false);
+    }
+  }, [orderId, fetchBookingDetails]);
 
   const downloadInvoice = async () => {
     if (bookingDetails?.invoice) {
@@ -265,23 +262,23 @@ const PaymentSuccess = () => {
               <div className="action-buttons-vertical">
                 {isSuccess && bookingDetails?.invoice && (
                   <>
-                    <button className="btn-action btn-download" onClick={downloadInvoice}>
+                    <button className="btn-action-pays btn-download-pays" onClick={downloadInvoice}>
                       <i className="fas fa-download"></i> Download Invoice
                     </button>
                     <a
                       href={bookingDetails.invoice}
                       target="_blank"
                       rel="noreferrer"
-                      className="btn-action btn-view"
+                      className="btn-action-pays btn-view"
                     >
                       <i className="fas fa-eye"></i> View Invoice
                     </a>
                   </>
                 )}
-                <button className="btn-action btn-bookings" onClick={() => navigate('/bookings')}>
+                <button className="btn-action-pays btn-bookings" onClick={() => navigate('/bookings')}>
                   <i className="fas fa-list"></i> View My Bookings
                 </button>
-                <button className="btn-action btn-home" onClick={() => navigate('/')}>
+                <button className="btn-action-pays btn-home" onClick={() => navigate('/')}>
                   <i className="fas fa-home"></i> Go to Home
                 </button>
               </div>
@@ -301,4 +298,3 @@ const PaymentSuccess = () => {
 };
 
 export default PaymentSuccess;
-

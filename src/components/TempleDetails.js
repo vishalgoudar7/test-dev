@@ -10,8 +10,6 @@ const TempleDetails = () => {
   const { id } = useParams();
   const [temple, setTemple] = useState(null);
   const [tabNo, setTabNo] = useState(2);
-  // tabNoImage is no longer directly used for display in Carousel, but can remain for other potential uses
-  const [tabNoImage, setTabNoImage] = useState(0);
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState([]);
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
@@ -384,4 +382,3 @@ const TempleDetails = () => {
 };
 
 export default TempleDetails;
-

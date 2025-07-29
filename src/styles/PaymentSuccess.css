@@ -253,7 +253,7 @@
   gap: 15px;
 }
 
-.btn-action {
+.btn-action-pays {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -271,11 +271,11 @@
   min-width: 200px;
 }
 
-.btn-download {
+.btn-download-pays {
   background: linear-gradient(135deg, #ef5b0c 0%, #d94d0a 100%);
 }
 
-.btn-download:hover {
+.btn-download-pays:hover {
   background: linear-gradient(135deg, #d94d0a 0%, #c44309 100%);
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(239, 91, 12, 0.3);
@@ -425,7 +425,7 @@
     font-size: 1.2rem;
   }
   
-  .btn-action {
+  .btn-action-pays {
     font-size: 14px;
     padding: 12px 16px;
   }
