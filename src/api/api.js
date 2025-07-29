@@ -9,7 +9,7 @@ const API_CONFIG = {
     },
     live: {
       base: "https://live.devalayas.com",
-      presetToken: "e52a308c58887782d13a6fce7ae0258f8b6dfde1", 
+      presetToken: "e52a308c58887782d13a6fce7ae0258f8b6dfde1",
     },
   },
   current: 'beta',
@@ -25,7 +25,7 @@ const api = axios.create({
   },
 });
 
-// ✅ Add token to every request
+// ✅ Add token to every request + block guest on protected
 api.interceptors.request.use(
   (config) => {
     const userToken = localStorage.getItem('authToken');
@@ -34,6 +34,18 @@ api.interceptors.request.use(
     const isAuthEndpoint =
       config.url.includes('/api/v1/auth/') ||
       config.url.includes('/api/v1/devotee/login/');
+
+    // ❌ Guest token block
+    const protectedRoutes = [
+      '/api/v1/devotee/profile/',
+      '/api/v1/devotee/pooja_request/',
+      '/api/v1/devotee/profile/edit/',
+    ];
+    const isProtected = protectedRoutes.some(route => config.url.startsWith(route));
+
+    if (isProtected && token === presetToken) {
+      throw new axios.Cancel('🔒 Guest token not allowed. Please login.');
+    }
 
     if (!isAuthEndpoint && token) {
       config.headers['Authorization'] = `Token ${token}`;
