@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 import bannerImage from '../assets/banner.png'; // Phone image
-import backgroundImage from '../assets/background.png'; // Orange pattern background
+
 import '../styles/HomePage.css';
 import '../styles/CardSection.css'; // Keep if you have card-specific styles
 

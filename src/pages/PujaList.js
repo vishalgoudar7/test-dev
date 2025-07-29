@@ -4,7 +4,6 @@ import api from '../api/api';
 import '../styles/PujaList.css';
 
 const PujaList = () => {
-  const [pujas, setPujas] = useState([]);
   const [uniquePujas, setUniquePujas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -16,7 +15,6 @@ const PujaList = () => {
       try {
         const response = await api.get('/api/v1/devotee/pooja/');
         const pujaList = response.data?.results || [];
-        setPujas(pujaList);
 
         const map = {};
         pujaList.forEach((puja) => {
