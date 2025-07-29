@@ -1,597 +1,3 @@
-/* Consistent card button size for Book button */
-/* .temple-card .btn,
-.card .btn {
-  min-width: 120px;
-  min-height: 45px;
-  height: 45px;
-  font-size: 1.1rem;
-  border-radius: 8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 18px;
-}
-.temple-main {
-  background-color: #fef5ec;
-  padding-bottom: 50px;
-}
-
-
-.temple-name {
-  font-size: 2.2rem;
-  font-weight: 700;
-  margin-top: 20px;
-}
-
-.temple-address {
-  font-size: 1.1rem;
-  color: #555;
-  margin-bottom: 20px;
-}
-
-
-.temple-carousel .carousel .slide img {
-  height: 150px;
-  width: 250px;
-  object-fit: cover;
-  border-radius: 12px;
-  margin: 10px auto;
-}
-
-.temple-carousel {
-  padding: 10px 0;
-}
-
-.tab-list {
-  border-bottom: 2px solid #ddd;
-}
-
-.tab-list .nav-item {
-  margin: 0 10px;
-}
-
-.tab-list .nav-link {
-  font-weight: 600;
-  font-size: 16px;
-  color: #333;
-  cursor: pointer;
-  padding: 8px 16px;
-}
-
-.tab-list .nav-link.active {
-  color: #ef5b0c;
-  border-bottom: 3px solid #ef5b0c;
-}
-
-
-.search-bar input.form-control-lg {
-  border-radius: 10px;
-  font-size: 16px;
-  padding: 12px 20px;
-}
-
-.search-bar button.btn-primary {
-  font-size: 16px;
-  padding: 12px;
-  border-radius: 10px;
-  background-color: #0b5ed7;
-}
-
-.pooja-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 10px;
-  color: #d45a23;
-}
-
-.pooja-img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  margin-bottom: 15px;
-  border-radius: 10px;
-}
-
-.card-footer button {
-  font-weight: 600;
-}
-
-h4, h5 {
-  font-weight: 600;
-  margin-top: 20px;
-}
-
-.list-group-item {
-  display: flex;
-  justify-content: space-between;
-  font-size: 15px;
-}
-
-
-@media (max-width: 768px) {
-  .temple-carousel .carousel .slide img {
-    width: 90%;
-    height: 160px;
-  }
-
-  .tab-list .nav-item {
-    margin: 5px 5px;
-  }
-
-  .search-bar .form-control-lg {
-    font-size: 14px;
-  }
-
-  .search-bar button {
-    font-size: 14px;
-  }
-}
-
-.responsive-img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 10px;
-  border: 3px solid orange;
-  padding: 6px;
-  background-color: #fff;
-} */
-
-
-
-
-
-
-/* ✅ New styling for single image with thumbnail selection */
-/* .main-temple-img {
-  width: 100%;
-  max-width: 700px;
-  height: 350px;
-  object-fit: cover;
-  border-radius: 15px;
-  border: 4px solid orange;
-  padding: 6px;
-  background: #fff;
-  margin: auto;
-}
-
-.thumbnail-img {
-  width: 100px;
-  height: 60px;
-  object-fit: cover;
-  margin: 5px;
-  border-radius: 8px;
-  border: 3px solid transparent;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.thumbnail-img:hover,
-.thumbnail-img.selected {
-  border-color: #ef5b0c;
-  transform: scale(1.05);
-}
-
-.temple-tabs .nav-link {
-  padding: 10px 20px;
-  font-weight: 600;
-  font-size: 16px;
-  color: #333;
-}
-
-.temple-tabs .nav-link.active {
-  color: #ef5b0c;
-  border-bottom: 3px solid #ef5b0c;
-} */
-
-
-
-
-
-
-
-
-
-
-
-/* Existing styles */
-/* .main-temple-img {
-  width: 100%;
-  max-width: 700px;
-  height: 350px;
-  object-fit: contain; 
-  border-radius: 15px;
-  border: 4px solid orange;
-  padding: 6px;
-  background: #fff;
-  margin: auto;
-  cursor: pointer; 
-}
-
-.thumbnail-img {
-  width: 100px;
-  height: 60px;
-  object-fit: contain; 
-  margin: 5px;
-  border-radius: 8px;
-  border: 3px solid transparent;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.thumbnail-img:hover,
-.thumbnail-img.selected {
-  border-color: #ef5b0c;
-  transform: scale(1.05);
-}
-
-.temple-tabs .nav-link {
-  padding: 10px 20px;
-  font-weight: 600;
-  font-size: 16px;
-  color: #333;
-  cursor: pointer;
-}
-
-.temple-tabs .nav-link.active {
-  color: #ef5b0c;
-  border-bottom: 3px solid #ef5b0c;
-}
-
-
-.card-img-fixed-size {
-  width: 100%;
-  height: 180px; 
-  object-fit: contain; 
-  border: 3px solid orange;
-  padding: 6px;
-  border-radius: 12px;
-  cursor: pointer; 
-}
-
-
-.gallery-img-fixed-size {
-  width: 100%;
-  height: 200px; 
-  object-fit: contain; 
-  padding: 8px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  cursor: pointer; 
-}
-
-
-.zoomed-image-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000; 
-}
-
-.zoomed-image-container {
-  position: relative;
-  max-width: 90%;
-  max-height: 90%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.zoomed-image {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  border: 5px solid white;
-  border-radius: 10px;
-}
-
-.close-zoomed-image {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: none;
-  border: none;
-  font-size: 3rem;
-  color: white;
-  cursor: pointer;
-  padding: 0 10px;
-}
-
-.close-zoomed-image:hover {
-  color: #ef5b0c;
-}
-.close-modal-btn {
-  position: fixed;
-  top: 20px;
-  right: 30px;
-  background: transparent;
-  border: none;
-  font-size: 28px;
-  color: white;
-  cursor: pointer;
-  z-index: 1000;
-  transition: transform 0.2s ease;
-}
-
-.close-modal-btn:hover {
-  transform: scale(1.2);
-}
-
-
-
-@media (max-width: 768px) {
-  .main-temple-img {
-    height: 250px;
-  }
-  .card-img-fixed-size {
-    height: 150px;
-  }
-  .gallery-img-fixed-size {
-    height: 150px;
-  }
-} */
-
-
-
-
-
-
-
-/* Main Layout & Section Styling */
-/* .temple-main {
-  padding: 20px 0;
-  background-color: #fdfaf6; 
-}
-
-.temple-container {
-  background-color: #fff;
-  padding: 10px;
-  border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-}
-
-.temple-name {
-  color: #a04000;
-  text-align: center;
-  margin-bottom: 10px;
-  font-size: 2.5rem;
-  font-weight: 700;
-}
-
-.temple-address {
-  text-align: center;
-  color: #555;
-  margin-bottom: 30px;
-  font-size: 1.1rem;
-}
-
-
-.temple-images-section {
-  margin-bottom: 40px;
-}
-
-
-.main-temple-img {
-  width: 100%;
-  max-width: 320px;
-  height: 200px;
-  object-fit: contain; 
-  border-radius: 15px;
-  border: 4px solid orange;
-  padding: 6px;
-  background: #fff;
-  margin: auto;
-  cursor: pointer; 
-  transition: transform 0.2s ease-in-out; 
-}
-
-.main-temple-img:hover {
-  transform: scale(1.01); 
-}
-
-.thumbnail-row {
-  margin-top: 20px;
-  gap: 10px; 
-}
-
-
-.thumbnail-img {
-  width: 100px;
-  height: 60px;
-  object-fit: contain; 
-  margin: 5px; 
-  border-radius: 8px;
-  border: 3px solid transparent;
-  cursor: pointer;
-  transition: border-color 0.3s ease, transform 0.3s ease;
-}
-
-.thumbnail-img:hover,
-.thumbnail-img.selected {
-  border-color: #ef5b0c; 
-  transform: scale(1.05); 
-}
-
-
-.temple-tabs {
-  border-bottom: 2px solid #eee;
-  margin-bottom: 30px;
-}
-
-.temple-tabs .nav-item {
-  margin: 0 15px;
-}
-
-.temple-tabs .nav-link {
-  padding: 12px 20px;
-  font-weight: 600;
-  font-size: 1.05rem;
-  color: #777;
-  border: none;
-  background-color: transparent;
-  cursor: pointer; 
-  transition: color 0.3s ease, border-bottom 0.3s ease;
-}
-
-.temple-tabs .nav-link:hover {
-  color: #ef5b0c;
-}
-
-.temple-tabs .nav-link.active {
-  color: #ef5b0c;
-  border-bottom: 3px solid #ef5b0c;
-  font-weight: 700;
-}
-
-
-.card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-}
-
-
-.card-img-fixed-size {
-  width: 100%;
-  height: 180px; 
-  object-fit: contain; 
-  border: 3px solid orange;
-  padding: 6px;
-  border-radius: 12px;
-  cursor: pointer; 
-}
-
-
-.list-group-item {
-  font-size: 1rem;
-  color: #333;
-}
-
-.list-group-item strong {
-  color: #ef5b0c;
-}
-
-
-.gallery-img-fixed-size {
-  width: 100%;
-  height: 200px; 
-  object-fit: contain; 
-  padding: 8px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  cursor: pointer; 
-}
-
-
-
-.zoomed-image-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw; 
-  height: 100vh; 
-  background: rgba(0, 0, 0, 0.85);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1050; 
-}
-
-
-.zoomed-image-container {
-  position: relative; 
-  max-width: 90%;
-  max-height: 90%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
- 
-}
-
-
-.zoomed-image {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  border: 5px solid white;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-}
-
-
-.close-zoomed-image { 
-  position: absolute; 
-  top: 5px;   
-  right: 5px; 
-  background: rgba(0, 0, 0, 0.5); 
-  border: none;
-  border-radius: 50%; 
-  width: 40px; 
-  height: 40px; 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2rem; 
-  color: white;
-  cursor: pointer;
-  z-index: 1060; 
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.close-zoomed-image:hover {
-  background-color: #ef5b0c; 
-  color: white;
-}
-
-
-
-@media (max-width: 991px) { 
-  .col-md-3 {
-    width: 50%; 
-  }
-}
-
-@media (max-width: 767px) {
-  .temple-name {
-    font-size: 2rem;
-  }
-  .main-temple-img {
-    height: 250px;
-  }
-  .card-img-fixed-size {
-    height: 150px;
-  }
-  .gallery-img-fixed-size {
-    height: 150px;
-  }
-  .thumbnail-img {
-    width: 80px;
-    height: 50px;
-  }
-  .col-md-3 {
-    width: 100%; 
-  }
-  .close-zoomed-image { 
-    top: 10px;
-    right: 10px;
-    width: 35px;
-    height: 35px;
-    font-size: 1.8rem;
-  }
-} */
-
-
-
-
 /* Main Layout & Section Styling */
 .temple-main {
   padding: 20px 0;
@@ -609,7 +15,7 @@ h4, h5 {
   color: #ef0c0c;
   text-align: center;
   margin-bottom: 10px;
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   font-weight: 700;
 }
 
@@ -620,16 +26,14 @@ h4, h5 {
   font-size: 1.1rem;
 }
 
-/* Image Section Styling */
 .temple-images-section {
   margin-bottom: 40px;
 }
 
-/* Main Temple Image */
-.main-temple-img {
+.main-temple-carousel-img {
   width: 100%;
-  max-width: 280px;
-  height: 200px;
+  max-width: 700px;
+  height: 250px;
   object-fit: contain;
   border-radius: 15px;
   border: 4px solid orange;
@@ -640,34 +44,15 @@ h4, h5 {
   transition: transform 0.2s ease-in-out;
 }
 
-.main-temple-img:hover {
+.main-temple-carousel-img:hover {
   transform: scale(1.01);
 }
 
-.thumbnail-row {
-  margin-top: 20px;
-  gap: 10px;
+.main-temple-carousel {
+  max-width: 720px;
+  margin: 0 auto;
 }
 
-/* Thumbnail images */
-.thumbnail-img {
-  width: 100px;
-  height: 60px;
-  object-fit: contain;
-  margin: 5px;
-  border-radius: 8px;
-  border: 3px solid transparent;
-  cursor: pointer;
-  transition: border-color 0.3s ease, transform 0.3s ease;
-}
-
-.thumbnail-img:hover,
-.thumbnail-img.selected {
-  border-color: #ef5b0c;
-  transform: scale(1.05);
-}
-
-/* Navigation Tabs Styling */
 .temple-tabs {
   border-bottom: 2px solid #eee;
   margin-bottom: 30px;
@@ -677,7 +62,6 @@ h4, h5 {
   margin: 0 15px;
 }
 
-/* Temple tab styles */
 .temple-tabs .nav-link {
   padding: 12px 20px;
   font-weight: 600;
@@ -699,7 +83,6 @@ h4, h5 {
   font-weight: 700;
 }
 
-/* Card Styling for Pooja/Prasadam */
 .card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -709,7 +92,6 @@ h4, h5 {
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
-/* Pooja/Prasadam card images */
 .card-img-fixed-size {
   width: 100%;
   height: 180px;
@@ -720,28 +102,92 @@ h4, h5 {
   cursor: pointer;
 }
 
-/* List group for Temple Details */
-.list-group-item {
-  font-size: 1rem;
-  color: #333;
+/* --- Styles for "About Temple" Section --- */
+
+/* Removed previous attempt for .tab-content .row.mt-4 */
+
+
+/* Target the description column directly and adjust its padding-top */
+.tab-content .col-md-8 {
+  padding-top: 0 !important; /* Remove or reduce top padding for the description column */
 }
 
-.list-group-item strong {
-  color: #ef5b0c;
+/* You might also want to reduce the margin-top on the h4 if it's too far down after this */
+.tab-content h4 {
+  color: #ef0c0c;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-top: 0; /* Adjust or remove if the heading itself has a top margin */
+  margin-bottom: 15px;
+  border-bottom: 2px solid #f2e2d8;
+  padding-bottom: 5px;
 }
 
-/* About Temple gallery images */
+/* Paragraphs within the About Temple section */
+.tab-content p {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #4a4a4a;
+  margin-bottom: 20px;
+  text-align: justify;
+}
+
+/* Gallery images */
 .gallery-img-fixed-size {
   width: 100%;
-  height: 200px;
-  object-fit: contain;
+  height: 220px; /* Slightly increased height for wider images */
+  object-fit: cover;
   padding: 8px;
   background: #f8f9fa;
   border-radius: 8px;
   cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Zoom Modal Overlay */
+.gallery-img-fixed-size:hover {
+  transform: scale(1.03);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* List group for temple information */
+.list-group {
+  border: 1px solid #ffe9d6;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.list-group-item {
+  font-size: 1rem;
+  color: #333;
+  padding: 12px 15px;
+  border-left: none;
+  border-right: none;
+  background-color: #fefefe;
+}
+
+.list-group-item:first-child {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.list-group-item:last-child {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-bottom: none;
+}
+
+
+.list-group-item strong {
+  color: #ef5b0c;
+  margin-right: 5px;
+  font-weight: 600;
+}
+
+/* --- End of Styles for "About Temple" Section --- */
+
+
 .zoomed-image-overlay {
   position: fixed;
   top: 0;
@@ -755,38 +201,34 @@ h4, h5 {
   z-index: 1050;
 }
 
-/* ✅ UPDATED: Zoomed Image Container to have a fixed max size for consistency */
 .zoomed-image-container {
   position: relative;
-  /* Use viewport units for relative sizing to screen, with hard pixel caps */
   width: 80vw;
   height: 80vh;
-  max-width: 900px; /* Adjust this max-width for your desired largest image size */
-  max-height: 600px; /* Adjust this max-height for your desired largest image size */
-  background-color: #000; /* Background for the container to show letterboxing */
-  display: flex; /* To center the image inside this container */
+  max-width: 900px;
+  max-height: 600px;
+  background-color: #000;
+  display: flex;
   justify-content: center;
   align-items: center;
-  border: 5px solid white; /* Border applied to the consistent container */
+  border: 5px solid white;
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  overflow: hidden; /* Important to prevent image spill if it's larger than container */
+  overflow: hidden;
 }
 
-/* ✅ UPDATED: Zoomed Image to fit within its consistently sized container */
 .zoomed-image {
-  width: 100%; /* Image takes full width of its consistently sized container */
-  height: 100%; /* Image takes full height of its consistently sized container */
-  object-fit: contain; /* ESSENTIAL: Scales image down to fit, maintaining aspect ratio. Will cause letterboxing for different aspect ratios. */
-  border-radius: 5px; /* Minor rounding for the image itself */
-  display: block; /* Removes any extra space below the image */
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 5px;
+  display: block;
 }
 
-/* Close Button IN Top-Right (modal) */
 .close-zoomed-image {
   position: absolute;
-  top: 10px; /* Adjusted to be slightly inside the white container border */
-  right: 10px; /* Adjusted to be slightly inside the white container border */
+  top: 10px;
+  right: 10px;
   background: rgba(0, 0, 0, 0.5);
   border: none;
   border-radius: 50%;
@@ -807,10 +249,26 @@ h4, h5 {
   color: white;
 }
 
-/* Responsive adjustments for smaller screens */
+
 @media (max-width: 991px) {
   .col-md-3 {
     width: 50%;
+  }
+
+  .main-temple-carousel-img {
+    max-width: 90%;
+    height: 220px;
+  }
+  .main-temple-carousel {
+    max-width: 95%;
+  }
+
+  /* Adjust gallery column for tablets */
+  .tab-content .col-md-4 {
+    width: 50%; /* Make gallery images 50% width on tablets (2 per row) */
+  }
+  .gallery-img-fixed-size {
+    height: 180px; /* Slightly reduce height on tablets if needed for balance */
   }
 }
 
@@ -818,8 +276,12 @@ h4, h5 {
   .temple-name {
     font-size: 2rem;
   }
-  .main-temple-img {
-    height: 250px;
+  .main-temple-carousel-img {
+    max-width: 100%;
+    height: 180px;
+  }
+  .main-temple-carousel {
+    max-width: 100%;
   }
   .card-img-fixed-size {
     height: 150px;
@@ -827,19 +289,20 @@ h4, h5 {
   .gallery-img-fixed-size {
     height: 150px;
   }
-  .thumbnail-img {
-    width: 80px;
-    height: 50px;
-  }
   .col-md-3 {
     width: 100%;
   }
-  /* ✅ Responsive adjustments for zoomed image container */
+
+  /* Gallery images full width on mobile */
+  .tab-content .col-md-4 {
+    width: 100%; /* Make gallery images 100% width on mobiles (1 per row) */
+  }
+
   .zoomed-image-container {
-    width: 95vw; /* Allow it to take up more of the width on small screens */
-    height: 85vh; /* Allow it to take up more of the height on small screens */
-    max-width: none; /* Remove pixel max-width on small screens */
-    max-height: none; /* Remove pixel max-height on small screens */
+    width: 95vw;
+    height: 85vh;
+    max-width: none;
+    max-height: none;
   }
   .close-zoomed-image {
     top: 10px;
