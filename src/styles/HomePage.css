@@ -1,22 +1,19 @@
-
 /* Layout container */
 .homepage {
-  background-image: url('../assets/d-image3.png'); 
+  background-image: url('../assets/d-image3.png');
   background-repeat: no-repeat;
   background-position: top center;
-  background-size: 100% 500px;  
+  background-size: 100% 500px;
   background-attachment: scroll;
-  min-height: 100vh; 
+  min-height: 100vh;
   width: 100%;
-  padding-top: 20px;
+  padding-top: 10px;
 }
-
 
 .homepage-row {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 20px;
 }
 
 .homepage-left {
@@ -26,14 +23,14 @@
 }
 
 .homepage-left p {
-    font-size: 1.1rem; /* Keep existing font size */
-    color: #555;      /* Keep existing color */
-    margin-bottom: 2rem; /* Keep existing bottom margin */
-    white-space: nowrap; 
-    overflow: hidden;   
-    text-align: center; 
-    width: 100%;         
-    box-sizing: border-box; 
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 10px;
+  white-space: normal;
+  overflow: visible;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .section-title {
@@ -41,28 +38,31 @@
   font-weight: bold;
   text-align: center;
   color: black !important;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 
-
 .highlight-letter {
-  color:red;
+  color: red;
   font-size: 48px;
   font-weight: bold;
   animation: pulse 1.5s infinite;
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
-
 
 .image-card-overlap {
   position: relative;
   width: 100%;
-  height: auto;
   margin-top: 90px;
   display: flex;
   justify-content: center;
@@ -101,7 +101,6 @@
   transform: rotate(3deg);
 }
 
-
 .homepage-right {
   flex: 1;
   min-width: 35%;
@@ -116,30 +115,24 @@
   max-width: 100%;
   max-height: 520px;
   height: 440px;
-  margin-top: 30px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
-
 
 .download-buttons {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  margin-left: -60px !important;
-  margin-right: 80px !important; /* ← pushes left */
-  text-align: left !important;
+  gap: 10px;
+  margin: 0 auto;
+  margin-top: -60px;
 }
-
 
 .download-buttons a img {
   width: 140px;
   margin: 6px;
-  margin-top: -100px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
-
-
 
 /* ✅ Responsive Breakpoints */
 
@@ -154,6 +147,7 @@
     min-width: 100%;
     width: 100%;
     margin: 0 auto;
+    padding: 0 20px;
   }
 
   .banner-img {
@@ -165,31 +159,21 @@
   .image-card-overlap {
     margin-top: 40px;
     padding: 20px 0;
+    flex-direction: row;
+    gap: 10px;
   }
 
   .event-img {
-    max-width: 200px;
+    position: static;
+    transform: none;
+    max-width: 180px;
     max-height: 140px;
-  }
-
-  .img-left {
-    left: 5%;
-    bottom: -30px;
-  }
-
-  .img-center {
-    transform: scale(1) translateY(-20px);
-  }
-
-  .img-right {
-    right: 5%;
-    bottom: -30px;
   }
 }
 
 @media (max-width: 576px) {
   .section-title {
-    font-size: 22px;
+    font-size: 35px;
   }
 
   .highlight-letter {
@@ -197,12 +181,8 @@
   }
 
   .event-img {
-    max-width: 160px;
+    max-width: 140px;
     max-height: 110px;
-  }
-
-  .img-left, .img-right {
-    bottom: -20px;
   }
 
   .banner-img {
@@ -212,6 +192,12 @@
   }
 
   .download-buttons a img {
-    width: 120px;
+    width: 80px;
+    padding-top: 10px;
+  }
+
+  /* ✅ Hide 3 temple images on small screens */
+  .image-card-overlap {
+    display: none;
   }
 }

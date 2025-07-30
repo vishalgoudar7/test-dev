@@ -39,7 +39,7 @@ const SpecialPooja = () => {
   return (
     <main className="special-pooja-main">
       <div className="text-center">
-        <h2 className="section-title">✨ SPECIAL PUJA'S ✨</h2>
+        <h2 className="section-title-special-pooja">✨ SPECIAL PUJA'S ✨</h2>
         <p className="section-subtitle">
           Experience the magic of a special puja, an enchanting ritual that
           elevates the spirit and brings blessings into your life.
