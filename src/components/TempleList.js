@@ -25,7 +25,7 @@ const TempleList = () => {
   } = useSelector((state) => state.temple || {});
 
   const [page, setPage] = useState(1);
-  const pageSize = 10;
+  const pageSize = 25;
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
