@@ -215,7 +215,7 @@ const TempleDetails = () => {
       )}
 
       <main className="temple-main">
-        <section className="temple-container container">
+        <section className="temple-container-td container">
           <h2 className="temple-name">{temple.name}</h2>
           {/* <p className="temple-address">📍 {temple.address}</p> */}
 

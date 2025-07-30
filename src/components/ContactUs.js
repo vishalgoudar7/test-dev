@@ -24,7 +24,7 @@ const ContactUs = () => {
         </div>
       </div>
 
-      <div className="info-card">
+      <div className="info-card-contact">
         <div>
           <h4>📍ADDRESS</h4>
           <p>CTS NO 4824/C7,<br />S P OFFICE ROAD, BELAGAVI,<br />Karnataka, 590016</p>
