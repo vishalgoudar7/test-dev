@@ -1,125 +1,15 @@
-/* .contactus-section {
-  background-image: url('../assets/orange.jpg'); 
-  background-size: cover;
-  background-position: center;
-  padding: 60px 20px;
-  position: relative;
-}
-
-.contactus-overlay {
-  background-color: rgba(255, 255, 255, 0.85);
-  padding: 40px;
-  border-radius: 20px;
-  max-width: 1000px;
-  margin: 0 auto;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-}
-
-.contactus-heading {
-  text-align: center;
-  font-size: 36px;
-  color: #d35400;
-  padding-top: -20px;
-  margin-bottom: 20px;
-  font-weight: bold;
-}
-
-.contactus-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 30px;
-}
-
-.contactus-info {
-  flex: 1;
-  min-width: 280px;
-  margin-top: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.info-item {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  font-size: 18px;
-  color: #1d1c1c;
-}
-
-.info-icon {
-  font-size: 22px;
-  color: #e67e22;
-}
-
-.contactus-form {
-  flex: 1;
-  min-width: 300px;
-  max-width: 400px;
-  background-color: #fff7f0;
-  padding: 25px 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(255, 140, 0, 0.1);
-}
-
-.contactus-form form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-.adjust-line {
-  margin-top: -15px;
-  margin-left: 10px; 
-}
-
-
-.contactus-form input,
-.contactus-form textarea {
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  resize: none;
-  font-size: 16px;
-  font-family: inherit;
-}
-
-.contactus-form textarea {
-  height: 100px;
-}
-
-.contactus-form button {
-  padding: 12px;
-  background-color: #e67e22;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-.contactus-form button:hover {
-  background-color: #d35400;
-} */
-
-
-
-
-
-
 .contactus-section {
-  background-image: url('../assets/orange.jpg'); /* Replace with actual path */
+  background-image: url('../assets/orange.jpg');
   background-size: cover;
   background-position: center;
-  padding: 30px 15px; /* Reduced padding */
+  padding: 30px 15px;
   position: relative;
-  min-height: 100vh; /* Ensures it covers full screen height */
+  min-height: 100vh;
 }
 
 .contactus-overlay {
   background-color: rgba(255, 255, 255, 0.85);
-  padding: 20px; /* Reduced padding inside box */
+  padding: 20px;
   border-radius: 20px;
   max-width: 1000px;
   margin: 40px auto;
@@ -128,7 +18,7 @@
 
 .contactus-heading {
   text-align: center;
-  font-size: 34px;
+  font-size: 2rem;
   color: #d35400;
   margin-bottom: 25px;
   font-weight: bold;
@@ -141,40 +31,41 @@
   gap: 25px;
 }
 
+/* Left Contact Info */
 .contactus-info {
   flex: 1;
   min-width: 280px;
-  margin-top: 10px;
   display: flex;
   flex-direction: column;
   gap: 18px;
-  padding-left: 20px; /* Optional: push content slightly right */
+  padding-left: 20px;
 }
 
 .info-item {
   display: flex;
   align-items: center;
   gap: 15px;
-  font-size: 17px;
+  font-size: 1rem;
   color: #1d1c1c;
 }
 
 .info-icon {
-  font-size: 20px;
+  font-size: 1.2rem;
   color: #e67e22;
 }
 
 .adjust-line {
   margin-top: -10px;
-  margin-left: 12px; /* Slight adjustment to center under first line */
+  margin-left: 12px;
 }
 
+/* Right Form */
 .contactus-form {
   flex: 1;
-  min-width: 300px;
-  max-width: 380px;
+  min-width: 280px;
+  max-width: 400px;
   background-color: #fff7f0;
-  padding: 20px 18px; /* Less padding */
+  padding: 20px 18px;
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(255, 140, 0, 0.1);
 }
@@ -187,12 +78,13 @@
 
 .contactus-form input,
 .contactus-form textarea {
+  width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  resize: none;
-  font-size: 16px;
+  font-size: 1rem;
   font-family: inherit;
+  resize: none;
 }
 
 .contactus-form textarea {
@@ -207,9 +99,53 @@
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.3s ease;
+  transition: background 0.3s ease;
 }
 
 .contactus-form button:hover {
   background-color: #d35400;
+}
+
+/* Medium Devices (Tablets) */
+@media (max-width: 992px) {
+  .contactus-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .contactus-info,
+  .contactus-form {
+    width: 100%;
+    padding-left: 0;
+    max-width: 100%;
+  }
+}
+
+/* Small Devices (Phones) */
+@media (max-width: 576px) {
+  .contactus-heading {
+    font-size: 1.6rem;
+  }
+
+  .info-item {
+    font-size: 0.95rem;
+    gap: 10px;
+  }
+
+  .info-icon {
+    font-size: 1rem;
+  }
+
+  .contactus-form {
+    padding: 15px;
+  }
+
+  .contactus-form input,
+  .contactus-form textarea {
+    font-size: 0.95rem;
+  }
+
+  .contactus-form button {
+    font-size: 0.95rem;
+  }
 }
