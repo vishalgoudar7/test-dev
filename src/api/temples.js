@@ -11,7 +11,7 @@
 
 
 // src/api/temples.js
-import axios from 'axios';
+import axios from 'axios';1
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
