@@ -16,6 +16,7 @@
   justify-content: center;
   margin: 20px 0;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .search-input {
@@ -117,5 +118,50 @@
   }
   100% {
     opacity: 1;
+  }
+}
+
+/* Medium screens (tablets) */
+@media (max-width: 1024px) {
+  .puja-cards {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0 20px;
+  }
+
+  .puja-heading {
+    font-size: 2rem;
+  }
+}
+
+/* Small screens (mobile) */
+@media (max-width: 768px) {
+  .puja-cards {
+    grid-template-columns: 1fr;
+    padding: 0 10px;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+
+  .search-box {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .puja-heading {
+    font-size: 1.6rem;
+  }
+
+  .puja-card {
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto;
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .puja-count {
+    align-self: flex-end;
   }
 }

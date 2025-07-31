@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import CheckoutModal from '../components/CheckoutModal';
 import { useNavigate } from 'react-router-dom';
-
 const CartPage = () => {
   const [cart, setCart] = useState([]);
   const [showCheckout, setShowCheckout] = useState(false);
@@ -74,6 +73,7 @@ const CartPage = () => {
   };
 
   return (
+    
     <div className="container py-5" style={{ minHeight: '80vh' }}>
       <h1 className="text-center mb-5" style={{ fontWeight: 500, fontSize: '2.5rem' }}>
         POOJA SELECTIONS
@@ -85,6 +85,7 @@ const CartPage = () => {
         </div>
       ) : (
         <>
+        
           <div className="table-responsive">
             <table className="table align-middle" style={{ minWidth: 900 }}>
               <thead style={{ background: '#fafafa' }}>

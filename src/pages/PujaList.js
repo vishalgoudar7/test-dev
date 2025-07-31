@@ -16,8 +16,14 @@ const PujaList = () => {
         const response = await api.get('/api/v1/devotee/pooja/');
         const pujaList = response.data?.results || [];
 
+        // Deduplicate and count pujas by name
         const map = {};
         pujaList.forEach((puja) => {
+          const nameLower = puja.name?.toLowerCase() || '';
+
+          // ❌ Exclude pujas containing the word 'prasadam'
+          if (nameLower.includes('prasadam')) return;
+
           if (!map[puja.name]) {
             map[puja.name] = { ...puja, count: 1 };
           } else {
@@ -32,6 +38,7 @@ const PujaList = () => {
         setLoading(false);
       }
     };
+
     fetchPujas();
   }, []);
 

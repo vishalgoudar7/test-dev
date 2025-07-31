@@ -92,10 +92,10 @@ const PujaDetails = () => {
       window.dispatchEvent(new Event('open-cart-drawer'));
       
       // Show success message with pricing details
-      const totalAmount = finalTotal.toLocaleString('en-IN', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
+      // const totalAmount = finalTotal.toLocaleString('en-IN', {
+      //   minimumFractionDigits: 2,
+      //   maximumFractionDigits: 2
+      // });
       // alert(`Item added to cart successfully!\nTotal: ₹${totalAmount}`);
       
     } catch (error) {
