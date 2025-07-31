@@ -1,7 +1,7 @@
 .payment-success-page {
   background: linear-gradient(135deg, #fef5ec 0%, #fff8f3 100%);
   min-height: 100vh;
-  padding: 40px 20px;
+  padding: 5px 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,7 +33,7 @@
 
 .status-header {
   text-align: center;
-  padding: 40px 30px 30px;
+  padding: 5px 30px 30px;
   background: linear-gradient(135deg, #fff8f3 0%, #fef5ec 100%);
   position: relative;
 }
@@ -103,10 +103,10 @@
   min-height: 300px;
 }
 
-.column {
+.column-ps {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .temple-column {

@@ -193,7 +193,7 @@ const PaymentSuccess = () => {
           </div>
 
           <div className="three-column-layout">
-            <div className="column temple-column">
+            <div className="column-ps temple-column">
               <div className="temple-image-container">
                 <img
                   src={
@@ -217,7 +217,7 @@ const PaymentSuccess = () => {
               <h3 className="temple-namepay">{bookingDetails?.temple?.name || displayTempleName}</h3>
             </div>
 
-            <div className="column details-column">
+            <div className="column-ps details-column">
               <h3 className="column-title">Payment Details</h3>
               <div className="details-list">
                 <div className="detail-item">
@@ -257,7 +257,7 @@ const PaymentSuccess = () => {
               </div>
             </div>
 
-            <div className="column actions-column">
+            <div className="column-ps actions-column">
               <h3 className="column-title">Actions</h3>
               <div className="action-buttons-vertical">
                 {isSuccess && bookingDetails?.invoice && (

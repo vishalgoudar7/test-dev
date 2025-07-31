@@ -12,7 +12,7 @@ const API_CONFIG = {
       presetToken: "e52a308c58887782d13a6fce7ae0258f8b6dfde1",
     },
   },
-  current: 'live',
+  current: 'beta',
 };
 
 const { base, presetToken } = API_CONFIG.servers[API_CONFIG.current];
