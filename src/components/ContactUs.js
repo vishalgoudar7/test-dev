@@ -1,45 +1,45 @@
-// src/components/ContactUs.js
 import React from 'react';
-
-import '../styles/ContactUs.css';  // ✅ correct if CSS is in src/styles/
-
-import bgImage from '../assets/bac.webp'; // Make sure the image is placed here
+import '../styles/ContactUs.css';
+import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
 
 const ContactUs = () => {
   return (
-    <div className="contact-wrapper">
-      <div className="background-image">
-        <img src={bgImage} alt="Shiva" />
-      </div>
+    <div className="contactus-section">
+      <div className="contactus-overlay">
+        <h2 className="contactus-heading">LET'S GET IN TOUCH</h2>
+        <div className="contactus-container">
+          {/* Left Info Card */}
+          <div className="contactus-info">
+            <div className="info-item">
+              <FaMapMarkerAlt className="info-icon" />
+              <p>
+                Classique Hts,Ayodhya Nagar,
+               </p>
+               <p className="adjust-line">Belagavi - 590016</p>
+            </div>
+            <div className="info-item">
+              <FaPhoneAlt className="info-icon" />
+              <p>+91 8951 269 111<br />+91 8296 443 111</p>
+            </div>
+            <div className="info-item">
+              <FaEnvelope className="info-icon" />
+               <p>info@devalayas.com</p>
+            </div>
+          </div>
 
-      <div className="contact-card">
-        <div className="form-side">
-          <h2>Contact Us</h2>
-          <form>
-            <input type="text" placeholder="Enter your Name" required />
-            <input type="email" placeholder="Enter a valid email address" required />
-            <textarea placeholder="Enter your message" rows="4" required></textarea>
-            <button className='button-contact' type="submit">Submit</button>
-          </form>
-        </div>
-      </div>
-
-      <div className="info-card-contact">
-        <div>
-          <h4>📍ADDRESS</h4>
-          <p>CTS NO 4824/C7,<br />S P OFFICE ROAD, BELAGAVI,<br />Karnataka, 590016</p>
-        </div>
-        <div>
-          <h4>📞 CALL US</h4>
-          <p>+91 8951 269 111<br />+91 8296 443 111</p>
-        </div>
-        <div>
-         <h4>📧 EMAIL</h4>
-    <p>info@devalayas.com</p>
+          {/* Right Form Card */}
+          <div className="contactus-form">
+            <form>
+              <input type="text" placeholder="Your Name" required />
+              <input type="mobile number" placeholder="Mobile Number" required />
+              <input type="email" placeholder="Your Email" required />
+              <textarea placeholder="Your Message" required></textarea>
+              <button type="submit">Send Message</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-     
   );
 };
 
