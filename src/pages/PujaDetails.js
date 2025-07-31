@@ -96,7 +96,7 @@ const PujaDetails = () => {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       });
-      alert(`Item added to cart successfully!\nTotal: ₹${totalAmount}`);
+      // alert(`Item added to cart successfully!\nTotal: ₹${totalAmount}`);
       
     } catch (error) {
       console.error('Error adding item to cart:', error);
@@ -119,7 +119,7 @@ const PujaDetails = () => {
 
   return (
     <div className="puja-details-container">
-      <h2 className="puja-title">{puja.name}</h2>
+      {/* <h2 className="puja-title">{puja.name}</h2> */}
 
       <div className="puja-flex-wrapper">
         <div className="puja-image-box">
@@ -134,38 +134,15 @@ const PujaDetails = () => {
 
         <div className="puja-text-box">
           {/* <p><strong>Details:</strong> {puja.details || 'No details available'}</p> */}
+          <h2 className="puja-title">{puja.name}</h2>
           <p><strong>Temple:</strong> {puja.temple.name|| 'N/A'}</p>
+          <p><strong>God:</strong> {puja.god?.name || 'N/A'}</p>
           <p><strong>Included:</strong> {puja.included || 'N/A'}</p>
           <p><strong>Excluded:</strong> {puja.excluded || 'N/A'}</p>
           <p><strong>Price:</strong> ₹{Number(puja.original_cost || puja.cost || 0).toLocaleString('en-IN', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
           })}</p>
-          {puja.convenience_fee && Number(puja.convenience_fee) > 0 && (
-            <p><strong>Convenience Fee:</strong> ₹{Number(puja.convenience_fee).toLocaleString('en-IN', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })}</p>
-          )}
-          {puja.booking_charges && Number(puja.booking_charges) > 0 && (
-            <p><strong>Booking Charges:</strong> ₹{Number(puja.booking_charges).toLocaleString('en-IN', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })}</p>
-          )}
-          {puja.tax_amount && Number(puja.tax_amount) > 0 && (
-            <p><strong>Tax:</strong> ₹{Number(puja.tax_amount).toLocaleString('en-IN', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })}</p>
-          )}
-          {puja.final_total && Number(puja.final_total) !== Number(puja.original_cost || puja.cost || 0) && (
-            <p><strong>Total Amount:</strong> ₹{Number(puja.final_total).toLocaleString('en-IN', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })}</p>
-          )}
-          <p><strong>God:</strong> {puja.god?.name || 'N/A'}</p>
           {/* <p><strong>Prasad Delivery:</strong> {puja.prasad_delivery ? 'Yes' : 'No'}</p>
           <p><strong>Approval Status:</strong> {puja.approval_status || 'N/A'}</p> */}
 
