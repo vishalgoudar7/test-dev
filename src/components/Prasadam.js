@@ -43,7 +43,7 @@ const Prasadam = () => {
 
     localStorage.setItem('cart', JSON.stringify(cart));
     window.dispatchEvent(new Event('storage'));
-    // setCartDrawerOpen(true); // ❌ remove this line if no drawer
+    window.dispatchEvent(new Event('open-cart-drawer'));
   } catch (error) {
     console.error('Failed to add to cart:', error);
     alert('Could not add item to cart.');

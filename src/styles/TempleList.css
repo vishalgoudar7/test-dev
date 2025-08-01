@@ -17,22 +17,26 @@
   justify-content: center;
   align-items: center;
   gap: 12px;
-  max-width: 800px;  /* Wider container */
+  max-width: 800px;
+  /* Wider container */
   margin: 0 auto 2rem;
   width: 100%;
 }
 
 .search-container .form-control {
   padding: 10px;
-  width: 68%; /* Slightly reduced width to make the input field shorter */
+  width: 68%;
+  /* Slightly reduced width to make the input field shorter */
   font-size: 16px;
   border-radius: 5px;
   border: 2px solid #ccc;
-  height: 49px; /* Ensure input field has the same height as the button */
+  height: 49px;
+  /* Ensure input field has the same height as the button */
 }
 
 .search-container .btn-primary {
-  padding: 12px 20px; /* Larger padding to make the button look more square */
+  padding: 12px 20px;
+  /* Larger padding to make the button look more square */
   margin-left: 10px;
   background-color: #f44336;
   color: white;
@@ -40,12 +44,16 @@
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
-  height: 48px; /* Ensured button height is 48px to align with the input field */
-  width: 80px; /* Set width to match height for a more square-like button */
+  height: 48px;
+  /* Ensured button height is 48px to align with the input field */
+  width: 80px;
+  /* Set width to match height for a more square-like button */
   text-align: center;
   display: flex;
-  justify-content: center; /* Ensures the text is centered inside the button */
-  align-items: center; /* Centers the text vertically */
+  justify-content: center;
+  /* Ensures the text is centered inside the button */
+  align-items: center;
+  /* Centers the text vertically */
 }
 
 .temple-grid {
@@ -71,6 +79,8 @@
 .temple-card img {
   width: 100%;
   height: 180px;
+  border: 1px solid #e0e0e0;
+  border-bottom: none;
   object-fit: contain;
   background-color: #f0f0f0;
   padding: 8px;
@@ -84,6 +94,8 @@
   flex-direction: column;
   text-align: center;
   flex-grow: 1;
+      border: 1px solid #e0e0e0;
+    border-top: none;
 }
 
 .card-title {
@@ -95,7 +107,8 @@
 }
 
 .temple-location {
-  font-size: 1.1rem; /* Increased font size */
+  font-size: 1.1rem;
+  /* Increased font size */
   color: #555;
   margin-bottom: 1rem;
   display: flex;
@@ -109,7 +122,7 @@
 }
 
 .btn-outline-primary {
-  margin-top: auto; 
+  margin-top: auto;
   background-color: #ff5722;
   color: white;
   border: none;
@@ -122,8 +135,10 @@
 }
 
 .btn-outline-primary:hover {
-  background-color: #e65c00; /* Darker orange on hover */
-  transform: translateY(-2px); /* Slight lift on hover */
+  background-color: #e65c00;
+  /* Darker orange on hover */
+  transform: translateY(-2px);
+  /* Slight lift on hover */
   cursor: pointer;
 }
 
@@ -194,6 +209,7 @@
     grid-template-columns: repeat(1, 1fr);
   }
 }
-.btn-danger{
+
+.btn-danger {
   background-color: #ff5722;
 }

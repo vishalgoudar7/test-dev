@@ -11,7 +11,7 @@ import templeIcon from '../assets/templeIcon.png';
 function AppInfoSection() {
   return (
     <div className="container-fluid bg-gradient-purple">
-      <div className="row align-items-center info-section px-3">
+      <div className="row align-items-center info-section-ap px-3">
         <div className="col-12 col-md-5 text-white px-3 py-4 text-center text-md-start">
           <p className="highlight-text">
             Trusted by more than 300k devotees in India and over 10k NRIs.
