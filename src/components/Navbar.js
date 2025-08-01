@@ -9,6 +9,7 @@ import {
   FaPlaceOfWorship,
 } from "react-icons/fa";
 import { useUserAuth } from "../context/UserAuthContext";
+import { logout as apiLogout } from "../api/api";
 import "../styles/Navbar.css";
 import logo from "../assets/logo.png";
 import extraLogo from "../assets/logo2.png";
@@ -78,7 +79,15 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      // Call the API logout endpoint with limit parameter
+      await apiLogout();
+    } catch (error) {
+      console.warn('API logout failed:', error);
+    }
+    
+    // Then proceed with the existing logout logic
     logout()
       .then(() => {
         setDropdownOpen(false);

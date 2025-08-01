@@ -93,6 +93,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
+import { logout as apiLogout } from "../api/api";
 
 const UserAuthContext = createContext();
 
@@ -126,6 +127,13 @@ export const UserAuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
+    // Call the API logout endpoint with limit parameter
+    try {
+      await apiLogout();
+    } catch (error) {
+      console.warn('API logout failed:', error);
+    }
+    
     const auth = getAuth();
     await signOut(auth);
     setUser(null);

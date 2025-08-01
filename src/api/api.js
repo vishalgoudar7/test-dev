@@ -12,7 +12,7 @@ const API_CONFIG = {
       presetToken: "e52a308c58887782d13a6fce7ae0258f8b6dfde1",
     },
   },
-  current: 'beta',
+  current: 'beta', // Change to 'live' for production
 };
 
 const { base, presetToken } = API_CONFIG.servers[API_CONFIG.current];
@@ -170,7 +170,16 @@ export const getDevoteeProfile = async () => {
 // ✅ Logout (remove only real token)
 export const logout = async () => {
   try {
-    await api.get('/api/v1/auth/logout/');
+    // Get the user token
+    const userToken = localStorage.getItem('authToken');
+    const token = userToken || presetToken;
+    
+    // Make the API call with explicit Authorization header
+    await api.get('/api/v1/auth/logout/', {
+      headers: {
+        'Authorization': `Token ${token}`
+      }
+    });
   } catch (error) {
     console.warn('⚠️ Server logout failed:', error.response?.data || error.message);
   }
