@@ -155,8 +155,8 @@
   color: white;
   padding: 20px;
   position: absolute;
-  bottom: 10px;
-  left: 10px;
+  bottom: -25px;
+  left: -110px;
   border-radius: 8px;
   max-width: 90%;
 }

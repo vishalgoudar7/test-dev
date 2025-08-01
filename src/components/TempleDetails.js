@@ -92,7 +92,7 @@ const TempleDetails = () => {
         <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={p.id}>
           <div className="card h-100 shadow-sm border-0 rounded-4" style={{ background: '#fff7ec' }}>
             <div className="card-body d-flex flex-column justify-content-between p-3" style={{ border: '1px solid #e0e0e0', borderRadius: '10px' }}>
-              <h5 className="fw-bold text-danger text-center mb-3">🌸 {p.name}</h5>
+              <h5 className="fw-bold text-danger text-start mb-3">🌸 {p.name}</h5>
               <div className="text-center mb-3">
                 <img
                   src={getFullImageUrl(p.images?.[0]?.image)}
