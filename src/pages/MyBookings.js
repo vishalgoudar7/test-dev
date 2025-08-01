@@ -235,7 +235,7 @@ const MyBookings = () => {
                   </span>
                 </div>
                 
-                <div className="card-body">
+                <div className="card-body-mb">
                   <div className="booking-info-row">
                     <div className="info-item">
                       <span className="info-label">Order ID:</span>

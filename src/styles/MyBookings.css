@@ -409,7 +409,7 @@
   display: inline-block;
 }
 
-.card-body {
+.card-body-mb {
   padding: 15px;
 }
 
@@ -581,7 +581,7 @@
     padding: 12px;
   }
   
-  .card-body {
+  .card-body-mb {
     padding: 12px;
   }
   

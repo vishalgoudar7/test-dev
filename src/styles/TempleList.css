@@ -41,7 +41,7 @@
   cursor: pointer;
   font-weight: bold;
   height: 48px; /* Ensured button height is 48px to align with the input field */
-  width: 65px; /* Set width to match height for a more square-like button */
+  width: 80px; /* Set width to match height for a more square-like button */
   text-align: center;
   display: flex;
   justify-content: center; /* Ensures the text is centered inside the button */
@@ -78,7 +78,7 @@
   border-top-right-radius: 0.5rem;
 }
 
-.card-body {
+.card-body-tl {
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -157,7 +157,7 @@
 .pagination-container .btn-outline-primary,
 .pagination-container .btn-outline-secondary {
   border-color: #0d6efd;
-  color: #0d6efd;
+  color: #111;
 }
 
 .pagination-container .btn:disabled {

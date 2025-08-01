@@ -85,7 +85,7 @@ const TempleList = () => {
                     e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
                   }}
                 />
-                <div className="card-body">
+                <div className="card-body-tl">
                   <h5 className="card-title">{temple.name}</h5>
                   <p className="temple-location">
                     <FaMapMarkerAlt className="location-icon" />{' '}

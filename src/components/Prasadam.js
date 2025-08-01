@@ -4,7 +4,6 @@ import '../styles/Prasadam.css';
 
 const Prasadam = () => {
   const [prasadamList, setPrasadamList] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -19,9 +18,7 @@ const Prasadam = () => {
       } catch (err) {
         console.error('Prasadam API Error:', err);
         setError('Failed to load prasadam data.');
-      } finally {
-        setLoading(false);
-      }
+      } 
     };
 
     fetchPrasadam();
@@ -52,7 +49,6 @@ const Prasadam = () => {
     alert('Could not add item to cart.');
   }
 };
-
   if (error) return <div className="prasadam-error">{error}</div>;
   if (!prasadamList.length) return <div className="prasadam-error">No prasadam available.</div>;
 
@@ -61,7 +57,6 @@ const Prasadam = () => {
       {prasadamList.map((prasadam) => {
         const poojaPrasadam = prasadam.pooja_prasadam || {};
         const imageUrl = prasadam.temple?.images?.[0]?.image || poojaPrasadam.temple?.images?.[0]?.image;
-        const god = poojaPrasadam.god || {};
         const temple = prasadam.temple || poojaPrasadam.temple || {};
 
         return (

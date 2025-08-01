@@ -1,4 +1,4 @@
-Main Layout & Section Styling
+/* Main Layout & Section Styling */
 .temple-main {
   padding: 20px 0;
   background-color: #fdfaf6;
@@ -9,6 +9,8 @@ Main Layout & Section Styling
   padding: 10px;
   border-radius: 15px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .temple-name {
@@ -83,6 +85,7 @@ Main Layout & Section Styling
   font-weight: 700;
 }
 
+/* Cards */
 .card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -102,22 +105,20 @@ Main Layout & Section Styling
   cursor: pointer;
 }
 
-
+/* Tabs Content */
 .tab-content .col-md-8 {
-  padding-top: 0 !important; 
+  padding-top: 0 !important;
 }
-
 
 .tab-content h4 {
   color: #ef0c0c;
   font-size: 1.6rem;
   font-weight: 700;
-  margin-top: 0; 
+  margin-top: 0;
   margin-bottom: 15px;
   border-bottom: 2px solid #f2e2d8;
   padding-bottom: 5px;
 }
-
 
 .tab-content p {
   font-size: 1.05rem;
@@ -127,10 +128,10 @@ Main Layout & Section Styling
   text-align: justify;
 }
 
-
+/* Gallery */
 .gallery-img-fixed-size {
   width: 100%;
-  height: 220px; 
+  height: 220px;
   object-fit: cover;
   padding: 8px;
   background: #f8f9fa;
@@ -145,7 +146,7 @@ Main Layout & Section Styling
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
-
+/* List Group */
 .list-group {
   border: 1px solid #ffe9d6;
   border-radius: 10px;
@@ -173,15 +174,13 @@ Main Layout & Section Styling
   border-bottom: none;
 }
 
-
 .list-group-item strong {
   color: #ef5b0c;
   margin-right: 5px;
   font-weight: 600;
 }
 
-
-
+/* Image Zoom Overlay */
 .zoomed-image-overlay {
   position: fixed;
   top: 0;
@@ -243,65 +242,76 @@ Main Layout & Section Styling
   color: white;
 }
 
+/* ----------------------------
+   RESPONSIVE MEDIA QUERIES
+----------------------------- */
 
-@media (max-width: 991px) {
+@media (max-width: 1199.98px) {
+  .col-md-3 {
+    width: 33.33%;
+  }
+
+  .tab-content .col-md-4 {
+    width: 50%;
+  }
+}
+
+@media (max-width: 991.98px) {
   .col-md-3 {
     width: 50%;
   }
 
-  .main-temple-carousel-img {
-    max-width: 90%;
-    height: 220px;
-  }
-  .main-temple-carousel {
-    max-width: 95%;
+  .tab-content .col-md-4 {
+    width: 50%;
   }
 
- 
-  .tab-content .col-md-4 {
-    width: 50%; 
+  .main-temple-carousel-img {
+    max-width: 100%;
+    height: 200px;
   }
+
   .gallery-img-fixed-size {
-    height: 180px; 
+    height: 180px;
+  }
+
+  .card-img-fixed-size {
+    height: 160px;
   }
 }
 
-@media (max-width: 767px) {
-  .temple-name {
-    font-size: 2rem;
-  }
-  .main-temple-carousel-img {
-    max-width: 100%;
-    height: 180px;
-  }
-  .main-temple-carousel {
-    max-width: 100%;
-  }
-  .card-img-fixed-size {
-    height: 150px;
-  }
-  .gallery-img-fixed-size {
-    height: 150px;
-  }
-  .col-md-3 {
-    width: 100%;
+@media (max-width: 767.98px) {
+  .col-md-3,
+  .col-md-4,
+  .col-md-6 {
+    width: 100% !important;
   }
 
-  .tab-content .col-md-4 {
-    width: 100%; 
+  .temple-name {
+    font-size: 1.6rem;
+  }
+
+  .main-temple-carousel-img {
+    max-width: 100%;
+    height: 160px;
+  }
+
+  .gallery-img-fixed-size,
+  .card-img-fixed-size {
+    height: 150px;
   }
 
   .zoomed-image-container {
     width: 95vw;
-    height: 85vh;
+    height: 80vh;
     max-width: none;
     max-height: none;
   }
+
   .close-zoomed-image {
     top: 10px;
     right: 10px;
     width: 35px;
     height: 35px;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
   }
 }
