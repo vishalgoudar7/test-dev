@@ -25,6 +25,7 @@ const TempleDetails = () => {
         let prasadamData = [];
         try {
           const prasadamRes = await api.get(`/api/v1/devotee/prasadam/?temple=${id}`);
+          console.log('Prasadam Data:', prasadamRes.data);
           prasadamData = prasadamRes.data.results || [];
         } catch (prasadamErr) {
           console.warn('Failed to load prasadam:', prasadamErr);
@@ -118,6 +119,7 @@ const TempleDetails = () => {
               <div className="text-center mt-auto">
                 <button
                   className="btn btn-warning fw-semibold px-4"
+                  style={{ backgroundColor: ' #ff5722', color: 'white' }}
                   onClick={() => handleAddToCart({ ...p, type: 'pooja', cost: p.original_cost || p.cost })}
                 >
                   Participate ➜
@@ -131,44 +133,58 @@ const TempleDetails = () => {
   );
 
   const renderPrasadam = () => (
-    <div className="row">
-      {temple?.prasadam?.length ? temple.prasadam.map((p) => (
-        <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={p.id}>
-          <div className="card h-100 shadow-lg border-0 rounded-3" style={{ background: '#ffe9d6' }}>
-            <div className="card-body d-flex flex-column justify-content-between">
-              <h5 className="fw-bold text-danger">🍛 {p.name}</h5>
-              <div className="text-left my-3">
-                <img
-                  src={getFullImageUrl(p.image)}
-                  alt={p.name}
-                  className="card-img-fixed-size"
-                  onClick={() => handleImageClick(getFullImageUrl(p.image))}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = require('../assets/Default.png');
-                  }}
-                />
-              </div>
-              <div className="mt-2 small text-dark">
-                <p><strong className="text-danger">Details:</strong><br />{p.details || 'N/A'}</p>
-                <p><strong className="text-danger">Includes:</strong><br />{p.included || 'N/A'}</p>
-                <p><strong className="text-danger">Benefits:</strong><br />{p.benefits || '-'}</p>
-                <p><strong className="text-danger">Cost:</strong><br />₹ {p.original_cost || 'N/A'} /-</p>
-              </div>
-              <div className="d-flex justify-content-center mt-3">
-                <button
-                  className="btn btn-warning px-4 fw-semibold shadow-sm"
-                  onClick={() => handleAddToCart({ ...p, type: 'prasadam', cost: p.original_cost || 'N/A' })}
-                >
-                  Participate ➜
-                </button>
-              </div>
+  <div className="row">
+    {temple?.prasadam?.length ? temple.prasadam.map((p, index) => (
+      <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={p.id || `prasadam-${index}`}>
+        <div className="card h-100 shadow-sm border-0 rounded-4" style={{ background: '#fff7ec' }}>
+          <div className="card-body d-flex flex-column justify-content-between p-3" style={{ border: '1px solid #e0e0e0', borderRadius: '10px' }}>
+            <h5 className="fw-bold text-danger text-start mb-3">🍛 {p.name}</h5>
+            
+            <div className="text-center mb-3">
+              <img
+                src={getFullImageUrl(p.image)}
+                alt={p.name || 'Prasadam Image'}
+                onClick={() => handleImageClick(getFullImageUrl(p.image))}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = require('../assets/Default.png');
+                }}
+                className="img-fluid rounded shadow-sm"
+                style={{
+                  height: '180px',
+                  width: '100%',
+                  objectFit: 'cover',
+                  borderRadius: '10px',
+                  border: '2px solid #ffc107'
+                }}
+              />
+            </div>
+
+            <div className="text-dark small mb-3">
+              <p><strong className="text-danger">Details:</strong><br />{p.pooja_prasadam?.details || 'N/A'}</p>
+              <p><strong className="text-danger">Includes:</strong><br />{p.pooja_prasadam?.included || 'N/A'}</p>
+              <p><strong className="text-danger">Benefits:</strong><br />{p.pooja_prasadam?.benefits || '-'}</p>
+              <p><strong className="text-danger">Cost:</strong><br />₹ {p.pooja_prasadam?.original_cost || 'N/A'} /-</p>
+            </div>
+
+            <div className="text-center mt-auto">
+              <button
+                className="btn fw-semibold px-4"
+                style={{ backgroundColor: ' #ff5722', color: 'white' }}
+                onClick={() => handleAddToCart({ ...p, type: 'prasadam', cost: p.pooja_prasadam?.original_cost || 'N/A' })}
+              >
+                Participate ➜
+              </button>
             </div>
           </div>
         </div>
-      )) : <p className="text-center">No prasadam available for this temple.</p>}
-    </div>
-  );
+      </div>
+    )) : (
+      <p className="text-center">No prasadam available for this temple.</p>
+    )}
+  </div>
+);
+
 
   if (loading) return <p>Loading temple details...</p>;
   if (!temple) return <p>No temple found.</p>;
@@ -238,7 +254,7 @@ const TempleDetails = () => {
             {tabNo === 2 && (
               filteredData.length > 0 ? renderCards(filteredData) : <p className="text-center">No items found.</p>
             )}
-            {tabNo === 4 && <div className="prasadam-section my-5">{renderPrasadam()}</div>}
+            {tabNo === 4 && <div className="prasadam-section my-2">{renderPrasadam()}</div>}
             {tabNo === 3 && <h4 className="text-center text-muted">e-Services coming soon...</h4>}
             {tabNo === 1 && (
               <div className="row mt-4">

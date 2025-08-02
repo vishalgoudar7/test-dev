@@ -166,7 +166,7 @@ const PujaDetails = () => {
         <button className={activeTab === 'packages' ? 'active' : ''} onClick={() => setActiveTab('packages')}>Packages</button>
       </div>
 
-      <div className="tab-content">
+      <div className="tab-content-pd">
         {activeTab === 'about' && (
           <div>
             <h3>About Puja</h3>
