@@ -25,7 +25,7 @@ const TempleDetails = () => {
         let prasadamData = [];
         try {
           const prasadamRes = await api.get(`/api/v1/devotee/prasadam/?temple=${id}`);
-          console.log('Prasadam Data:', prasadamRes.data);
+          // console.log('Prasadam Data:', prasadamRes.data);
           prasadamData = prasadamRes.data.results || [];
         } catch (prasadamErr) {
           console.warn('Failed to load prasadam:', prasadamErr);

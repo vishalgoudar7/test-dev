@@ -20,7 +20,7 @@ const HomePage = () => {
     const fetchProfile = async () => {
       try {
         const data = await getDevoteeProfile();
-        console.log('Profile data:', data);
+        // console.log('Profile data:', data);
       } catch (err) {
         console.error('Error fetching profile:', err);
       }
