@@ -64,28 +64,13 @@ const PaymentSuccess = () => {
           return;
         }
 
-        try {
-          const detailResponse = await api.get(`/api/v1/devotee/pooja_request/${bookingId}/`);
-          const detailedBooking = detailResponse.data;
-          setBookingDetails(detailedBooking);
-
-          if (detailedBooking.temple_id) {
-            try {
-              const templeResponse = await api.get(`/api/v1/devotee/temple/${detailedBooking.temple_id}`);
-              setTempleDetails(templeResponse.data);
-            } catch (templeError) {
-              console.warn('Failed to fetch temple details:', templeError);
-            }
-          }
-        } catch (detailError) {
-          setBookingDetails(firstBooking);
-          if (firstBooking.temple_id) {
-            try {
-              const templeResponse = await api.get(`/api/v1/devotee/temple/${firstBooking.temple_id}`);
-              setTempleDetails(templeResponse.data);
-            } catch (templeError) {
-              console.warn('Failed to fetch temple details:', templeError);
-            }
+        setBookingDetails(firstBooking);
+        if (firstBooking.temple_id) {
+          try {
+            const templeResponse = await api.get(`/api/v1/devotee/temple/${firstBooking.temple_id}`);
+            setTempleDetails(templeResponse.data);
+          } catch (templeError) {
+            console.warn('Failed to fetch temple details:', templeError);
           }
         }
       } else {

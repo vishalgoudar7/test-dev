@@ -167,6 +167,17 @@ export const getDevoteeProfile = async () => {
   }
 };
 
+// ✅ Update devotee profile
+export const updateDevoteeProfile = async (profileData) => {
+  try {
+    const response = await api.put('/api/v1/devotee/profile/update/', profileData);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Error updating profile:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 // ✅ Logout (remove only real token)
 export const logout = async () => {
   try {

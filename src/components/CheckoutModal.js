@@ -3,7 +3,7 @@ import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { useNavigate } from 'react-router-dom';
 import { useUserAuth } from '../context/UserAuthContext';
-import api from '../api/api';
+import api, { updateDevoteeProfile, getDevoteeProfile } from '../api/api';
 import '../styles/CheckoutModal.css';
 
 // Get API base URL from the centralized config
@@ -141,26 +141,58 @@ const CheckoutModal = ({ open, onClose }) => {
   });
   const [errors, setErrors] = useState({});
   const [orderData, setOrderData] = useState(null);
+  const [apiProfile, setApiProfile] = useState(null);
 
-  // Prefill devoteeName and devoteeMobile from profile if available
+  // Fetch API profile and prefill address data
   useEffect(() => {
-    if (open && profile) {
-      setAddress({
-        bookingDate: '',
-        devoteeName:
-          profile.firstName && profile.lastName
-            ? `${profile.firstName} ${profile.lastName}`
-            : profile.firstName || '',
-        devoteeMobile: profile.phone || '',
-        sankalpa: '',
-        nakshatra: '',
-        street1: '',
-        street2: '',
-        area: '',
-        city: '',
-        state: '',
-        pincode: ''
-      });
+    if (open) {
+      const fetchApiProfile = async () => {
+        try {
+          const data = await getDevoteeProfile();
+          setApiProfile(data);
+          
+          // Prefill address from API profile or local profile
+          setAddress({
+            bookingDate: '',
+            devoteeName: data.name ||
+              (profile?.firstName && profile?.lastName
+                ? `${profile.firstName} ${profile.lastName}`
+                : profile?.firstName || ''),
+            devoteeMobile: data.mobile_number?.replace('+91', '') || profile?.phone || '',
+            sankalpa: '',
+            nakshatra: '',
+            street1: data.street_address || profile?.street1 || '',
+            street2: profile?.street2 || '',
+            area: data.area || profile?.area || '',
+            city: data.city || profile?.city || '',
+            state: data.state || profile?.state || '',
+            pincode: data.pincode || profile?.pincode || ''
+          });
+        } catch (err) {
+          console.error('Error fetching API profile:', err);
+          // Fallback to local profile data
+          if (profile) {
+            setAddress({
+              bookingDate: '',
+              devoteeName:
+                profile.firstName && profile.lastName
+                  ? `${profile.firstName} ${profile.lastName}`
+                  : profile.firstName || '',
+              devoteeMobile: profile.phone || '',
+              sankalpa: '',
+              nakshatra: '',
+              street1: profile.street1 || '',
+              street2: profile.street2 || '',
+              area: profile.area || '',
+              city: profile.city || '',
+              state: profile.state || '',
+              pincode: profile.pincode || ''
+            });
+          }
+        }
+      };
+      
+      fetchApiProfile();
     }
   }, [profile, open]);
 
@@ -324,6 +356,51 @@ const CheckoutModal = ({ open, onClose }) => {
         pincode: address.pincode
       };
       localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+
+      // Save address to profile via API only if it's the first time (profile doesn't have address info)
+      const hasAddressInfo = apiProfile?.street_address || apiProfile?.area || apiProfile?.city || apiProfile?.state || apiProfile?.pincode;
+      
+      if (!hasAddressInfo && apiProfile) {
+        try {
+          const profileUpdateData = {
+            name: address.devoteeName,
+            area: address.area,
+            city: address.city,
+            state: address.state,
+            pincode: address.pincode,
+            street_address: address.street1,
+            address: `${address.street1}, ${address.street2 ? `${address.street2}, ` : ''}${address.area}, ${address.city}, ${address.state} - ${address.pincode}`
+          };
+          
+          await updateDevoteeProfile(profileUpdateData);
+          console.log('Profile updated successfully with address information');
+        } catch (err) {
+          console.error('Error updating profile:', err);
+          // Continue with checkout even if profile update fails
+        }
+      }
+
+      // Also save to localStorage for backward compatibility
+      const existingProfile = JSON.parse(localStorage.getItem('profile') || '{}');
+      const localHasAddressInfo = existingProfile.street1 || existingProfile.area || existingProfile.city || existingProfile.state || existingProfile.pincode;
+      
+      if (!localHasAddressInfo) {
+        const updatedProfile = {
+          ...existingProfile,
+          firstName: existingProfile.firstName || address.devoteeName.split(' ')[0] || address.devoteeName,
+          lastName: existingProfile.lastName || (address.devoteeName.split(' ').length > 1 ? address.devoteeName.split(' ').slice(1).join(' ') : ''),
+          phone: existingProfile.phone || address.devoteeMobile,
+          street1: address.street1,
+          street2: address.street2,
+          area: address.area,
+          city: address.city,
+          state: address.state,
+          pincode: address.pincode,
+          sankalpa: existingProfile.sankalpa || address.sankalpa,
+          nakshatra: existingProfile.nakshatra || address.nakshatra
+        };
+        localStorage.setItem('profile', JSON.stringify(updatedProfile));
+      }
       // Create individual requests for each quantity of each item
       const requests = [];
       cart.forEach((item) => {
