@@ -341,7 +341,8 @@ const CheckoutModal = ({ open, onClose }) => {
             family_member: [
               {
                 id: (profile && profile.id) ? profile.id : 1,
-                name: address.devoteeName || profile?.name || profile?.firstName || 'Devotee'
+                name: address.devoteeName || profile?.name || profile?.firstName || 'Devotee',
+                nakshatra: address.nakshatra || ''
               }
             ],
             sankalpa: address.sankalpa,
@@ -522,7 +523,6 @@ const CheckoutModal = ({ open, onClose }) => {
                   <strong>Mobile:</strong> +91{address.devoteeMobile}<br />
                   <strong>Address:</strong> {address.street1}, {address.street2 ? `${address.street2}, ` : ''}{address.area}, {address.city}, {address.state} - {address.pincode}<br />
                   <strong>Sankalpa:</strong> {address.sankalpa || 'N/A'}<br />
-                  <strong>Zodiac Sign:</strong> {address.zodiacSign || 'N/A'}<br />
                   <strong>Rashi,Nakshatra,Gotra:</strong> {address.nakshatra || 'N/A'}<br />
                   <strong>Booking Date:</strong> {address.bookingDate}
                 </div>
@@ -583,17 +583,6 @@ const CheckoutModal = ({ open, onClose }) => {
                         onChange={(e) => setAddress({ ...address, sankalpa: e.target.value })}
                         className="form-control"
                         placeholder="Sankalpa"
-                      />
-                    </div>
-
-                    <div className="mb-2">
-                      <label>Zodiac Sign</label>
-                      <input
-                        type="text"
-                        value={address.zodiacSign}
-                        onChange={(e) => setAddress({ ...address, zodiacSign: e.target.value })}
-                        className="form-control"
-                        placeholder="Zodiac Sign"
                       />
                     </div>
 
