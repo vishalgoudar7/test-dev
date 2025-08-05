@@ -115,7 +115,7 @@ const EditProfile = () => {
             </div>
           </div>
 
-          <h4>Address Details</h4>
+          <h3>Address Details</h3>
 
           <div className="form-row">
             <div className="form-group">
