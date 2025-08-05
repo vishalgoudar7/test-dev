@@ -17,17 +17,16 @@ import appStore from '../assets/appStore.png';
 
 const HomePage = () => {
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const data = await getDevoteeProfile();
-        // console.log('Profile data:', data);
-      } catch (err) {
-        console.error('Error fetching profile:', err);
-      }
-    };
+  const fetchProfile = async () => {
+    try {
+      await getDevoteeProfile(); // No 'data' variable since it's unused
+    } catch (err) {
+      console.error('Error fetching profile:', err);
+    }
+  };
 
-    fetchProfile();
-  }, []);
+  fetchProfile();
+}, []);
 
   return (
     <div className="homepage">
