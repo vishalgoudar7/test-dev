@@ -81,9 +81,11 @@
 
 .tab-nav {
   display: flex;
-  gap: 16px;
+  gap: 80px;
   margin-top: 15px;
-  border-bottom: 2px solid #eee;
+  justify-content: center;
+  border-top: 1px solid #2b2a2a;
+  border-bottom: 1px solid #2b2b2b;
   padding-bottom: 10px;
 }
 
@@ -144,3 +146,5 @@
     text-align: left;
   }
 }
+
+
