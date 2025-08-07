@@ -113,7 +113,7 @@ const TempleDetails = () => {
               <div className="text-dark small mb-3">
                 <p><strong className="text-danger">Details:</strong><br />{p.details || 'N/A'}</p>
                 <p><strong className="text-danger">Includes:</strong><br />{p.included || 'N/A'}</p>
-                <p><strong className="text-danger">Benefits:</strong><br />{p.benefits || '-'}</p>
+                <p><strong className="text-danger">Benefits:</strong><br />{p.excluded || '-'}</p>
                 <p><strong className="text-danger">Cost:</strong><br />₹ {p.original_cost || p.cost || 'N/A'} /-</p>
               </div>
               <div className="text-center mt-auto">
@@ -163,7 +163,7 @@ const TempleDetails = () => {
             <div className="text-dark small mb-3">
               <p><strong className="text-danger">Details:</strong><br />{p.pooja_prasadam?.details || 'N/A'}</p>
               <p><strong className="text-danger">Includes:</strong><br />{p.pooja_prasadam?.included || 'N/A'}</p>
-              <p><strong className="text-danger">Benefits:</strong><br />{p.pooja_prasadam?.benefits || '-'}</p>
+              <p><strong className="text-danger">Benefits:</strong><br />{p.pooja_prasadam?.excluded || '-'}</p>
               <p><strong className="text-danger">Cost:</strong><br />₹ {p.pooja_prasadam?.original_cost || 'N/A'} /-</p>
             </div>
 

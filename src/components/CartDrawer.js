@@ -121,11 +121,11 @@ const CartDrawer = ({ open, onClose }) => {
                   <div className="small text-muted">{item.details}</div>
                   <div className="small">
                     {item.quantity} x ₹
-                    {Number(item.final_total || item.cost).toLocaleString('en-IN', {
+                    {Number(item.original_cost || item.cost).toLocaleString('en-IN', {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2
                     })} = ₹
-                    {(item.quantity * Number(item.final_total || item.cost)).toLocaleString('en-IN', {
+                    {(item.quantity * Number(item.original_cost || item.cost)).toLocaleString('en-IN', {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2
                     })}

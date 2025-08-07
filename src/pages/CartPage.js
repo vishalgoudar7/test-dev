@@ -119,7 +119,7 @@ const CartPage = () => {
                   <div className="d-flex align-items-center justify-content-between mt-3 mt-md-0 ms-md-auto" style={{ width: '100%', maxWidth: '300px' }}>
                     <div className="text-center">
                       <span className="d-block text-muted">Price</span>
-                      <span className="d-block fw-bold fs-5 mt-1">Rs. {item.final_total || item.cost}</span>
+                      <span className="d-block fw-bold fs-5 mt-1">Rs. {item.original_cost || item.cost}</span>
                     </div>
 
                     <div className="d-flex align-items-center mx-4">
@@ -130,7 +130,7 @@ const CartPage = () => {
 
                     <div className="text-center">
                       <span className="d-block text-muted">Total</span>
-                      <span className="d-block fw-bold fs-5 mt-1">Rs. {(item.final_total || item.cost) * item.quantity}</span>
+                      <span className="d-block fw-bold fs-5 mt-1">Rs. {(item.original_cost || item.cost) * item.quantity}</span>
                     </div>
 
                     <button
