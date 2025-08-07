@@ -49,23 +49,33 @@ const EventDetails = () => {
       name,
       original_cost,
       included,
-      convenience_fee = 0,
-      tax_amount = 0,
+      convenience_fee,
+      tax_amount,
     } = event.pooja;
 
-    const total = Number(original_cost || 0) + Number(convenience_fee || 0) + Number(tax_amount || 0);
+    const cost = parseFloat(original_cost);
+    const convenience = parseFloat(convenience_fee);
+    const tax = parseFloat(tax_amount);
+
+    const safeCost = isNaN(cost) ? 0 : cost;
+    const safeConvenience = isNaN(convenience) ? 0 : convenience;
+    const safeTax = isNaN(tax) ? 0 : tax;
+
+    const total = safeCost + safeConvenience + safeTax;
 
     const poojaItem = {
       id: poojaId,
       name,
-      original_cost,
+      original_cost: safeCost,
+      cost: safeCost,
+      final_total: total,
       included,
       temple: event.temple.id,
       quantity: 1,
       payment_data: {
-        original_cost,
-        convenience_fee,
-        tax_amount,
+        original_cost: safeCost,
+        convenience_fee: safeConvenience,
+        tax_amount: safeTax,
         total,
       },
     };
