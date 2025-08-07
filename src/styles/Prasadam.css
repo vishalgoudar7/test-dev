@@ -1,4 +1,4 @@
-/* Container for all prasadam cards */
+/* Container for all prasadam cards
 .prasadam-container {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -7,7 +7,7 @@
   background-color: #f7f7f7;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 1400px) {
   .prasadam-container {
     grid-template-columns: repeat(4, 1fr);
@@ -32,7 +32,7 @@
   }
 }
 
-/* Individual card styling */
+
 .prasadam-card {
   background-color: #fff7ec;
   border: 1px solid #e0e0e0;
@@ -49,7 +49,7 @@
   transform: scale(1.02);
 }
 
-/* Heading */
+
 .prasadam-card h3 {
   font-size: 20px;
   color: #f44336;
@@ -57,7 +57,7 @@
   text-align: center;
 }
 
-/* Image should fill consistently */
+
 .prasadam-image {
   width: 100%;
   height: 180px;
@@ -67,7 +67,7 @@
   background-color: #f0f0f0;
 }
 
-/* Text details */
+
 .prasadam-card p {
   font-size: 14px;
   color: #444;
@@ -79,11 +79,11 @@
   color: #000;
 }
 
-/* Add to Cart Button */
+
 .prasadam-add-btn {
   margin-top: auto;
   padding: 10px 0;
-  background-color: #ff5722; /* Orange color */
+  background-color: #ff5722; 
   color: white;
   font-weight: bold;
   border: none;
@@ -94,14 +94,137 @@
 }
 
 .prasadam-add-btn:hover {
-  background-color: #e68a00; /* Darker orange on hover */
+  background-color: #e68a00; 
 }
 
-/* Loader and Error */
+
 .prasadam-loading,
 .prasadam-error {
   text-align: center;
   font-size: 18px;
   padding: 40px;
   color: #f44336;
+} */
+
+
+
+
+
+
+
+
+/* Container for all prasadam cards */
+.prasadam-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+  padding: 30px;
+  background-color: #f7f7f7;
+}
+
+@media (max-width: 1400px) {
+  .prasadam-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 1100px) {
+  .prasadam-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 800px) {
+  .prasadam-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .prasadam-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.prasadam-card {
+  background-color: #fff7ec;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease-in-out;
+}
+
+.prasadam-card:hover {
+  transform: scale(1.02);
+}
+
+.prasadam-card h3 {
+  font-size: 20px;
+  color: #f44336;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.prasadam-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  background-color: #f0f0f0;
+}
+
+.prasadam-card p {
+  font-size: 14px;
+  color: #444;
+  margin: 6px 0;
+  line-height: 1.4;
+}
+
+.prasadam-card strong {
+  color: #000;
+}
+
+.prasadam-add-btn {
+  margin-top: auto;
+  padding: 10px 0;
+  background-color: #ff5722; 
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.prasadam-add-btn:hover {
+  background-color: #e68a00; 
+}
+
+.prasadam-loading,
+.prasadam-error {
+  text-align: center;
+  font-size: 18px;
+  padding: 40px;
+  color: #f44336;
+}
+
+.loader {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #f44336;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 15px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
