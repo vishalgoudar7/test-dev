@@ -9,7 +9,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 const TempleDetails = () => {
   const { id } = useParams();
   const [temple, setTemple] = useState(null);
-  const [tabNo, setTabNo] = useState(4); // Still 4 because Prasadam is tab 4 in logic
+  const [tabNo, setTabNo] = useState(4); // Default to Prasadam
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState([]);
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
@@ -18,29 +18,60 @@ const TempleDetails = () => {
   const BASE_IMAGE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
-    const fetchTempleAndPoojas = async () => {
+    const fetchTempleAndPrasadam = async () => {
       try {
+        // Fetch temple details
         const templeRes = await api.get(`/api/v1/devotee/temple/${id}`);
-        let prasadamData = [];
+        const templeData = templeRes.data;
+
+        // Fetch prasadam from BOTH APIs
+        let prasadamFromPooja = [];
+        let prasadamFromPrasadamAPI = [];
+
+        // API 1: /pooja/?search=prasadam (existing)
         try {
-          const prasadamRes = await api.get(`/api/v1/devotee/pooja/?temple=${id}&search=prasadam`);
-          prasadamData = prasadamRes.data.results || [];
-        } catch (prasadamErr) {
-          console.warn('Failed to load prasadam:', prasadamErr);
+          const res1 = await api.get(`/api/v1/devotee/pooja/?temple=${id}&search=prasadam`);
+          prasadamFromPooja = res1.data.results || [];
+        } catch (err) {
+          console.warn('Failed to load prasadam from /pooja API:', err);
         }
-        const poojaRes = await api.get(`/api/v1/devotee/pooja/?temple=${id}`);
-        setTemple({
-          ...templeRes.data,
-          prasadam: prasadamData,
+
+        // API 2: /prasadam (new dedicated endpoint)
+        try {
+          const res2 = await api.get(`/api/v1/devotee/prasadam/?temple=${id}`);
+          // Optional: Filter by temple if backend returns all prasadam
+          // prasadamFromPrasadamAPI = (res2.data.results || []).filter(p => p.temple === parseInt(id));
+          prasadamFromPrasadamAPI = res2.data.results || [];
+        } catch (err) {
+          console.warn('Failed to load prasadam from /prasadam API:', err);
+        }
+
+        // Combine and deduplicate by ID
+        const combined = [...prasadamFromPooja, ...prasadamFromPrasadamAPI];
+        const uniqueMap = new Map();
+        combined.forEach(item => {
+          if (item.id) uniqueMap.set(item.id, item);
         });
-        setFilteredData(poojaRes.data.results || []);
+        const uniquePrasadam = Array.from(uniqueMap.values());
+
+        // Fetch all puja/udi items for Puja tab
+        const poojaRes = await api.get(`/api/v1/devotee/pooja/?temple=${id}`);
+        const poojaList = poojaRes.data.results || [];
+
+        // Set final data
+        setTemple({
+          ...templeData,
+          prasadam: uniquePrasadam,
+        });
+        setFilteredData(poojaList);
       } catch (err) {
-        console.error('Error loading data:', err);
+        console.error('Error loading temple data:', err);
       } finally {
         setLoading(false);
       }
     };
-    fetchTempleAndPoojas();
+
+    fetchTempleAndPrasadam();
   }, [id]);
 
   const handleAddToCart = (item) => {
@@ -50,7 +81,7 @@ const TempleDetails = () => {
     } catch {
       cart = [];
     }
-    if (!cart.find((c) => c.id === item.id)) {
+    if (!cart.find(c => c.id === item.id)) {
       cart.push(item);
       localStorage.setItem('cart', JSON.stringify(cart));
       window.dispatchEvent(new Event('storage'));
@@ -88,8 +119,8 @@ const TempleDetails = () => {
   const renderCards = (data) => (
     <div className="row">
       {data
-        .filter((p) => !p.name.toLowerCase().includes('prasadam'))
-        .map((p) => (
+        .filter(p => !p.name.toLowerCase().includes('prasadam'))
+        .map(p => (
           <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={p.id}>
             <div className="card h-100 shadow-sm border-0 rounded-4" style={{ background: '#fff7ec' }}>
               <div className="card-body d-flex flex-column justify-content-between p-3" style={{ border: '1px solid #e0e0e0', borderRadius: '10px' }}>
@@ -137,49 +168,51 @@ const TempleDetails = () => {
 
   const renderPrasadam = () => (
     <div className="row">
-      {temple?.prasadam?.length ? temple.prasadam.map((p, index) => (
-        <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={p.id || `prasadam-${index}`}>
-          <div className="card h-100 shadow-sm border-0 rounded-4" style={{ background: '#fff7ec' }}>
-            <div className="card-body d-flex flex-column justify-content-between p-3" style={{ border: '1px solid #e0e0e0', borderRadius: '10px' }}>
-              <h5 className="fw-bold text-danger text-start mb-3">🍛 {p.name}</h5>
-              <div className="text-center mb-3">
-                <img
-                  src={getFullImageUrl(p.images?.[0]?.image)}
-                  alt={p.name || 'Prasadam Image'}
-                  onClick={() => handleImageClick(getFullImageUrl(p.images?.[0]?.image))}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = require('../assets/Default.png');
-                  }}
-                  className="img-fluid rounded shadow-sm"
-                  style={{
-                    height: '180px',
-                    width: '100%',
-                    objectFit: 'cover',
-                    borderRadius: '10px',
-                    border: '2px solid #ffc107'
-                  }}
-                />
-              </div>
-              <div className="text-dark small mb-3">
-                <p><strong className="text-danger">Details:</strong><br />{p.details || 'N/A'}</p>
-                <p><strong className="text-danger">Includes:</strong><br />{p.included || 'N/A'}</p>
-                <p><strong className="text-danger">Benefits:</strong><br />{p.excluded || '-'}</p>
-                <p><strong className="text-danger">Cost:</strong><br />₹ {p.original_cost || p.cost || 'N/A'} /-</p>
-              </div>
-              <div className="text-center mt-auto">
-                <button
-                  className="btn fw-semibold px-4"
-                  style={{ backgroundColor: '#ff5722', color: 'white' }}
-                  onClick={() => handleAddToCart({ ...p, type: 'prasadam', cost: p.original_cost || p.cost })}
-                >
-                  Participate ➜
-                </button>
+      {temple?.prasadam && temple.prasadam.length > 0 ? (
+        temple.prasadam.map(p => (
+          <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={p.id}>
+            <div className="card h-100 shadow-sm border-0 rounded-4" style={{ background: '#fff7ec' }}>
+              <div className="card-body d-flex flex-column justify-content-between p-3" style={{ border: '1px solid #e0e0e0', borderRadius: '10px' }}>
+                <h5 className="fw-bold text-danger text-start mb-3">🍛 {p.name}</h5>
+                <div className="text-center mb-3">
+                  <img
+                    src={getFullImageUrl(p.images?.[0]?.image)}
+                    alt={p.name}
+                    onClick={() => handleImageClick(getFullImageUrl(p.images?.[0]?.image))}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = require('../assets/Default.png');
+                    }}
+                    className="img-fluid rounded shadow-sm"
+                    style={{
+                      height: '180px',
+                      width: '100%',
+                      objectFit: 'cover',
+                      borderRadius: '10px',
+                      border: '2px solid #ffc107'
+                    }}
+                  />
+                </div>
+                <div className="text-dark small mb-3">
+                  <p><strong className="text-danger">Details:</strong><br />{p.details || p.pooja_prasadam.details || 'N/A'}</p>
+                  <p><strong className="text-danger">Includes:</strong><br />{p.included || p.pooja_prasadam.included || 'N/A'}</p>
+                  <p><strong className="text-danger">Benefits:</strong><br />{p.excluded || p.pooja_prasadam.excluded || '-'}</p>
+                  <p><strong className="text-danger">Cost:</strong><br />₹ {p.original_cost || p.cost || p.pooja_prasadam.original_cost || 'N/A'} /-</p>
+                </div>
+                <div className="text-center mt-auto">
+                  <button
+                    className="btn fw-semibold px-4"
+                    style={{ backgroundColor: '#ff5722', color: 'white' }}
+                    onClick={() => handleAddToCart({ ...p, type: 'prasadam', cost: p.original_cost || p.cost || p.pooja_prasadam.original_cost })}
+                  >
+                    Participate ➜
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )) : (
+        ))
+      ) : (
         <p className="text-center">No prasadam available for this temple.</p>
       )}
     </div>
@@ -199,11 +232,11 @@ const TempleDetails = () => {
           </div>
         </div>
       )}
-
       <main className="temple-main">
         <section className="temple-container-td container">
           <h2 className="temple-name">{temple.name}</h2>
 
+          {/* Temple Image Carousel */}
           {temple.images?.length > 0 && (
             <div className="temple-images-section text-center">
               <Carousel
@@ -234,7 +267,7 @@ const TempleDetails = () => {
             </div>
           )}
 
-          {/* Updated Tab Order: 1.Prasadam, 2.Puja, 3.e-Services, 4.About */}
+          {/* Updated Tab Order: Prasadam → Puja → e-Services → About */}
           <ul className="nav nav-tabs justify-content-center mt-4 temple-tabs">
             {/* 1. Prasadam */}
             <li className="nav-item" onClick={() => handleTabSwitch(4)}>
@@ -259,14 +292,18 @@ const TempleDetails = () => {
 
           {/* Tab Content */}
           <div className="tab-content mt-4">
+            {/* Prasadam Tab */}
             {tabNo === 4 && <div className="prasadam-section my-2">{renderPrasadam()}</div>}
 
+            {/* Puja / Udi / Chadava Tab */}
             {tabNo === 2 && (
               filteredData.length > 0 ? renderCards(filteredData) : <p className="text-center">No items found.</p>
             )}
 
+            {/* e-Services Tab */}
             {tabNo === 3 && <h4 className="text-center text-muted">e-Services coming soon...</h4>}
 
+            {/* About Temple Tab */}
             {tabNo === 1 && (
               <div className="row mt-4">
                 <div className="col-md-8">
