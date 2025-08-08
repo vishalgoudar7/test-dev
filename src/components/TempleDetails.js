@@ -9,13 +9,12 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 const TempleDetails = () => {
   const { id } = useParams();
   const [temple, setTemple] = useState(null);
-  const [tabNo, setTabNo] = useState(2);
+  const [tabNo, setTabNo] = useState(4); // Still 4 because Prasadam is tab 4 in logic
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState([]);
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [zoomedImage, setZoomedImage] = useState(null);
-
   const BASE_IMAGE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
@@ -24,8 +23,7 @@ const TempleDetails = () => {
         const templeRes = await api.get(`/api/v1/devotee/temple/${id}`);
         let prasadamData = [];
         try {
-          const prasadamRes = await api.get(`/api/v1/devotee/prasadam/?temple=${id}`);
-          // console.log('Prasadam Data:', prasadamRes.data);
+          const prasadamRes = await api.get(`/api/v1/devotee/pooja/?temple=${id}&search=prasadam`);
           prasadamData = prasadamRes.data.results || [];
         } catch (prasadamErr) {
           console.warn('Failed to load prasadam:', prasadamErr);
@@ -89,15 +87,65 @@ const TempleDetails = () => {
 
   const renderCards = (data) => (
     <div className="row">
-      {data.map((p) => (
-        <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={p.id}>
+      {data
+        .filter((p) => !p.name.toLowerCase().includes('prasadam'))
+        .map((p) => (
+          <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={p.id}>
+            <div className="card h-100 shadow-sm border-0 rounded-4" style={{ background: '#fff7ec' }}>
+              <div className="card-body d-flex flex-column justify-content-between p-3" style={{ border: '1px solid #e0e0e0', borderRadius: '10px' }}>
+                <h5 className="fw-bold text-danger text-start mb-3">🌸 {p.name}</h5>
+                <div className="text-center mb-3">
+                  <img
+                    src={getFullImageUrl(p.images?.[0]?.image)}
+                    alt={p.name}
+                    onClick={() => handleImageClick(getFullImageUrl(p.images?.[0]?.image))}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = require('../assets/Default.png');
+                    }}
+                    className="img-fluid rounded shadow-sm"
+                    style={{
+                      height: '180px',
+                      width: '100%',
+                      objectFit: 'cover',
+                      borderRadius: '10px',
+                      border: '2px solid #ffc107'
+                    }}
+                  />
+                </div>
+                <div className="text-dark small mb-3">
+                  <p><strong className="text-danger">Details:</strong><br />{p.details || 'N/A'}</p>
+                  <p><strong className="text-danger">Includes:</strong><br />{p.included || 'N/A'}</p>
+                  <p><strong className="text-danger">Benefits:</strong><br />{p.excluded || '-'}</p>
+                  <p><strong className="text-danger">Cost:</strong><br />₹ {p.original_cost || p.cost || 'N/A'} /-</p>
+                </div>
+                <div className="text-center mt-auto">
+                  <button
+                    className="btn btn-warning fw-semibold px-4"
+                    style={{ backgroundColor: '#ff5722', color: 'white' }}
+                    onClick={() => handleAddToCart({ ...p, type: 'pooja', cost: p.original_cost || p.cost })}
+                  >
+                    Participate ➜
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+    </div>
+  );
+
+  const renderPrasadam = () => (
+    <div className="row">
+      {temple?.prasadam?.length ? temple.prasadam.map((p, index) => (
+        <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={p.id || `prasadam-${index}`}>
           <div className="card h-100 shadow-sm border-0 rounded-4" style={{ background: '#fff7ec' }}>
             <div className="card-body d-flex flex-column justify-content-between p-3" style={{ border: '1px solid #e0e0e0', borderRadius: '10px' }}>
-              <h5 className="fw-bold text-danger text-start mb-3">🌸 {p.name}</h5>
+              <h5 className="fw-bold text-danger text-start mb-3">🍛 {p.name}</h5>
               <div className="text-center mb-3">
                 <img
                   src={getFullImageUrl(p.images?.[0]?.image)}
-                  alt={p.name}
+                  alt={p.name || 'Prasadam Image'}
                   onClick={() => handleImageClick(getFullImageUrl(p.images?.[0]?.image))}
                   onError={(e) => {
                     e.target.onerror = null;
@@ -105,8 +153,11 @@ const TempleDetails = () => {
                   }}
                   className="img-fluid rounded shadow-sm"
                   style={{
-                    height: '180px', width: '100%', objectFit: 'cover',
-                    borderRadius: '10px', border: '2px solid #ffc107'
+                    height: '180px',
+                    width: '100%',
+                    objectFit: 'cover',
+                    borderRadius: '10px',
+                    border: '2px solid #ffc107'
                   }}
                 />
               </div>
@@ -118,9 +169,9 @@ const TempleDetails = () => {
               </div>
               <div className="text-center mt-auto">
                 <button
-                  className="btn btn-warning fw-semibold px-4"
-                  style={{ backgroundColor: ' #ff5722', color: 'white' }}
-                  onClick={() => handleAddToCart({ ...p, type: 'pooja', cost: p.original_cost || p.cost })}
+                  className="btn fw-semibold px-4"
+                  style={{ backgroundColor: '#ff5722', color: 'white' }}
+                  onClick={() => handleAddToCart({ ...p, type: 'prasadam', cost: p.original_cost || p.cost })}
                 >
                   Participate ➜
                 </button>
@@ -128,63 +179,11 @@ const TempleDetails = () => {
             </div>
           </div>
         </div>
-      ))}
+      )) : (
+        <p className="text-center">No prasadam available for this temple.</p>
+      )}
     </div>
   );
-
-  const renderPrasadam = () => (
-  <div className="row">
-    {temple?.prasadam?.length ? temple.prasadam.map((p, index) => (
-      <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={p.id || `prasadam-${index}`}>
-        <div className="card h-100 shadow-sm border-0 rounded-4" style={{ background: '#fff7ec' }}>
-          <div className="card-body d-flex flex-column justify-content-between p-3" style={{ border: '1px solid #e0e0e0', borderRadius: '10px' }}>
-            <h5 className="fw-bold text-danger text-start mb-3">🍛 {p.name}</h5>
-            
-            <div className="text-center mb-3">
-              <img
-                src={getFullImageUrl(p.image)}
-                alt={p.name || 'Prasadam Image'}
-                onClick={() => handleImageClick(getFullImageUrl(p.image))}
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = require('../assets/Default.png');
-                }}
-                className="img-fluid rounded shadow-sm"
-                style={{
-                  height: '180px',
-                  width: '100%',
-                  objectFit: 'cover',
-                  borderRadius: '10px',
-                  border: '2px solid #ffc107'
-                }}
-              />
-            </div>
-
-            <div className="text-dark small mb-3">
-              <p><strong className="text-danger">Details:</strong><br />{p.pooja_prasadam?.details || 'N/A'}</p>
-              <p><strong className="text-danger">Includes:</strong><br />{p.pooja_prasadam?.included || 'N/A'}</p>
-              <p><strong className="text-danger">Benefits:</strong><br />{p.pooja_prasadam?.excluded || '-'}</p>
-              <p><strong className="text-danger">Cost:</strong><br />₹ {p.pooja_prasadam?.original_cost || 'N/A'} /-</p>
-            </div>
-
-            <div className="text-center mt-auto">
-              <button
-                className="btn fw-semibold px-4"
-                style={{ backgroundColor: ' #ff5722', color: 'white' }}
-                onClick={() => handleAddToCart({ ...p, type: 'prasadam', cost: p.pooja_prasadam?.original_cost || 'N/A' })}
-              >
-                Participate ➜
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    )) : (
-      <p className="text-center">No prasadam available for this temple.</p>
-    )}
-  </div>
-);
-
 
   if (loading) return <p>Loading temple details...</p>;
   if (!temple) return <p>No temple found.</p>;
@@ -235,32 +234,45 @@ const TempleDetails = () => {
             </div>
           )}
 
+          {/* Updated Tab Order: 1.Prasadam, 2.Puja, 3.e-Services, 4.About */}
           <ul className="nav nav-tabs justify-content-center mt-4 temple-tabs">
-            <li className="nav-item" onClick={() => handleTabSwitch(2)}>
-              <span className={`nav-link ${tabNo === 2 ? 'active' : ''}`}>Puja / Udi / Chadava</span>
-            </li>
+            {/* 1. Prasadam */}
             <li className="nav-item" onClick={() => handleTabSwitch(4)}>
               <span className={`nav-link ${tabNo === 4 ? 'active' : ''}`}>Prasadam</span>
             </li>
+
+            {/* 2. Puja / Udi / Chadava */}
+            <li className="nav-item" onClick={() => handleTabSwitch(2)}>
+              <span className={`nav-link ${tabNo === 2 ? 'active' : ''}`}>Puja / Udi / Chadava</span>
+            </li>
+
+            {/* 3. e-Services */}
             <li className="nav-item" onClick={() => handleTabSwitch(3)}>
               <span className={`nav-link ${tabNo === 3 ? 'active' : ''}`}>e-Services</span>
             </li>
+
+            {/* 4. About Temple */}
             <li className="nav-item" onClick={() => handleTabSwitch(1)}>
               <span className={`nav-link ${tabNo === 1 ? 'active' : ''}`}>About Temple</span>
             </li>
           </ul>
 
+          {/* Tab Content */}
           <div className="tab-content mt-4">
+            {tabNo === 4 && <div className="prasadam-section my-2">{renderPrasadam()}</div>}
+
             {tabNo === 2 && (
               filteredData.length > 0 ? renderCards(filteredData) : <p className="text-center">No items found.</p>
             )}
-            {tabNo === 4 && <div className="prasadam-section my-2">{renderPrasadam()}</div>}
+
             {tabNo === 3 && <h4 className="text-center text-muted">e-Services coming soon...</h4>}
+
             {tabNo === 1 && (
               <div className="row mt-4">
                 <div className="col-md-8">
                   <h4>Description</h4>
                   <p>{temple.details}</p>
+
                   <h4 className="mt-4">Image Gallery</h4>
                   <div className="row g-3">
                     {temple.images?.map((img, i) => (
@@ -279,6 +291,7 @@ const TempleDetails = () => {
                     ))}
                   </div>
                 </div>
+
                 <div className="col-md-4 order-md-2">
                   <ul className="list-group">
                     <li className="list-group-item"><strong>Taluk:</strong> {temple.taluk}</li>
