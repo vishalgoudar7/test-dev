@@ -20,7 +20,7 @@ const PujaDetails = () => {
         setPuja(response.data);
       } catch (err) {
         setError('❌ Failed to load puja details. Please try again later.');
-        console.error('Error:', err.response?.data || err.message);
+        console.error('Error fetching puja:', err.response?.data || err.message);
       } finally {
         setLoading(false);
       }
@@ -29,23 +29,34 @@ const PujaDetails = () => {
     fetchPujaDetails();
   }, [id]);
 
+  // ✅ Robust fallback image logic
+  const rawImage =
+    puja?.image ||
+    (puja?.images?.length > 0 && puja.images[0]?.image) ||
+    puja?.god?.image ||
+    puja?.temple?.images?.[0]?.image;
+
+  const imageUrl = !imageError && rawImage
+    ? rawImage
+    : 'https://via.placeholder.com/600x400?text=Image+Not+Available';
+
+  useEffect(() => {
+    console.log('✅ Raw image from API:', rawImage);
+  }, [rawImage]);
+
   const handleParticipate = () => {
     if (!puja || addingToCart) return;
-    
+
     setAddingToCart(true);
-    
     try {
-      // Get existing cart from localStorage
       const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
-      
-      // Extract all pricing information from puja data
+
       const originalCost = Number(puja.original_cost || puja.cost || 0);
       const convenienceFee = Number(puja.convenience_fee || 0);
       const bookingCharges = Number(puja.booking_charges || 0);
       const taxAmount = Number(puja.tax_amount || 0);
       const finalTotal = Number(puja.final_total || originalCost + convenienceFee + bookingCharges + taxAmount);
-      
-      // Create cart item from puja data with complete pricing structure
+
       const cartItem = {
         id: puja.id,
         name: puja.name,
@@ -59,7 +70,6 @@ const PujaDetails = () => {
         quantity: 1,
         images: puja.images || [],
         prasad_delivery: puja.prasad_delivery || false,
-        // Include complete payment_data structure
         payment_data: {
           original_cost: originalCost,
           final_total: finalTotal,
@@ -70,36 +80,20 @@ const PujaDetails = () => {
           fee_amount: Number(puja.fee_amount || 0)
         }
       };
-      
-      // Check if item already exists in cart
+
       const existingItemIndex = existingCart.findIndex(item => item.id === puja.id);
-      
+
       if (existingItemIndex >= 0) {
-        // If item exists, increment quantity
         existingCart[existingItemIndex].quantity += 1;
       } else {
-        // If item doesn't exist, add new item
         existingCart.push(cartItem);
       }
-      
-      // Save updated cart to localStorage
+
       localStorage.setItem('cart', JSON.stringify(existingCart));
-      
-      // Dispatch storage event to update cart count in navbar
       window.dispatchEvent(new Event('storage'));
-      
-      // Open cart drawer
       window.dispatchEvent(new Event('open-cart-drawer'));
-      
-      // Show success message with pricing details
-      // const totalAmount = finalTotal.toLocaleString('en-IN', {
-      //   minimumFractionDigits: 2,
-      //   maximumFractionDigits: 2
-      // });
-      // alert(`Item added to cart successfully!\nTotal: ₹${totalAmount}`);
-      
     } catch (error) {
-      console.error('Error adding item to cart:', error);
+      console.error('Error adding to cart:', error);
       alert('Failed to add item to cart. Please try again.');
     } finally {
       setAddingToCart(false);
@@ -110,17 +104,8 @@ const PujaDetails = () => {
   if (error) return <div className="error">{error}</div>;
   if (!puja) return <div>No puja found</div>;
 
-  const imageUrl =
-    imageError
-      ? 'https://via.placeholder.com/500x300?text=Image+Not+Available'
-      : puja.image ||
-        (puja.images?.length > 0 && puja.images[0].image) ||
-        'https://via.placeholder.com/500x300?text=No+Image+Available';
-
   return (
     <div className="puja-details-container">
-      {/* <h2 className="puja-title">{puja.name}</h2> */}
-
       <div className="puja-flex-wrapper">
         <div className="puja-image-box">
           <img
@@ -133,9 +118,8 @@ const PujaDetails = () => {
         </div>
 
         <div className="puja-text-box">
-          {/* <p><strong>Details:</strong> {puja.details || 'No details available'}</p> */}
           <h2 className="puja-title">{puja.name}</h2>
-          <p><strong>Temple:</strong> {puja.temple.name|| 'N/A'}</p>
+          <p><strong>Temple:</strong> {puja.temple?.name || 'N/A'}</p>
           <p><strong>God:</strong> {puja.god?.name || 'N/A'}</p>
           <p><strong>Included:</strong> {puja.included || 'N/A'}</p>
           <p><strong>Excluded:</strong> {puja.excluded || 'N/A'}</p>
@@ -143,8 +127,6 @@ const PujaDetails = () => {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
           })}</p>
-          {/* <p><strong>Prasad Delivery:</strong> {puja.prasad_delivery ? 'Yes' : 'No'}</p>
-          <p><strong>Approval Status:</strong> {puja.approval_status || 'N/A'}</p> */}
 
           <div className="participate-button-wrapper">
             <button 
@@ -197,4 +179,3 @@ const PujaDetails = () => {
 };
 
 export default PujaDetails;
-
