@@ -203,7 +203,12 @@ const TempleDetails = () => {
                   <button
                     className="btn fw-semibold px-4"
                     style={{ backgroundColor: '#ff5722', color: 'white' }}
-                    onClick={() => handleAddToCart({ ...p, type: 'prasadam', cost: p.original_cost || p.cost || p.pooja_prasadam.original_cost })}
+                    onClick={() => handleAddToCart({
+                      ...p,
+                      id: p.pooja_prasadam && p.pooja_prasadam.id ? p.pooja_prasadam.id : (p.id || (p.prasadam && p.prasadam.id)),
+                      type: 'prasadam',
+                      cost: p.original_cost || p.cost || (p.pooja_prasadam && p.pooja_prasadam.original_cost)
+                    })}
                   >
                     Participate ➜
                   </button>
