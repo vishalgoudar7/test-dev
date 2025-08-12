@@ -1,12 +1,27 @@
 .special-pooja-main {
-  background-color:#fef5ec;
+  background-color: #fef5ec;
   padding: 2rem 1rem;
+}
+
+.special-pooja-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.special-pooja-heading .line {
+  flex: 1;
+  max-width: 40px;
+  height: 1.5px;
+  background-color: #f26a1b;
 }
 
 .section-title-special-pooja {
   font-size: 2.3rem;
   font-weight: bold;
   color: #f44336;
+  white-space: nowrap;
 }
 
 .section-subtitle {
@@ -19,7 +34,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-   margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .special-pooja-card-image {
