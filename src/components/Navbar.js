@@ -195,7 +195,8 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {cartDrawerOpen && (() => {
+      {/* Block CartDrawer on login page */}
+      {cartDrawerOpen && !location.pathname.startsWith('/login') && (() => {
         const CartDrawer = require("./CartDrawer").default;
         return <CartDrawer open={cartDrawerOpen} onClose={() => setCartDrawerOpen(false)} />;
       })()}
