@@ -121,7 +121,7 @@
 
 .tab-content p {
   font-size: 1.05rem;
-  line-height: 1.7;
+  line-height: initial;
   color: #4a4a4a;
   margin-bottom: 20px;
   text-align: justify;
