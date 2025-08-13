@@ -103,7 +103,7 @@ function DatePickerWithClose({ selectedDate, onDateChange, error }) {
                 setOpen(false);
               }
             }}
-            hidden={{
+            disabled={{
               before: (() => {
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
@@ -756,7 +756,7 @@ const CheckoutModal = ({ open, onClose }) => {
           </div>
 
           <div className="checkout-modal-right">
-            <h5>Cart</h5>
+            <h5>Selected Pooja/Prasadam</h5>
             <div className="checkout-cart-list">
               {cart.map((item) => (
                 <div className="checkout-cart-item" key={item.id}>

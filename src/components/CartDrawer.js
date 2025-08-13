@@ -70,7 +70,7 @@ const CartDrawer = ({ open, onClose }) => {
     <div className={`cart-drawer-overlay${open ? ' open' : ''}`} onClick={onClose}>
       <div className={`cart-drawer${open ? ' open' : ''}`} onClick={e => e.stopPropagation()}>
         <div className="cart-drawer-header d-flex justify-content-between align-items-center p-3 border-bottom">
-          <h5 className="mb-0">CART</h5>
+          <h5 className="mb-0">Pooja/Prasadam Selections</h5>
           <button
             className="btn-close"
             onClick={onClose}
@@ -97,7 +97,7 @@ const CartDrawer = ({ open, onClose }) => {
 
         <div className="cart-drawer-body p-3" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
           {cart.length === 0 ? (
-            <div className="text-center text-muted">Your cart is empty.</div>
+            <div className="text-center text-muted">You have not added any Pooja/Prasadam items.</div>
           ) : (
             cart.map(item => (
               <div className="d-flex align-items-center mb-3 border-bottom pb-2" key={item.id}>

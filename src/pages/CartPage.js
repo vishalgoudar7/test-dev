@@ -75,7 +75,7 @@ const CartPage = () => {
   return (
     <div className="container py-5" style={{ minHeight: '80vh' }}>
       <h1 className="text-center mb-5 fw-bold" style={{ fontSize: '2.5rem' }}>
-        Pooja Selections
+        Pooja/Prasadam Selections
       </h1>
 
       {cart.length === 0 ? (
@@ -138,7 +138,7 @@ const CartPage = () => {
                       onClick={() => removeItem(item.id)}
                       title="Remove"
                     >
-                      <span role="img" aria-label="delete" className="fs-4">🗑️</span>
+                      <span role="img" aria-label="delete" className="fs-6">Remove</span>
                     </button>
                   </div>
                 </div>
