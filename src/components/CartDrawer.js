@@ -134,7 +134,7 @@ const CartDrawer = ({ open, onClose }) => {
                     <button className="btn btn-outline-secondary btn-sm" onClick={() => decrement(item.id)}>-</button>
                     <span className="mx-2">{item.quantity}</span>
                     <button className="btn btn-outline-secondary btn-sm" onClick={() => increment(item.id)}>+</button>
-                    <button className="btn btn-danger btn-sm ms-3" onClick={() => removeItem(item.id)}>&#128465;</button>
+                    <button className="btn btn-danger btn-sm ms-3" onClick={() => removeItem(item.id)}>Remove</button>
                   </div>
                 </div>
               </div>

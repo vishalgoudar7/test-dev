@@ -41,7 +41,7 @@ const PujaTemples = () => {
     const alreadyExists = cart.find(item => item.id === temple.id);
     if (!alreadyExists) {
       const item = {
-        id: temple.id,
+        id: temple.pujaId,
         name: temple.name,
         city: temple.city,
         district: temple.district,

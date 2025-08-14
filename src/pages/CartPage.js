@@ -82,7 +82,7 @@ const CartPage = () => {
         <div className="text-center">
           <p className="fs-5">Your cart is currently empty.</p>
           <Link to="/" className="btn btn-primary mt-3">
-            Continue Shopping
+            Continue Booking
           </Link>
         </div>
       ) : (
@@ -145,7 +145,7 @@ const CartPage = () => {
               ))}
             </div>
             <Link to="/" className="btn btn-link mt-3 fw-bold text-dark">
-              &larr; Continue Shopping
+              &larr; Continue Booking
             </Link>
           </div>
 
