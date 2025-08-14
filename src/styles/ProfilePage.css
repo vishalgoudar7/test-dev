@@ -167,3 +167,19 @@
 .popup-no:hover {
   opacity: 0.9;
 }
+.profile-completion-container {
+  margin-top: 8px;
+}
+
+.profile-progress-bar {
+  width: 100%;
+  background-color: #eee;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.profile-progress-fill {
+  height: 8px;
+  transition: width 0.4s ease;
+}
