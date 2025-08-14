@@ -1,68 +1,107 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
+import google from '../assets/google.jpg';
+import apple from '../assets/apple.jpg';
 import incubatedAt from '../assets/3.png';
+import winnerOf from '../assets/1.png';
 import supported1 from '../assets/digitalindia-logo.jpg';
 import supported2 from '../assets/2.png';
-import winnerOf from '../assets/1.png';
 import supported3 from '../assets/3.png';
 import supported4 from '../assets/4.jpeg';
 import supported5 from '../assets/5.jpeg';
 import supported6 from '../assets/6.png';
-import '../styles/Footer.css';
 
-import { FaPhoneAlt, FaEnvelope, FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram, FaYoutube } from 'react-icons/fa';
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaLinkedinIn,
+  FaInstagram,
+  FaYoutube,
+  FaMapMarkerAlt,
+  FaEnvelope,
+  FaPhoneAlt
+} from 'react-icons/fa';
+import '../styles/Footer.css';
 
 const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-wrapper">
-        
-        {/* Top Section */}
         <div className="footer-top">
 
-          {/* Logo Column */}
-          <div className="footer-column logo-column">
-            <img className="footer-logo" src={logo} alt="Devalaya Logo" />
-            <h6 className="footer-tagline">With Trust & Devotion</h6>
+          {/* Logo + About */}
+          <div className="footer-column about-column">
+            <div className="about-header">
+              <img className="footer-logo" src={logo} alt="Devalaya Logo" />
+              <h6 className="footer-tagline">WITH TRUST & DEVOTION</h6>
+            </div>
             <p className="about-text">
-              DEVALAYA is an innovative spiritual tech platform to fulfill the needs of Devotees & Pandit jis across the globe.
-              We aim to bring local traditions to the global stage to preserve rituals in the modern age.
+              DEVALAYA is an innovative spiritual tech platform to fulfil the needs of Devotee & Pandit ji across the globe.
+              We aim to bring local traditions into the global platform, so that rituals and traditions are not lost in the backdrop of modern advancements.
             </p>
           </div>
 
-          {/* Support Section */}
-          <div className="footer-column">
-            <h5>Support</h5>
+          {/* Support Links */}
+          <div className="footer-column support-column">
+            <h5>SUPPORT</h5>
             <div className="footer-links">
-              <Link to="/TermsAndConditions">Terms & Conditions</Link>
+              <Link to="/">Home</Link>
+              <Link to="/about">About</Link>
+              <Link to="/TermsAndConditions">Terms and Conditions</Link>
               <Link to="/CancellationPolicy">Cancellation Policy</Link>
               <Link to="/RefundPolicy">Refund Policy</Link>
               <Link to="/PrivacyPolicy">Privacy Policy</Link>
             </div>
           </div>
 
-          {/* Contact Section with Icons */}
-          <div className="footer-column">
-            <h5>Contact</h5>
-            <p><FaPhoneAlt style={{ marginRight: '8px' }} /> +91 8951269111</p>
-            <p><FaEnvelope style={{ marginRight: '8px' }} /> info@devalayas.com</p>
-            <div className="social-icons">
-              <a href="https://facebook.com/devalayaonlinepujaapp/" target="_blank" rel="noreferrer">
-                <FaFacebookF />
-              </a>
-              <a href="https://twitter.com/devalayas_app" target="_blank" rel="noreferrer">
-                <FaTwitter />
-              </a>
-              <a href="http://linkedin.com/in/devalayaonlinepujaapp" target="_blank" rel="noreferrer">
-                <FaLinkedinIn />
-              </a>
-              <a href="https://instagram.com/devalaya_app/" target="_blank" rel="noreferrer">
-                <FaInstagram />
-              </a>
-              <a href="https://youtube.com/channel/UCRcWjnz7ybHWy2DfxlHlBpw" target="_blank" rel="noreferrer">
-                <FaYoutube />
-              </a>
+          {/* Contact */}
+          <div className="footer-column contact-column contact-shift">
+            <h5>CONTACT</h5>
+            <div className="contact-item">
+              <FaMapMarkerAlt className="contact-icon" />
+              <div>
+                <strong>Address:</strong>
+                <p>CTS NO 4824/C7, S P Office Road,<br />Belagavi, Karnataka, 590016.</p>
+              </div>
+            </div>
+            <div className="contact-item">
+              <FaEnvelope className="contact-icon" />
+              <div>
+                <strong>Email:</strong>
+                <p>info@devalayas.com</p>
+              </div>
+            </div>
+            <div className="contact-item">
+              <FaPhoneAlt className="contact-icon" />
+              <div>
+                <strong>Phone:</strong>
+                <p>+91 8951269111<br />+91 8296443111</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Social + Download */}
+          <div className="footer-column download-column">
+            <h5>FOLLOW US</h5>
+            <div className="social-icons social-shift">
+              <a href="https://facebook.com/devalayaonlinepujaapp/" target="_blank" rel="noreferrer"><FaFacebookF /></a>
+              <a href="https://instagram.com/devalaya_app/" target="_blank" rel="noreferrer"><FaInstagram /></a>
+              <a href="http://linkedin.com/in/devalayaonlinepujaapp" target="_blank" rel="noreferrer"><FaLinkedinIn /></a>
+              <a href="https://twitter.com/devalayas_app" target="_blank" rel="noreferrer"><FaTwitter /></a>
+              <a href="https://youtube.com/channel/UCRcWjnz7ybHWy2DfxlHlBpw" target="_blank" rel="noreferrer"><FaYoutube /></a>
+            </div>
+
+            <div className="get-app">
+              <h5>GET THE APP</h5>
+              <div className="download-buttons">
+                <a href="https://play.google.com/store/apps/details?id=com.devalaya.devotee" target="_blank" rel="noopener noreferrer">
+                  <img src={google} alt="Google Play" />
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=com.devalaya.devotee" target="_blank" rel="noopener noreferrer">
+                  <img src={apple} alt="App Store" />
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -92,7 +131,7 @@ const Footer = () => {
 
         {/* Footer Bottom */}
         <div className="footer-bottom">
-          © {new Date().getFullYear()} <a href="https://www.devalayas.in/" target="_blank" rel="noreferrer">Devalaya</a>. All rights reserved.
+          © {new Date().getFullYear()} Devalaya. All rights reserved.
         </div>
       </div>
     </footer>
@@ -100,4 +139,3 @@ const Footer = () => {
 };
 
 export default Footer;
-
