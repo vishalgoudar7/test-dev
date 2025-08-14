@@ -1,12 +1,12 @@
 // import React, { useEffect, useState } from "react";
 // import { Link, useNavigate } from "react-router-dom";
 // import { useUserAuth } from "../context/UserAuthContext";
-// import { getDevoteeProfile } from "../api/api";
+// import { getDevoteeProfile } from "../api/api"; // Assuming api.js is in api/api.js
 // import { FaUser, FaPhone, FaPen } from "react-icons/fa";
-// import "../styles/ProfilePage.css";
+// import "../styles/ProfilePage.css"; // Ensure this CSS file is present
 
 // const ProfilePage = () => {
-//   const { profile, logOut } = useUserAuth(); // 'user' removed
+//   const { profile, logOut } = useUserAuth();
 //   const [localProfile, setLocalProfile] = useState(profile || {});
 //   const [apiProfile, setApiProfile] = useState(null);
 //   const [checkoutData, setCheckoutData] = useState({});
@@ -19,6 +19,36 @@
 //       try {
 //         const data = await getDevoteeProfile();
 //         setApiProfile(data);
+
+//         // Update localProfile with API data for display
+//         // Split the 'name' field into firstName and lastName for consistency
+//         const fullName = data.name || "";
+//         const nameParts = fullName.split(' ');
+//         const firstName = nameParts[0] || "";
+//         const lastName = nameParts.slice(1).join(' ') || "";
+
+//         setLocalProfile(prev => ({
+//           ...prev,
+//           firstName: firstName,
+//           lastName: lastName,
+//           phone: data.mobile_number || "",
+//           gender: data.gender || "",
+//           dob: data.dob || "",
+//           placeOfBirth: data.place_of_birth || "",
+//           occupation: data.occupation || "",
+//           kula: data.kula || "", // Populate new fields from API
+//           gotra: data.gotra || "",
+//           rashi: data.rashi || "",
+//           nakshatra: data.nakshatra || "",
+//           street1: data.address || "", // Map to street1
+//           street2: data.street_address || "", // Map to street2
+//           area: data.area || "",
+//           city: data.city || "",
+//           state: data.state || "",
+//           pincode: data.pincode ? String(data.pincode) : "",
+//           sankalpa: data.sankalpa || "",
+//         }));
+
 //       } catch (err) {
 //         console.error('Error fetching API profile:', err);
 //       }
@@ -27,6 +57,7 @@
 //     fetchApiProfile();
 
 //     // Get stored profile data from localStorage (from checkout/other forms)
+//     // This might be redundant if API is primary source, but kept for existing logic
 //     const stored = localStorage.getItem("profile");
 //     if (stored) {
 //       setLocalProfile(JSON.parse(stored));
@@ -37,18 +68,18 @@
 //     if (checkoutStored) {
 //       setCheckoutData(JSON.parse(checkoutStored));
 //     }
-//   }, [profile]);
+//   }, [profile]); // Depend on 'profile' from context, if it's updated externally
 
 //   // Get name from checkout data or local profile, fallback to API profile
-//   const fullName = 
-//     checkoutData.devoteeName || 
+//   const fullName =
+//     checkoutData.devoteeName ||
 //     (localProfile.firstName || localProfile.lastName
 //       ? `${localProfile.firstName || ""} ${localProfile.lastName || ""}`.trim()
 //       : apiProfile?.name || "Your Name");
 
 //   // Get mobile number from API profile first, then fallback to local data
-//   const phoneDisplay = apiProfile?.mobile_number 
-//     ? apiProfile.mobile_number 
+//   const phoneDisplay = apiProfile?.mobile_number
+//     ? apiProfile.mobile_number
 //     : (localProfile?.phone ? `+91${localProfile.phone}` : "Not set");
 
 //   const confirmLogout = async () => {
@@ -69,7 +100,7 @@
 //         </Link>
 //       </div>
 
-//       {!localProfile?.phone && (
+//       {!localProfile?.phone && ( // Check for phone from localProfile (which is updated by API)
 //         <div className="user-compact-warning">
 //           <p>Please complete your profile</p>
 //           <Link to="/profile/edit" className="user-compact-warning-link">
@@ -105,6 +136,24 @@
 //               <label>Occupation</label>
 //               <input type="text" value={localProfile.occupation || ""} readOnly />
 //             </div>
+//             {/* New fields: Kula, Gotra, Rashi, Nakshatra */}
+//             <div className="input-field">
+//               <label>Kula</label>
+//               <input type="text" value={localProfile.kula || ""} readOnly />
+//             </div>
+//             <div className="input-field">
+//               <label>Gotra</label>
+//               <input type="text" value={localProfile.gotra || ""} readOnly />
+//             </div>
+//             <div className="input-field">
+//               <label>Rashi</label>
+//               <input type="text" value={localProfile.rashi || ""} readOnly />
+//             </div>
+//             <div className="input-field">
+//               <label>Nakshatra</label>
+//               <input type="text" value={localProfile.nakshatra || ""} readOnly />
+//             </div>
+//             {/* End of new fields */}
 //           </div>
 //         </div>
 //       </div>
@@ -145,12 +194,13 @@
 
 
 
+// src/pages/ProfilePage.js
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserAuth } from "../context/UserAuthContext";
-import { getDevoteeProfile } from "../api/api"; // Assuming api.js is in api/api.js
-import { FaUser, FaPhone, FaPen } from "react-icons/fa";
-import "../styles/ProfilePage.css"; // Ensure this CSS file is present
+import { getDevoteeProfile } from "../api/api";
+import { FaUser, FaPhone, FaPen, FaHome } from "react-icons/fa";
+import "../styles/ProfilePage.css";
 
 const ProfilePage = () => {
   const { profile, logOut } = useUserAuth();
@@ -161,20 +211,17 @@ const ProfilePage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Get profile data from API
     const fetchApiProfile = async () => {
       try {
         const data = await getDevoteeProfile();
         setApiProfile(data);
 
-        // Update localProfile with API data for display
-        // Split the 'name' field into firstName and lastName for consistency
         const fullName = data.name || "";
-        const nameParts = fullName.split(' ');
+        const nameParts = fullName.split(" ");
         const firstName = nameParts[0] || "";
-        const lastName = nameParts.slice(1).join(' ') || "";
+        const lastName = nameParts.slice(1).join(" ") || "";
 
-        setLocalProfile(prev => ({
+        setLocalProfile((prev) => ({
           ...prev,
           firstName: firstName,
           lastName: lastName,
@@ -183,51 +230,47 @@ const ProfilePage = () => {
           dob: data.dob || "",
           placeOfBirth: data.place_of_birth || "",
           occupation: data.occupation || "",
-          kula: data.kula || "", // Populate new fields from API
+          kula: data.kula || "",
           gotra: data.gotra || "",
           rashi: data.rashi || "",
           nakshatra: data.nakshatra || "",
-          street1: data.address || "", // Map to street1
-          street2: data.street_address || "", // Map to street2
+          street1: data.address || "",
+          street2: data.street_address || "",
           area: data.area || "",
           city: data.city || "",
           state: data.state || "",
           pincode: data.pincode ? String(data.pincode) : "",
           sankalpa: data.sankalpa || "",
         }));
-
       } catch (err) {
-        console.error('Error fetching API profile:', err);
+        console.error("Error fetching API profile:", err);
       }
     };
 
     fetchApiProfile();
 
-    // Get stored profile data from localStorage (from checkout/other forms)
-    // This might be redundant if API is primary source, but kept for existing logic
     const stored = localStorage.getItem("profile");
     if (stored) {
       setLocalProfile(JSON.parse(stored));
     }
 
-    // Get checkout data if available
     const checkoutStored = localStorage.getItem("checkoutData");
     if (checkoutStored) {
       setCheckoutData(JSON.parse(checkoutStored));
     }
-  }, [profile]); // Depend on 'profile' from context, if it's updated externally
+  }, [profile]);
 
-  // Get name from checkout data or local profile, fallback to API profile
   const fullName =
     checkoutData.devoteeName ||
     (localProfile.firstName || localProfile.lastName
       ? `${localProfile.firstName || ""} ${localProfile.lastName || ""}`.trim()
       : apiProfile?.name || "Your Name");
 
-  // Get mobile number from API profile first, then fallback to local data
   const phoneDisplay = apiProfile?.mobile_number
     ? apiProfile.mobile_number
-    : (localProfile?.phone ? `+91${localProfile.phone}` : "Not set");
+    : localProfile?.phone
+    ? `+91${localProfile.phone}`
+    : "Not set";
 
   const confirmLogout = async () => {
     await logOut();
@@ -247,7 +290,7 @@ const ProfilePage = () => {
         </Link>
       </div>
 
-      {!localProfile?.phone && ( // Check for phone from localProfile (which is updated by API)
+      {!localProfile?.phone && (
         <div className="user-compact-warning">
           <p>Please complete your profile</p>
           <Link to="/profile/edit" className="user-compact-warning-link">
@@ -257,6 +300,7 @@ const ProfilePage = () => {
       )}
 
       <div className="user-compact-grid">
+        {/* Contact Info */}
         <div className="user-compact-box">
           <h5>Contact Information</h5>
           <p>
@@ -264,6 +308,7 @@ const ProfilePage = () => {
           </p>
         </div>
 
+        {/* General Info */}
         <div className="user-compact-box">
           <h5>General Information</h5>
           <div className="user-grid-form">
@@ -277,13 +322,20 @@ const ProfilePage = () => {
             </div>
             <div className="input-field">
               <label>Place of Birth</label>
-              <input type="text" value={localProfile.placeOfBirth || ""} readOnly />
+              <input
+                type="text"
+                value={localProfile.placeOfBirth || ""}
+                readOnly
+              />
             </div>
             <div className="input-field">
               <label>Occupation</label>
-              <input type="text" value={localProfile.occupation || ""} readOnly />
+              <input
+                type="text"
+                value={localProfile.occupation || ""}
+                readOnly
+              />
             </div>
-            {/* New fields: Kula, Gotra, Rashi, Nakshatra */}
             <div className="input-field">
               <label>Kula</label>
               <input type="text" value={localProfile.kula || ""} readOnly />
@@ -298,9 +350,50 @@ const ProfilePage = () => {
             </div>
             <div className="input-field">
               <label>Nakshatra</label>
-              <input type="text" value={localProfile.nakshatra || ""} readOnly />
+              <input
+                type="text"
+                value={localProfile.nakshatra || ""}
+                readOnly
+              />
             </div>
-            {/* End of new fields */}
+          </div>
+        </div>
+      </div>
+
+      {/* Address Info */}
+      <div className="user-compact-box" style={{ marginTop: "20px" }}>
+        <h5>
+          <FaHome style={{ marginRight: "6px" }} />
+          Address Details
+        </h5>
+        <div className="user-grid-form">
+          <div className="input-field">
+            <label>Street Address 1</label>
+            <input type="text" value={localProfile.street1 || ""} readOnly />
+          </div>
+          <div className="input-field">
+            <label>Street Address 2</label>
+            <input type="text" value={localProfile.street2 || ""} readOnly />
+          </div>
+          <div className="input-field">
+            <label>Area</label>
+            <input type="text" value={localProfile.area || ""} readOnly />
+          </div>
+          <div className="input-field">
+            <label>City</label>
+            <input type="text" value={localProfile.city || ""} readOnly />
+          </div>
+          <div className="input-field">
+            <label>State</label>
+            <input type="text" value={localProfile.state || ""} readOnly />
+          </div>
+          <div className="input-field">
+            <label>Pincode</label>
+            <input type="text" value={localProfile.pincode || ""} readOnly />
+          </div>
+          <div className="input-field" style={{ gridColumn: "1 / -1" }}>
+            <label>Sankalpa</label>
+            <input type="text" value={localProfile.sankalpa || ""} readOnly />
           </div>
         </div>
       </div>
@@ -309,21 +402,29 @@ const ProfilePage = () => {
         <p>Your personal information is secure with us.</p>
       </div>
 
-      {/* Logout Button */}
       <div className="logout-center">
-        <button className="logout-text-btn" onClick={() => setShowConfirm(true)}>
+        <button
+          className="logout-text-btn"
+          onClick={() => setShowConfirm(true)}
+        >
           Logout
         </button>
       </div>
 
-      {/* Confirmation Popup */}
       {showConfirm && (
         <div className="logout-popup">
           <div className="logout-popup-box">
             <p>Are you sure you want to logout?</p>
             <div className="logout-popup-actions">
-              <button onClick={confirmLogout} className="popup-yes">Yes</button>
-              <button onClick={() => setShowConfirm(false)} className="popup-no">No</button>
+              <button onClick={confirmLogout} className="popup-yes">
+                Yes
+              </button>
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="popup-no"
+              >
+                No
+              </button>
             </div>
           </div>
         </div>
