@@ -250,14 +250,20 @@ const PaymentSuccess = () => {
                     <button className="btn-action-pays btn-download-pays" onClick={downloadInvoice}>
                       <i className="fas fa-download"></i> Download Invoice
                     </button>
-                    <a
-                      href={bookingDetails.invoice}
-                      target="_blank"
-                      rel="noreferrer"
+                    <button
                       className="btn-action-pays btn-view"
+                      onClick={() => {
+                        const win = window.open(bookingDetails.invoice, '_blank');
+                        if (win) {
+                          win.focus();
+                          win.onload = function() {
+                            setTimeout(() => win.print(), 500);
+                          };
+                        }
+                      }}
                     >
-                      <i className="fas fa-eye"></i> View Invoice
-                    </a>
+                      <i className="fas fa-print"></i> Print Invoice
+                    </button>
                   </>
                 )}
                 <button className="btn-action-pays btn-bookings" onClick={() => navigate('/bookings')}>
