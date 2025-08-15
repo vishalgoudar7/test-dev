@@ -104,7 +104,6 @@
   cursor: pointer;
 }
 
-/* Tabs Content */
 .tab-content .col-md-8 {
   padding-top: 0 !important;
 }
@@ -127,7 +126,6 @@
   text-align: justify;
 }
 
-/* Gallery */
 .gallery-img-fixed-size {
   width: 100%;
   height: 220px;
@@ -145,7 +143,6 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
-/* List Group */
 .list-group {
   border: 1px solid #ffe9d6;
   border-radius: 10px;
@@ -179,7 +176,6 @@
   font-weight: 600;
 }
 
-/* Image Zoom Overlay */
 .zoomed-image-overlay {
   position: fixed;
   top: 0;
@@ -240,10 +236,6 @@
   background-color: #ef5b0c;
   color: white;
 }
-
-/* ----------------------------
-   RESPONSIVE MEDIA QUERIES
------------------------------ */
 
 @media (max-width: 1199.98px) {
   .col-md-3 {
