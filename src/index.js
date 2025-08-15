@@ -4,6 +4,10 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/effect-coverflow";
+
 
 // 🔽 Redux
 import { Provider } from 'react-redux';
