@@ -11,15 +11,27 @@ const Prasadam = () => {
     const fetchPrasadam = async () => {
       try {
         setLoading(true);
-        const response = await api.get('/api/v1/devotee/pooja/');
-        const allItems = response.data?.results || [];
 
-        const filtered = allItems.filter((item) =>
+        // Fetch both APIs in parallel
+        const [poojaRes, prasadamRes] = await Promise.all([
+          api.get('/api/v1/devotee/pooja/'),
+          api.get('/api/v1/devotee/prasadam/'),
+        ]);
+
+        // Extract results safely
+        const poojaItems = poojaRes.data?.results || [];
+        const prasadamItems = prasadamRes.data?.results || [];
+
+        // Old filter logic (keep prasadam from pooja API)
+        const filteredPooja = poojaItems.filter((item) =>
           item.name?.toLowerCase().includes('prasadam') ||
           item.name?.toLowerCase().includes('prasad')
         );
 
-        setPrasadamList(filtered);
+        // Merge both API results
+        const combined = [...filteredPooja, ...prasadamItems];
+
+        setPrasadamList(combined);
         setLoading(false);
       } catch (err) {
         console.error('Prasadam API Error:', err);
@@ -34,7 +46,9 @@ const Prasadam = () => {
   const addToCart = (item) => {
     try {
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const existingItem = cart.find((cartItem) => cartItem.id === item.id);
+      // Always use prasadam id, fallback to pooja_prasadam.id if available
+      const prasadamId = item.pooja_prasadam?.id || item.id;
+      const existingItem = cart.find((cartItem) => cartItem.id === prasadamId);
 
       const poojaPrasadam = item.pooja_prasadam || {};
       const cost = poojaPrasadam.cost || item.cost || 0;
@@ -45,6 +59,7 @@ const Prasadam = () => {
       } else {
         cart.push({
           ...item,
+          id: prasadamId,
           quantity: 1,
           cost,
           final_total: finalTotal,
@@ -74,7 +89,7 @@ const Prasadam = () => {
 
   return (
     <div className="prasadam-wrapper">
-      {prasadamList.map((prasadam, index) => {
+      {prasadamList.map((prasadam) => {
         const poojaPrasadam = prasadam.pooja_prasadam || {};
         const imageUrl =
           prasadam.temple?.images?.[0]?.image ||
@@ -95,8 +110,10 @@ const Prasadam = () => {
 
         return (
           <div key={prasadam.id} className="prasadam-card-modern">
+            {/* 🔖 Top Left Label */}
+            <div className="prasadam-top-label">Prasadam</div>
 
-
+            {/* Image */}
             {imageUrl && (
               <div className="prasadam-image-wrapper">
                 <img
@@ -109,7 +126,11 @@ const Prasadam = () => {
                 />
               </div>
             )}
+
+            {/* Title */}
             <h4 className="prasadam-title">🌸 {prasadam.name || poojaPrasadam.name || 'Prasadam'}</h4>
+
+            {/* Content */}
             <div className="prasadam-card-content-modern">
               <p><span className="label">Details:</span> {prasadam.details || poojaPrasadam.details || 'N/A'}</p>
               <p><span className="label">Include's:</span> {includes}</p>
@@ -117,6 +138,7 @@ const Prasadam = () => {
               <p><span className="label">Cost:</span> {costDisplay}</p>
             </div>
 
+            {/* Button */}
             <button
               className="prasadam-book-btn"
               onClick={() => addToCart(prasadam)}

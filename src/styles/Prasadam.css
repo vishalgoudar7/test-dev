@@ -19,6 +19,25 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative; /* Required for absolute positioning of label */
+}
+
+/* 🔖 Top Left Label */
+.prasadam-top-label {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background-color: #f25c05; /* Matches your .label color */
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 6px;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .prasadam-title {

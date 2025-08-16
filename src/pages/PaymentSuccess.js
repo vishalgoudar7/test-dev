@@ -269,7 +269,10 @@ const PaymentSuccess = () => {
                 <button className="btn-action-pays btn-bookings" onClick={() => navigate('/bookings')}>
                   <i className="fas fa-list"></i> View My Bookings
                 </button>
-                <button className="btn-action-pays btn-home" onClick={() => navigate('/')}>
+                <button className="btn-action-pays btn-profile bg-dark" onClick={() => navigate('/profile')}>
+                  <i className="fas fa-user-edit"></i> Complete Your Profile
+                </button>
+                <button className="btn-action-pays btn-home" onClick={() => navigate('/')}> 
                   <i className="fas fa-home"></i> Go to Home
                 </button>
               </div>

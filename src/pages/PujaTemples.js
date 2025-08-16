@@ -23,22 +23,35 @@ const PujaTemples = () => {
             puja.temple.id &&
             puja.temple.name
           ) {
-            templeMap[puja.temple.id] = { ...puja.temple, pujaId: puja.id, cost: puja.amount || 100 };
+            templeMap[puja.temple.id] = {
+              ...puja.temple,
+              pujaId: puja.id,
+              cost: puja.amount || 100,
+              pujaType: puja.puja_type || `${pujaName}`,
+            };
           }
         });
         setTemples(Object.values(templeMap));
+      } catch (error) {
+        console.error('Failed to fetch temples:', error);
+        setTemples([]);
       } finally {
         setLoading(false);
       }
     };
-    fetchTemples();
+
+    if (pujaName) {
+      fetchTemples();
+    } else {
+      setTemples([]);
+      setLoading(false);
+    }
   }, [pujaName]);
 
-  // ✅ UPDATED LINE: Store selected temple in cart and navigate to /cart
   const handleParticipate = (temple) => {
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const alreadyExists = cart.find(item => item.id === temple.pujaId);
 
-    const alreadyExists = cart.find(item => item.id === temple.id);
     if (!alreadyExists) {
       const item = {
         id: temple.pujaId,
@@ -49,11 +62,11 @@ const PujaTemples = () => {
         quantity: 1,
         cost: temple.cost || 100,
         final_total: temple.cost || 100,
-        details: `${temple.city}, ${temple.district}`
+        details: `${temple.city}, ${temple.district}`,
       };
       cart.push(item);
       localStorage.setItem('cart', JSON.stringify(cart));
-      window.dispatchEvent(new Event('storage'));
+      window.dispatchEvent(new Event('storage')); // Notify other components (e.g., cart icon)
     }
 
     navigate('/cart');
@@ -64,13 +77,19 @@ const PujaTemples = () => {
       <h2 style={styles.heading}>{pujaName} is available at:</h2>
       <div style={styles.cardsWrapper}>
         {loading ? (
-          <div>Loading...</div>
+          <div style={styles.loading}>Loading temples...</div>
         ) : temples.length === 0 ? (
           <p>No temples found for this puja.</p>
         ) : (
           temples.map((temple, idx) => (
             <div key={temple.id || idx} style={styles.card}>
+              {/* Top Left Label */}
+              <div style={styles.topLabel}>
+                {temple.pujaType || pujaName}
+              </div>
+
               <div style={styles.cardContent}>
+                {/* Temple Image */}
                 {temple.images && temple.images.length > 0 ? (
                   <img
                     src={temple.images[0].image}
@@ -83,11 +102,17 @@ const PujaTemples = () => {
                 ) : (
                   <div style={styles.noImage}>No Image</div>
                 )}
+
+                {/* Temple Name */}
                 <div style={styles.templeName}>{temple.name}</div>
+
+                {/* Location */}
                 <div style={styles.templeLocation}>
                   {temple.city}, {temple.district}
                 </div>
               </div>
+
+              {/* Action Buttons */}
               <div style={styles.buttonGroup}>
                 <button
                   style={styles.viewButton}
@@ -110,6 +135,7 @@ const PujaTemples = () => {
   );
 };
 
+// ✅ Styles
 const styles = {
   container: {
     padding: '20px',
@@ -138,6 +164,20 @@ const styles = {
     flexDirection: 'column',
     justifyContent: 'space-between',
     height: '340px',
+    position: 'relative', // Required for absolute positioning of label
+  },
+  topLabel: {
+    position: 'absolute',
+    top: '10px',
+    left: '10px',
+    backgroundColor: '#FF8C00', // Vibrant orange
+    color: 'white',
+    fontSize: '12px',
+    fontWeight: 'bold',
+    padding: '6px 10px',
+    borderRadius: '5px',
+    zIndex: 2, // Above content
+    boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
   },
   cardContent: {
     flexGrow: 1,
@@ -201,6 +241,12 @@ const styles = {
     color: '#fff',
     cursor: 'pointer',
     transition: 'background-color 0.3s ease',
+  },
+  loading: {
+    gridColumn: '1 / -1',
+    textAlign: 'center',
+    fontSize: '18px',
+    color: '#555',
   },
 };
 
