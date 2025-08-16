@@ -46,6 +46,7 @@ body {
 
 .prasadam-card-content-modern {
   width: 100%;
+  flex-grow: 1;
 }
 
 .prasadam-card-content-modern p {

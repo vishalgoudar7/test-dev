@@ -95,7 +95,7 @@ const Prasadam = () => {
 
         return (
           <div key={prasadam.id} className="prasadam-card-modern">
-            <h3 className="prasadam-title">🌸 {prasadam.name || poojaPrasadam.name || 'Prasadam'}</h3>
+
 
             {imageUrl && (
               <div className="prasadam-image-wrapper">
@@ -109,7 +109,7 @@ const Prasadam = () => {
                 />
               </div>
             )}
-
+            <h4 className="prasadam-title">🌸 {prasadam.name || poojaPrasadam.name || 'Prasadam'}</h4>
             <div className="prasadam-card-content-modern">
               <p><span className="label">Details:</span> {prasadam.details || poojaPrasadam.details || 'N/A'}</p>
               <p><span className="label">Include's:</span> {includes}</p>
