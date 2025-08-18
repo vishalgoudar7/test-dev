@@ -58,3 +58,87 @@
 // };
 
 // export default TempleImagesCoverflow;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import React, { useEffect, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Autoplay, EffectCoverflow } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/effect-coverflow";
+
+const TempleImagesCoverflow = ({ templeId }) => {
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    fetch(`https://your-api-url.com/temples/${templeId}/images`) // replace with real API
+      .then((res) => res.json())
+      .then((data) => setImages(data))
+      .catch((err) => console.error("Error fetching images:", err));
+  }, [templeId]);
+
+  return (
+    <div style={{ background: "#111", padding: "20px 0", textAlign: "center" }}>
+      <Swiper
+        modules={[Navigation, Autoplay, EffectCoverflow]}
+        navigation={{
+          prevEl: ".custom-prev",
+          nextEl: ".custom-next",
+        }}
+        loop={true}
+        autoplay={{
+          delay: 1500,
+          disableOnInteraction: false,
+        }}
+        effect="coverflow"
+        centeredSlides={true}
+        slidesPerView={3}
+        spaceBetween={30} // Ensures equal spacing between slides
+        grabCursor={true}
+        coverflowEffect={{
+          rotate: 0,
+          stretch: 0,
+          depth: 200,
+          modifier: 1.5,
+          slideShadows: false,
+        }}
+        speed={800}
+        style={{ width: "100%", maxWidth: "1200px", margin: "0 auto" }} // Centers the carousel
+      >
+        {images.map((img, index) => (
+          <SwiperSlide key={index}>
+            <img
+              src={img.url}
+              alt={`Temple Image ${index + 1}`}
+              style={{
+                width: "100%",
+                height: "350px",
+                objectFit: "cover",
+                borderRadius: "10px",
+              }}
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+      <div className="swiper-nav">
+        <button className="custom-prev">PREV</button>
+        <button className="custom-next">NEXT</button>
+      </div>
+    </div>
+  );
+};
+
+export default TempleImagesCoverflow;
