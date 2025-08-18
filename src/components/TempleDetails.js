@@ -337,19 +337,19 @@ const TempleDetails = () => {
                   </ul>
                   <div>
                     <div className="temple-map-container">
-  {temple.latitude && temple.longitude ? (
-    <iframe
-      title="temple-map"
-      loading="lazy"
-      allowFullScreen
-      src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=${encodeURIComponent(
-        temple.name
-      )}&center=${temple.latitude},${temple.longitude}&zoom=15`}
-    ></iframe>
-  ) : (
-    <p className="text-muted text-center">Location not available</p>
-  )}
-</div>
+                      {temple.latitude && temple.longitude ? (
+                        <iframe
+                          title="temple-map"
+                          loading="lazy"
+                          allowFullScreen
+                          src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=${encodeURIComponent(
+                            temple.name
+                          )}&center=${temple.latitude},${temple.longitude}&zoom=15`}
+                        ></iframe>
+                      ) : (
+                        <p className="text-muted text-center">Location not available</p>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

@@ -90,7 +90,7 @@ const MyBookings = () => {
             <input
               type="text"
               className="search-input-my-bookings"
-              placeholder="Search by order ID, devotee name, or temple..."
+              placeholder="Search by order ID or temple..."
               value={meta.search}
               onChange={(e) => setMeta((prev) => ({ ...prev, search: e.target.value }))}
               onKeyDown={handleSearch}
