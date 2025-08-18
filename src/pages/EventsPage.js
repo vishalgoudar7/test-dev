@@ -16,7 +16,6 @@ const EventsPage = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        // Using the correct events API endpoint
         const response = await api.get('/api/v1/devotee/event/');
         const eventList = response.data?.results || [];
         setEvents(eventList);
@@ -25,7 +24,6 @@ const EventsPage = () => {
       } catch (err) {
         console.error('API Error:', err);
         setError('Failed to load events list');
-        // Fallback to mock data for demonstration
         const mockEvents = [
           {
             id: 1,
@@ -36,7 +34,8 @@ const EventsPage = () => {
             temple: { 
               name: 'Sri Krishna Temple',
               images: [{ image: 'https://via.placeholder.com/300x200?text=Diwali+Event' }]
-            }
+            },
+            category: 'Festival'
           },
           {
             id: 2,
@@ -47,7 +46,8 @@ const EventsPage = () => {
             temple: { 
               name: 'Durga Mata Temple',
               images: [{ image: 'https://via.placeholder.com/300x200?text=Navratri+Event' }]
-            }
+            },
+            category: 'Festival'
           },
           {
             id: 3,
@@ -58,7 +58,8 @@ const EventsPage = () => {
             temple: { 
               name: 'Ganesh Temple',
               images: [{ image: 'https://via.placeholder.com/300x200?text=Ganesh+Event' }]
-            }
+            },
+            category: 'Festival'
           }
         ];
         setEvents(mockEvents);
@@ -80,7 +81,6 @@ const EventsPage = () => {
   };
 
   const handleEventClick = (eventName) => {
-    // Navigate to event details page using event name as ID
     navigate(`/events/${encodeURIComponent(eventName)}`);
   };
 
@@ -143,6 +143,11 @@ const EventsPage = () => {
               key={event.id}
               onClick={() => handleEventClick(event.name)}
             >
+              {/* 🔖 Top Left Label */}
+              <div className="event-top-label">
+                {event.category || 'Event'}
+              </div>
+
               <img
                 src={getImageUrl(event)}
                 alt={event.name}

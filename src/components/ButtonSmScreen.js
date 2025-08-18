@@ -1,5 +1,5 @@
 import React from 'react';
-import './ButtonSmScreen.css';
+import '../styles/ButtonSmScreen.css';
 
 const buttons = [
   { name: 'Puja', link: '/puja' },

@@ -17,7 +17,7 @@ import AppInfoSection from "./components/AppInfoSection";
 import Footer from "./components/Footer";
 import SpecialPooja from "./components/SpecialPooja";
 import ButtonSmScreen from "./components/ButtonSmScreen";
-import "./components/ButtonSmScreen.css";
+import "./styles/ButtonSmScreen.css";
 
 function AppWrapper() {
   const location = useLocation();
