@@ -288,34 +288,11 @@
   .card-img-fixed-size { height: 160px; }
 }
 @media (max-width: 767.98px) {
-<<<<<<< HEAD
-  .col-md-3,
-  .col-md-4,
-  .col-md-6 {
-    width: 100% !important;
-  }
-
-  .temple-name {
-    font-size: 1.6rem;
-  }
-
-  .main-temple-carousel-img {
-    max-width: 100%;
-    height: 160px;
-  }
-
-  .gallery-img-fixed-size,
-  .card-img-fixed-size {
-    height: 150px;
-  }
-
-  .zoomed-image-container {
-    width: 95vw;
-    height: 80vh;
-    max-width: none;
-    max-height: none;
-  }
-
+  .col-md-3, .col-md-4, .col-md-6 { width: 100% !important; }
+  .temple-name { font-size: 1.6rem; }
+  .main-temple-carousel-img { max-width: 100%; height: 160px; }
+  .gallery-img-fixed-size, .card-img-fixed-size { height: 150px; }
+  .zoomed-image-container { width: 95vw; height: 80vh; max-width: none; max-height: none; }
   .close-zoomed-image {
     top: 10px;
     right: 10px;
@@ -332,13 +309,5 @@
   .temple-map-container iframe {
     border-radius: 8px;
   }
-=======
-  .col-md-3, .col-md-4, .col-md-6 { width: 100% !important; }
-  .temple-name { font-size: 1.6rem; }
-  .main-temple-carousel-img { max-width: 100%; height: 160px; }
-  .gallery-img-fixed-size, .card-img-fixed-size { height: 150px; }
-  .zoomed-image-container { width: 95vw; height: 80vh; max-width: none; max-height: none; }
-  .close-zoomed-image { top: 10px; right: 10px; width: 35px; height: 35px; font-size: 1.6rem; }
->>>>>>> 9d5504c388fdead5f4d2f62cfb0969cd565491b7
 }
 
