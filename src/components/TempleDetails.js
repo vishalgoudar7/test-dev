@@ -4,10 +4,9 @@ import { useParams } from 'react-router-dom';
 import '../styles/TempleDetails.css';
 import api from '../api/api';
 import { Swiper, SwiperSlide } from "swiper/react";
-import { EffectCoverflow, Navigation, Pagination, Autoplay } from "swiper/modules";
+import { Navigation, Autoplay, EffectCoverflow } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import "swiper/css/pagination";
 import "swiper/css/effect-coverflow";
 
 const TempleDetails = () => {
@@ -236,48 +235,50 @@ const TempleDetails = () => {
         <section className="temple-container-td container">
           <h2 className="temple-name">{temple.name}</h2>
 
-          {/* Coverflow Swiper */}
+          {/* Swiper RENDER */}
           {temple.images?.length > 0 && (
             <div className="temple-images-section text-center">
               <Swiper
+                modules={[Navigation, Autoplay, EffectCoverflow]}
                 effect="coverflow"
-                grabCursor={true}
-                centeredSlides={true}
-                slidesPerView="auto"
-                loop={true}
-                autoplay={{ delay: 3000, disableOnInteraction: false }}
-                coverflowEffect={{
-                  rotate: 50,
-                  stretch: 0,
-                  depth: 100,
-                  modifier: 1,
-                  slideShadows: true,
+                navigation={{
+                  prevEl: ".custom-prev",
+                  nextEl: ".custom-next",
                 }}
-                pagination={{ clickable: true }}
-                navigation
-                modules={[EffectCoverflow, Pagination, Navigation, Autoplay]}
-                className="coverflow-swiper"
+                autoplay={{ delay: 2500, disableOnInteraction: false }}
+                loop={true}
+                centeredSlides={true}
+                slidesPerView={3}
+                spaceBetween={40}
+                speed={800}
+                coverflowEffect={{
+                  rotate: 0,
+                  stretch: 0,
+                  depth: 150,
+                  modifier: 2.5,
+                  slideShadows: false,
+                }}
+                style={{ width: "100%", maxWidth: "1000px", margin: "0 auto" }}
               >
                 {temple.images.map((img, idx) => (
-                  <SwiperSlide key={idx} style={{ width: '300px', height: '300px' }}>
-                    <img
-                      src={getFullImageUrl(img.image)}
-                      alt={`Temple ${idx}`}
-                      onClick={() => handleImageClick(getFullImageUrl(img.image))}
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = require('../assets/Default.png');
-                      }}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        borderRadius: '15px'
-                      }}
-                    />
+                  <SwiperSlide key={idx} className="custom-slide">
+                    <div className="slide-box">
+                      <img
+                        src={getFullImageUrl(img.image)}
+                        alt={`Temple ${idx}`}
+                        className="slide-img"
+                        onClick={() => handleImageClick(getFullImageUrl(img.image))}
+                      />
+                    </div>
                   </SwiperSlide>
                 ))}
               </Swiper>
+
+              {/* Custom Prev / Next Buttons */}
+              <div className="swiper-nav">
+                <button className="custom-prev">PREV</button>
+                <button className="custom-next">NEXT</button>
+              </div>
             </div>
           )}
 

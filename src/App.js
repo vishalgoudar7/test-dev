@@ -16,6 +16,8 @@ import AppInfoSection from "./components/AppInfoSection";
 // import SpecialPujaSection from "./components/SpecialPujaSection";
 import Footer from "./components/Footer";
 import SpecialPooja from "./components/SpecialPooja";
+import ButtonSmScreen from "./components/ButtonSmScreen";
+import "./components/ButtonSmScreen.css";
 
 function AppWrapper() {
   const location = useLocation();
@@ -37,6 +39,7 @@ function AppWrapper() {
   return (
     <>
       <Navbar />
+      <ButtonSmScreen />
 
       <Routes>
         <Route path="/*" element={<AllRouters />} />
