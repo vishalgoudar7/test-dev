@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/api';
 import '../styles/SplpujaDetails.css';
-import { useNavigate } from 'react-router-dom';
 
 const SplpujaDetails = () => {
   const { categoryId, subCategoryId } = useParams();
   const [poojas, setPoojas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [expandedPooja, setExpandedPooja] = useState(null); // Track expanded dropdown
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,9 +36,10 @@ const SplpujaDetails = () => {
     const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
     const existingItemIndex = currentCart.findIndex(item => item.id === pooja.id);
 
-    const itemDetailsForCart = (pooja.temple && pooja.temple.city && pooja.temple.district)
-      ? `${pooja.temple.city}, ${pooja.temple.district}`
-      : '';
+    const itemDetailsForCart =
+      (pooja.temple && pooja.temple.city && pooja.temple.district)
+        ? `${pooja.temple.city}, ${pooja.temple.district}`
+        : '';
 
     const newItem = {
       id: pooja.id,
@@ -72,18 +73,22 @@ const SplpujaDetails = () => {
         <p>No poojas available.</p>
       ) : (
         poojas.map((pooja) => {
-          // Mock rating data (replace with API data if available)
           const rating = pooja.rating || 5.0;
           const devoteeCount = pooja.devotee_count || '10002+';
 
+          const details = pooja.details
+            ?.split('.')
+            .filter(line => line.trim());
+
+          const isExpanded = expandedPooja === pooja.id;
+          const visibleDetails = isExpanded ? details : details?.slice(0, 5);
+
           return (
             <div className="splpuja-card" key={pooja.id}>
-              {/* 🔖 Top Left Label */}
               <div className="splpuja-top-label">
                 {pooja.puja_type || 'Special Puja'}
               </div>
 
-              {/* Image */}
               <img
                 src={pooja.images?.[0]?.image || 'https://via.placeholder.com/350x250'}
                 alt={pooja.name}
@@ -93,29 +98,34 @@ const SplpujaDetails = () => {
                 }}
               />
 
-              {/* Content */}
               <div className="splpuja-content">
                 <h3 className="splpuja-title">{pooja.name}</h3>
 
-                {/* Location */}
                 {pooja.temple && pooja.temple.city && pooja.temple.district && (
                   <div className="splpuja-location">
                     {pooja.temple.city}, {pooja.temple.district}
                   </div>
                 )}
 
-               
-
                 {/* Description */}
                 <ul className="splpuja-description">
-                  {pooja.details
-                    ?.split('.')
-                    .filter(line => line.trim())
-                    .map((point, idx) => (
-                      <li key={idx}>• {point.trim()}</li>
-                    ))}
+                  {visibleDetails?.map((point, idx) => (
+                    <li key={idx}>
+                      • {point.trim()}
+                      {/* Show "Read more" after the last visible bullet */}
+                      {idx === visibleDetails.length - 1 && details?.length > 5 && !isExpanded && (
+                        <span
+                          className="read-more"
+                          onClick={() => setExpandedPooja(pooja.id)}
+                        >
+                          ... Read more
+                        </span>
+                      )}
+                    </li>
+                  ))}
                 </ul>
-                 {/* Rating & Devotees */}
+
+                {/* Rating & Devotees */}
                 <div className="splpuja-rating">
                   <div className="rating-devotees">
                     <span className="devotees-icon">👥</span>
@@ -127,7 +137,6 @@ const SplpujaDetails = () => {
                   </div>
                 </div>
 
-                {/* Bottom Section */}
                 <div className="splpuja-bottom">
                   <span className="splpuja-price">₹ {pooja.original_cost || 'N/A'}</span>
                   <button
