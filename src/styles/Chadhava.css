@@ -1,22 +1,103 @@
-/* src/styles/Chadhava.css */
-.coming-soon-wrapper {
-  height: 80vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 10px;
-  background: #fef5ec;
+.chadhava-wrapper {
+  padding: 30px;
   text-align: center;
+  background: #fdfaf6;
+  min-height: 80vh;
 }
 
-.coming-soon-title {
-  font-size: 2.5rem;
-  color: #f26a1b;
-  margin-bottom: 1rem;
+.chadhava-title {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #4a2c2a;
 }
 
-.coming-soon-text {
-  font-size: 2.5rem;
-  color: #272727;
+.loading-text,
+.error-text,
+.no-items-text {
+  font-size: 18px;
+  margin-top: 20px;
+  color: #555;
+}
+
+.chadhava-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.chadhava-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  transition: transform 0.2s;
+  text-align: left;
+}
+
+.chadhava-card:hover {
+  transform: translateY(-5px);
+}
+
+.chadhava-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.chadhava-name {
+  font-size: 20px;
+  margin: 10px 0 5px;
+  color: #222;
+}
+
+.chadhava-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.chadhava-temple {
+  font-size: 14px;
+  color: #444;
+  margin: 6px 0;
+}
+
+.chadhava-cost {
+  font-size: 14px;
+  color: #2e7d32;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.assigned-items {
+  margin-top: 10px;
+}
+
+.assigned-items h4 {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.assigned-items ul {
+  padding-left: 18px;
+  font-size: 13px;
+  color: #555;
+}
+
+.chadhava-btn {
+  margin-top: 12px;
+  padding: 8px 15px;
+  background: #ff9800;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 100%;
+}
+
+.chadhava-btn:hover {
+  background: #e68900;
 }
