@@ -335,8 +335,9 @@ const TempleDetails = () => {
                     <li className="list-group-item"><strong>Pincode:</strong> {temple.pincode}</li>
                     <li className="list-group-item"><strong>Website:</strong> {temple.website || '-'}</li>
                   </ul>
-                  <div>
-                    <div className="temple-map-container">
+                  <div className="temple-map-section mt-4">
+                    <h5 className="text-center text-danger fw-bold mb-3">📍 Temple Location</h5>
+                    <div className="temple-map-container border rounded shadow-sm">
                       {temple.latitude && temple.longitude ? (
                         <iframe
                           title="temple-map"
@@ -347,7 +348,7 @@ const TempleDetails = () => {
                           )}&center=${temple.latitude},${temple.longitude}&zoom=15`}
                         ></iframe>
                       ) : (
-                        <p className="text-muted text-center">Location not available</p>
+                        <p className="text-muted text-center p-3">Location not available</p>
                       )}
                     </div>
                   </div>

@@ -101,3 +101,30 @@
 .chadhava-btn:hover {
   background: #e68900;
 }
+
+.chadhava-card {
+  position: relative; /* needed for absolute label */
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  transition: 0.3s;
+}
+
+.chadhava-card:hover {
+  transform: translateY(-5px);
+}
+
+.chadhava-label {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #e67e22;   /* orange */
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}

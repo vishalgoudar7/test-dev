@@ -15,7 +15,6 @@ const Chadhava = () => {
         const response = await api.get("/api/v1/devotee/chadhava/");
         console.log("✅ Chadhava API Response:", response.data);
 
-        // Take results array from API
         setChadhavaItems(response.data?.results || []);
       } catch (err) {
         setError("Failed to load Chadhava items. Please try again.");
@@ -46,6 +45,9 @@ const Chadhava = () => {
 
               return (
                 <div key={item.id} className="chadhava-card">
+                  {/* 🔹 Label inside card */}
+                  <div className="chadhava-label">Chadhava</div>
+
                   <img
                     src={templeImage}
                     alt={item.temple?.name || item.name}
