@@ -314,3 +314,22 @@
     justify-content: center;
   }
 }
+.read-more,
+.show-less {
+  color: #e67e22;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.show-less {
+  display: inline-block;
+  margin-top: 8px;
+}
+.read-more,
+.show-less {
+  color: #e67e22;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 6px;
+}

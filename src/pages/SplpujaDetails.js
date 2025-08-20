@@ -107,23 +107,33 @@ const SplpujaDetails = () => {
                   </div>
                 )}
 
-                {/* Description */}
-                <ul className="splpuja-description">
-                  {visibleDetails?.map((point, idx) => (
-                    <li key={idx}>
-                      • {point.trim()}
-                      {/* Show "Read more" after the last visible bullet */}
-                      {idx === visibleDetails.length - 1 && details?.length > 5 && !isExpanded && (
-                        <span
-                          className="read-more"
-                          onClick={() => setExpandedPooja(pooja.id)}
-                        >
-                          ... Read more
-                        </span>
-                      )}
-                    </li>
-                  ))}
-                </ul>
+{/* Description */}
+<ul className="splpuja-description">
+  {visibleDetails?.map((point, idx) => (
+    <li key={idx}>
+      • {point.trim()}
+      {/* Show "Read more" after the last visible bullet */}
+      {idx === visibleDetails.length - 1 && details?.length > 5 && !isExpanded && (
+        <span
+          className="read-more"
+          onClick={() => setExpandedPooja(pooja.id)}
+        >
+          ... Read more
+        </span>
+      )}
+      {/* Show "Show less" at the end when expanded */}
+      {idx === details.length - 1 && isExpanded && details?.length > 5 && (
+        <span
+          className="show-less"
+          onClick={() => setExpandedPooja(null)}
+        >
+          ... Show less ▲
+        </span>
+      )}
+    </li>
+  ))}
+</ul>
+
 
                 {/* Rating & Devotees */}
                 <div className="splpuja-rating">
