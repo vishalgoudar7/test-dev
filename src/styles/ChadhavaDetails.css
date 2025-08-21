@@ -1,0 +1,131 @@
+/* ChadhavaDetails.css */
+
+/* Wrapper for the entire page */
+.chadhava-wrapper {
+  padding: 30px;
+  text-align: center;
+  background: #fdfaf6;
+  min-height: 80vh;
+}
+
+/* Title styling */
+.chadhava-title {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #4a2c2a;
+}
+
+/* Error text */
+.error-text {
+  font-size: 18px;
+  margin-top: 20px;
+  color: #555;
+}
+
+/* Details container */
+.chadhava-details {
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* Image styling */
+.chadhava-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* Name and description */
+.chadhava-name {
+  font-size: 20px;
+  margin: 10px 0 5px;
+  color: #222;
+}
+
+/* Description */
+.chadhava-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+/* Temple and cost details */
+.chadhava-temple {
+  font-size: 14px;
+  color: #444;
+  margin: 6px 0;
+}
+
+.chadhava-temple strong {
+  color: #222;
+}
+
+.chadhava-cost {
+  font-size: 14px;
+  color: #2e7d32;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.chadhava-cost strong {
+  color: #2e7d32;
+}
+
+/* Assigned items section */
+.assigned-items {
+  margin-top: 10px;
+}
+
+.assigned-items h4 {
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #222;
+}
+
+.assigned-items ul {
+  padding-left: 18px;
+  font-size: 13px;
+  color: #555;
+}
+
+/* Button styling */
+.chadhava-btn {
+  margin-top: 12px;
+  padding: 8px 15px;
+  background: #ff9800;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 100%;
+}
+
+.chadhava-btn:hover {
+  background: #e68900;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .chadhava-wrapper {
+    padding: 15px;
+  }
+
+  .chadhava-title {
+    font-size: 24px;
+  }
+
+  .chadhava-details {
+    padding: 10px;
+  }
+
+  .chadhava-image {
+    height: 150px;
+  }
+}

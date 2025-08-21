@@ -32,6 +32,7 @@ import SubCategoryPage from "../pages/SubCategoryPage";
 import SplpujaDetails from "../pages/SplpujaDetails";
 import PujaTemples from "../pages/PujaTemples";
 import Chadhava from "../pages/Chadhava";
+import ChadhavaDetails from "../pages/ChadhavaDetails";
 
 
 
@@ -72,6 +73,7 @@ const AllRouters = () => {
       <Route path="/puja-temples" element={<PujaTemples />} />
       <Route path="/puja-details/:id" element={<PujaDetails />} />
       <Route path="/chadhava" element={<Chadhava />} />
+      <Route path="/chadhava/:id" element={<ChadhavaDetails />} />
     
     </Routes>
   );
