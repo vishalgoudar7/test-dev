@@ -48,6 +48,7 @@
   letter-spacing: 0.8px;
   backdrop-filter: blur(4px);
   border: 1px solid rgba(255, 150, 0, 0.3);
+  animation: blink 1s infinite;
 }
 
 /* Image styling */
@@ -332,4 +333,10 @@
   font-weight: 600;
   cursor: pointer;
   margin-left: 6px;
+}
+
+@keyframes blink {
+  0% { color: white; }
+  50% { color: transparent; }
+  100% { color: white; }
 }

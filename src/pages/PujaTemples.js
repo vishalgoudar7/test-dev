@@ -10,6 +10,23 @@ const PujaTemples = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const styleSheet = document.createElement("style");
+    styleSheet.type = "text/css";
+    styleSheet.innerText = `
+      @keyframes blink {
+        0% { color: white; }
+        50% { color: transparent; }
+        100% { color: white; }
+      }
+    `;
+    document.head.appendChild(styleSheet);
+
+    return () => {
+      document.head.removeChild(styleSheet);
+    };
+  }, []);
+
+  useEffect(() => {
     const fetchTemples = async () => {
       try {
         const response = await api.get('/api/v1/devotee/pooja/');
@@ -178,6 +195,7 @@ const styles = {
     borderRadius: '5px',
     zIndex: 2, // Above content
     boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+    animation: 'blink 1s infinite',
   },
   cardContent: {
     flexGrow: 1,

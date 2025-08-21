@@ -33,7 +33,7 @@
 
 .status-header {
   text-align: center;
-  padding: 5px 30px 30px;
+  padding: 5px 30px 10px;
   background: linear-gradient(135deg, #fff8f3 0%, #fef5ec 100%);
   position: relative;
 }
@@ -99,7 +99,7 @@
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   gap: 30px;
-  padding: 40px 30px;
+  padding: 10px 30px;
   min-height: 300px;
 }
 

@@ -38,6 +38,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   white-space: nowrap;
+  animation: blink 1s infinite;
 }
 
 .prasadam-title {
@@ -102,4 +103,10 @@ body {
   .prasadam-card-modern {
     width: 90%;
   }
+}
+
+@keyframes blink {
+  0% { color: white; }
+  50% { color: transparent; }
+  100% { color: white; }
 }

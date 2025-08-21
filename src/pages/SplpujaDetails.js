@@ -74,7 +74,7 @@ const SplpujaDetails = () => {
       ) : (
         poojas.map((pooja) => {
           const rating = pooja.rating || 5.0;
-          const devoteeCount = pooja.devotee_count || '10002+';
+          const devoteeCount = pooja.devotee_count || '9999+';
 
           const details = pooja.details
             ?.split('.')
