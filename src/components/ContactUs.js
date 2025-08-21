@@ -1,4 +1,3 @@
-// src/components/ContactUs.js
 import React from 'react';
 import '../styles/ContactUs.css';
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
