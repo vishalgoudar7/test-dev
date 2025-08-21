@@ -151,8 +151,7 @@ const Chadhava = () => {
   }, []);
 
   const handleOfferNow = (item) => {
-    // Pass only assigned_items to the details page
-    navigate(`/chadhava/${item.id}`, { state: { assignedItems: item.assigned_items || [] } });
+    navigate(`/chadhava/${item.id}`, { state: { item: item } });
   };
 
   return (
