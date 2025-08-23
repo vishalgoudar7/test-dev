@@ -152,7 +152,7 @@ import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import google from '../assets/google.jpg';
 import apple from '../assets/apple.jpg';
-import incubatedAt from '../assets/3.png';
+import incubatedAt from '../assets/ginserve.jpg';
 import winnerOf from '../assets/1.png';
 import supported1 from '../assets/digitalindia-logo.jpg';
 import supported2 from '../assets/2.png';
