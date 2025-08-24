@@ -45,7 +45,6 @@ const Chadhava = () => {
             chadhavaItems.map((item) => {
               const templeImage =
                 item.temple?.images?.[0]?.image || "/placeholder.png";
-              const pooja = item.pooja_chadhava;
               const assignedItems = item.assigned_items || [];
 
               return (
