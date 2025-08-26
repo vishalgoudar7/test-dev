@@ -618,7 +618,7 @@ const ChadhavaDetails = () => {
                     <span>₹{charges.shipping.toFixed(2)}</span>
                   </div>
                   <div className="price-row">
-                    <span>GST (5%)</span>
+                    <span>GST </span>
                     <span>₹{charges.gst.toFixed(2)}</span>
                   </div>
                   <div className="price-row total">
