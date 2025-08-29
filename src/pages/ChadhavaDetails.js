@@ -19,7 +19,7 @@ const loadRazorpayScript = () => {
 // Fetch Razorpay Key
 const fetchRazorpayKey = async () => {
   try {
-    const response = await api.get("/api/v1/devotee/payment_key/");
+    const response = await api.get("https://beta.devalayas.com/api/v1/devotee/payment_key/");
     return response.data.key;
   } catch (err) {
     console.error("Failed to load Razorpay key:", err);
@@ -37,21 +37,23 @@ const ChadhavaDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [orderDetails, setOrderDetails] = useState(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
-  // Checkout form state — now includes familyMember
+  // Checkout form state
   const [address, setAddress] = useState({
     bookingDate: "",
     devoteeName: "",
     devoteeMobile: "",
     sankalpa: "",
     nakshatra: "",
+    familyMember: "",
     street1: "",
     street2: "",
     area: "",
     city: "",
     state: "",
     pincode: "",
-    familyMember: "", // 👈 NEW: Added family_member
   });
 
   const [errors, setErrors] = useState({});
@@ -68,7 +70,7 @@ const ChadhavaDetails = () => {
     const fetchChadhavas = async () => {
       try {
         setLoading(true);
-        const res = await api.get("/api/v1/devotee/chadhava/");
+        const res = await api.get("https://beta.devalayas.com/api/v1/devotee/chadhava/");
         const data = res.data;
 
         const allItems = data?.results?.length
@@ -127,11 +129,12 @@ const ChadhavaDetails = () => {
     }
 
     // Prefill from profile
+    const devoteeName = `${profile?.firstName || ""} ${profile?.lastName || ""}`.trim();
     setAddress((prev) => ({
       ...prev,
-      devoteeName: `${profile?.firstName || ""} ${profile?.lastName || ""}`.trim(),
+      devoteeName: devoteeName,
       devoteeMobile: profile?.phone || "",
-      familyMember: "Self", // Default value
+      familyMember: devoteeName,
     }));
 
     // Calculate total
@@ -165,13 +168,13 @@ const ChadhavaDetails = () => {
       newErrors.devoteeMobile = "Valid 10-digit mobile";
     if (!address.sankalpa) newErrors.sankalpa = "Required";
     if (!address.nakshatra) newErrors.nakshatra = "Required";
+    if (!address.familyMember) newErrors.familyMember = "Required";
     if (!address.street1) newErrors.street1 = "Required";
     if (!address.area) newErrors.area = "Required";
     if (!address.city) newErrors.city = "Required";
     if (!address.state) newErrors.state = "Required";
     if (!address.pincode || !/^\d{6}$/.test(address.pincode))
       newErrors.pincode = "6-digit pincode";
-    if (!address.familyMember) newErrors.familyMember = "Required"; // ✅ Validation added
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -187,6 +190,7 @@ const ChadhavaDetails = () => {
       const payload = {
         requests: selectedItems.map((item) => ({
           is_chadhava: true,
+          is_prasadam_delivery: true, // Always true to get delivery charges
           pooja: item.poojaId,
           temple: item.templeId,
           requested_chadhava_items: [
@@ -201,7 +205,7 @@ const ChadhavaDetails = () => {
           devotee_number: `+91${address.devoteeMobile}`,
           sankalpa: address.sankalpa,
           nakshatra: address.nakshatra,
-          family_member: [{ name: address.familyMember }], // ✅ Changed to list of objects
+          family_member: [{ name: address.familyMember }],
           prasadam_address: {
             name: address.devoteeName,
             street_address_1: address.street1,
@@ -227,12 +231,12 @@ const ChadhavaDetails = () => {
 
       console.log("Payload sent to backend:", payload);
 
-      const response = await api.post("/api/v1/devotee/bulk_pooja_request/", payload);
+      const response = await api.post("https://beta.devalayas.com/api/v1/devotee/bulk_pooja_request/", payload);
       const order = Array.isArray(response.data) ? response.data[0] : response.data;
 
-      localStorage.setItem("checkoutData", JSON.stringify(address));
+      setOrderDetails(order);
+      setShowConfirmation(true);
       setLoading(false);
-      initiatePayment(order);
     } catch (err) {
       setLoading(false);
       console.error("Order creation failed:", err);
@@ -267,6 +271,7 @@ const ChadhavaDetails = () => {
           const payload = {
             razorpay_response: rz_response,
             request_id: rz_response.razorpay_payment_id,
+            family_member: [{ name: address.familyMember }],
             billing_address: {
               name: address.devoteeName,
               phone_number: address.devoteeMobile,
@@ -279,10 +284,10 @@ const ChadhavaDetails = () => {
             },
           };
           console.log("Payment verification payload:", payload);
-          const verificationResponse = await api.post("/api/v1/devotee/pooja_request/payment/", payload);
+          const verificationResponse = await api.post("https://beta.devalayas.com/api/v1/devotee/pooja_request/payment/", payload);
 
           if (verificationResponse.data.success) {
-            const orderDetailsResponse = await api.get(`/api/v1/devotee/pooja_request/list/?search=${order.order_id}`);
+            const orderDetailsResponse = await api.get(`https://beta.devalayas.com/api/v1/devotee/pooja_request/list/?search=${order.order_id}`);
             handleCloseCheckout();
             navigate(`/payment-success?payment_id=${rz_response.razorpay_payment_id}&order_id=${order.order_id}&status=success`, { state: { orderDetails: orderDetailsResponse.data } });
           } else {
@@ -332,6 +337,7 @@ const ChadhavaDetails = () => {
 
   return (
     <div className="chadhava-wrapper">
+      
       <h1 className="chadhava-title">🛕 Assigned Items</h1>
 
       <div className="chadhava-details">
@@ -346,18 +352,13 @@ const ChadhavaDetails = () => {
                 />
                 <div className="assigned-item-details">
                   <div className="assigned-item-name">
-                    <input
-                      type="checkbox"
-                      checked={selectedItems.some((si) => si.id === item.id)}
-                      onChange={() => handleSelectItem(item)}
-                    />
                     <label>{item.name}</label>
                   </div>
-                  <p className="assigned-item-description">{item.description}</p>
-                  <p className="assigned-item-cost">₹{item.cost.toFixed(2)}</p>
+                  <p className="assigned-item-description">{item.description}</p>               
                   <p className="assigned-item-meta">Temple: {item.temple}</p>
+                  <p className="assigned-item-cost">Cost: ₹{item.cost.toFixed(2)}</p>
 
-                  {selectedItems.some((si) => si.id === item.id) && (
+                  {selectedItems.some((si) => si.id === item.id) ? (
                     <div style={{ marginTop: "6px", fontSize: "13px" }}>
                       <label>Qty: </label>
                       <button
@@ -375,7 +376,10 @@ const ChadhavaDetails = () => {
                       >
                         −
                       </button>
-                      <span style={{ margin: "0 8px" }}>{item.quantity || 1}</span>
+                      <span style={{ margin: "0 8px" }}>
+                        {selectedItems.find((si) => si.id === item.id)
+                          ?.quantity || 1}
+                      </span>
                       <button
                         onClick={() =>
                           updateQuantity(item.id, (item.quantity || 1) + 1)
@@ -391,7 +395,16 @@ const ChadhavaDetails = () => {
                         +
                       </button>
                     </div>
-                  )}
+                  ) : null}
+
+                  <button
+                    className="add-btn"
+                    onClick={() => handleSelectItem(item)}
+                  >
+                    {selectedItems.some((si) => si.id === item.id)
+                      ? "Remove"
+                      : "Add"}
+                  </button>
                 </div>
               </li>
             ))}
@@ -418,192 +431,196 @@ const ChadhavaDetails = () => {
             </div>
 
             <div className="chadhava-checkout-body">
-              <div className="chadhava-item-summary">
-                <h4>Selected Items ({selectedItems.length})</h4>
-                {selectedItems.map((item) => (
-                  <p key={item.id}>
-                    {item.name} × {item.quantity || 1} @ ₹{item.cost.toFixed(2)}
-                  </p>
-                ))}
+              <div className="checkout-form">
+                <form onSubmit={handleSubmit}>
+                  <div className="form-scrollable-area">
+                    <div className="form-group">
+                      <label>Booking Date <span className="required-star">*</span></label>
+                      <input
+                        type="date"
+                        name="bookingDate"
+                        value={address.bookingDate}
+                        onChange={handleInputChange}
+                        min={new Date().toISOString().split("T")[0]}
+                        required
+                      />
+                      {errors.bookingDate && (
+                        <span className="error">{errors.bookingDate}</span>
+                      )}
+                    </div>
+
+                    <div className="form-group">
+                      <label>Devotee Name <span className="required-star">*</span></label>
+                      <input
+                        type="text"
+                        name="devoteeName"
+                        value={address.devoteeName}
+                        onChange={handleInputChange}
+                        placeholder="Full Name"
+                      />
+                      {errors.devoteeName && (
+                        <span className="error">{errors.devoteeName}</span>
+                      )}
+                    </div>
+
+                    <div className="form-group">
+                      <label>Mobile Number <span className="required-star">*</span></label>
+                      <input
+                        type="tel"
+                        name="devoteeMobile"
+                        value={address.devoteeMobile}
+                        onChange={handleInputChange}
+                        placeholder="10-digit number"
+                        maxLength={10}
+                      />
+                      {errors.devoteeMobile && (
+                        <span className="error">{errors.devoteeMobile}</span>
+                      )}
+                    </div>
+
+                    <div className="form-group">
+                      <label>Sankalpa <span className="required-star">*</span></label>
+                      <input
+                        type="text"
+                        name="sankalpa"
+                        value={address.sankalpa}
+                        onChange={handleInputChange}
+                        placeholder="e.g., For health and prosperity"
+                      />
+                      {errors.sankalpa && (
+                        <span className="error">{errors.sankalpa}</span>
+                      )}
+                    </div>
+
+                    <div className="form-group">
+                      <label>Nakshatra <span className="required-star">*</span></label>
+                      <input
+                        type="text"
+                        name="nakshatra"
+                        value={address.nakshatra}
+                        onChange={handleInputChange}
+                        placeholder="e.g., Rohini, Mrigashira"
+                      />
+                      {errors.nakshatra && (
+                        <span className="error">{errors.nakshatra}</span>
+                      )}
+                    </div>
+
+                    <div className="form-group">
+                      <label>Offering For <span className="required-star">*</span></label>
+                      <input
+                        type="text"
+                        name="familyMember"
+                        value={address.familyMember}
+                        onChange={handleInputChange}
+                        placeholder="e.g., Self, Father, Mother"
+                      />
+                      {errors.familyMember && (
+                        <span className="error">{errors.familyMember}</span>
+                      )}
+                    </div>
+
+                    <h5 style={{ marginTop: "16px" }}>
+                      Prasadam Delivery Address
+                    </h5>
+
+                    <div className="form-group">
+                      <label>Street Address 1 <span className="required-star">*</span></label>
+                      <input
+                        type="text"
+                        name="street1"
+                        value={address.street1}
+                        onChange={handleInputChange}
+                        placeholder="House, Street"
+                      />
+                      {errors.street1 && (
+                        <span className="error">{errors.street1}</span>
+                      )}
+                    </div>
+
+                    <div className="form-group">
+                      <label>Street Address 2 (Optional)</label>
+                      <input
+                        type="text"
+                        name="street2"
+                        value={address.street2}
+                        onChange={handleInputChange}
+                        placeholder="Apartment, floor"
+                      />
+                    </div>
+
+                    <div className="form-row">
+                      <div className="form-group half">
+                        <label>Area <span className="required-star">*</span></label>
+                        <input
+                          type="text"
+                          name="area"
+                          value={address.area}
+                          onChange={handleInputChange}
+                        />
+                        {errors.area && (
+                          <span className="error">{errors.area}</span>
+                        )}
+                      </div>
+                      <div className="form-group half">
+                        <label>Pincode *</label>
+                        <input
+                          type="text"
+                          name="pincode"
+                          value={address.pincode}
+                          onChange={handleInputChange}
+                          maxLength={6}
+                        />
+                        {errors.pincode && (
+                          <span className="error">{errors.pincode}</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="form-row">
+                      <div className="form-group half">
+                        <label>City <span className="required-star">*</span></label>
+                        <input
+                          type="text"
+                          name="city"
+                          value={address.city}
+                          onChange={handleInputChange}
+                        />
+                        {errors.city && (
+                          <span className="error">{errors.city}</span>
+                        )}
+                      </div>
+                      <div className="form-group half">
+                        <label>State <span className="required-star">*</span></label>
+                        <input
+                          type="text"
+                          name="state"
+                          value={address.state}
+                          onChange={handleInputChange}
+                        />
+                        {errors.state && (
+                          <span className="error">{errors.state}</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" className="pay-btn" disabled={loading}>
+                    {loading
+                      ? "Processing..."
+                      : `Save address and Proceed to payment`}
+                  </button>
+                </form>
               </div>
-
-              <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                  <label>Booking Date *</label>
-                  <input
-                    type="date"
-                    name="bookingDate"
-                    value={address.bookingDate}
-                    onChange={handleInputChange}
-                    min={new Date().toISOString().split("T")[0]}
-                    required
-                  />
-                  {errors.bookingDate && (
-                    <span className="error">{errors.bookingDate}</span>
-                  )}
+              <div className="checkout-summary">
+                <div className="chadhava-item-summary">
+                  <h4>Selected Items ({selectedItems.length})</h4>
+                  {selectedItems.map((item) => (
+                    <p key={item.id}>
+                      {item.name} × {item.quantity || 1} @ ₹
+                      {item.cost.toFixed(2)}
+                    </p>
+                  ))}
                 </div>
-
-                <div className="form-group">
-                  <label>Devotee Name *</label>
-                  <input
-                    type="text"
-                    name="devoteeName"
-                    value={address.devoteeName}
-                    onChange={handleInputChange}
-                    placeholder="Full Name"
-                  />
-                  {errors.devoteeName && (
-                    <span className="error">{errors.devoteeName}</span>
-                  )}
-                </div>
-
-                <div className="form-group">
-                  <label>Mobile Number *</label>
-                  <input
-                    type="tel"
-                    name="devoteeMobile"
-                    value={address.devoteeMobile}
-                    onChange={handleInputChange}
-                    placeholder="10-digit number"
-                    maxLength={10}
-                  />
-                  {errors.devoteeMobile && (
-                    <span className="error">{errors.devoteeMobile}</span>
-                  )}
-                </div>
-
-                <div className="form-group">
-                  <label>Sankalpa *</label>
-                  <input
-                    type="text"
-                    name="sankalpa"
-                    value={address.sankalpa}
-                    onChange={handleInputChange}
-                    placeholder="e.g., For health and prosperity"
-                  />
-                  {errors.sankalpa && (
-                    <span className="error">{errors.sankalpa}</span>
-                  )}
-                </div>
-
-                <div className="form-group">
-                  <label>Nakshatra *</label>
-                  <input
-                    type="text"
-                    name="nakshatra"
-                    value={address.nakshatra}
-                    onChange={handleInputChange}
-                    placeholder="e.g., Rohini, Mrigashira"
-                  />
-                  {errors.nakshatra && (
-                    <span className="error">{errors.nakshatra}</span>
-                  )}
-                </div>
-
-                {/* Family Member Dropdown */}
-                <div className="form-group">
-                  <label>Offering For *</label>
-                  <select
-                    name="familyMember"
-                    value={address.familyMember}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="">Select member</option>
-                    <option value="Self">Self</option>
-                    <option value="Father">Father</option>
-                    <option value="Mother">Mother</option>
-                    <option value="Brother">Brother</option>
-                    <option value="Sister">Sister</option>
-                    <option value="Son">Son</option>
-                    <option value="Daughter">Daughter</option>
-                    <option value="Other">Other</option>
-                  </select>
-                  {errors.familyMember && (
-                    <span className="error">{errors.familyMember}</span>
-                  )}
-                </div>
-
-                <h5 style={{ marginTop: "16px" }}>Prasadam Delivery Address</h5>
-
-                <div className="form-group">
-                  <label>Street Address 1 *</label>
-                  <input
-                    type="text"
-                    name="street1"
-                    value={address.street1}
-                    onChange={handleInputChange}
-                    placeholder="House, Street"
-                  />
-                  {errors.street1 && (
-                    <span className="error">{errors.street1}</span>
-                  )}
-                </div>
-
-                <div className="form-group">
-                  <label>Street Address 2 (Optional)</label>
-                  <input
-                    type="text"
-                    name="street2"
-                    value={address.street2}
-                    onChange={handleInputChange}
-                    placeholder="Apartment, floor"
-                  />
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group half">
-                    <label>Area *</label>
-                    <input
-                      type="text"
-                      name="area"
-                      value={address.area}
-                      onChange={handleInputChange}
-                    />
-                    {errors.area && <span className="error">{errors.area}</span>}
-                  </div>
-                  <div className="form-group half">
-                    <label>Pincode *</label>
-                    <input
-                      type="text"
-                      name="pincode"
-                      value={address.pincode}
-                      onChange={handleInputChange}
-                      maxLength={6}
-                    />
-                    {errors.pincode && (
-                      <span className="error">{errors.pincode}</span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group half">
-                    <label>City *</label>
-                    <input
-                      type="text"
-                      name="city"
-                      value={address.city}
-                      onChange={handleInputChange}
-                    />
-                    {errors.city && (
-                      <span className="error">{errors.city}</span>
-                    )}
-                  </div>
-                  <div className="form-group half">
-                    <label>State *</label>
-                    <input
-                      type="text"
-                      name="state"
-                      value={address.state}
-                      onChange={handleInputChange}
-                    />
-                    {errors.state && (
-                      <span className="error">{errors.state}</span>
-                    )}
-                  </div>
-                </div>
-
                 <div className="price-summary">
                   <div className="price-row">
                     <span>Subtotal</span>
@@ -611,26 +628,77 @@ const ChadhavaDetails = () => {
                   </div>
                   <div className="price-row">
                     <span>Convenience Fee</span>
-                    <span>₹{charges.convenienceFee.toFixed(2)}</span>
+                    <p>To be calculated</p>
                   </div>
                   <div className="price-row">
                     <span>Shipping</span>
-                    <span>₹{charges.shipping.toFixed(2)}</span>
+                    <p>To be calculated</p>
+                   
                   </div>
                   <div className="price-row">
                     <span>GST </span>
-                    <span>₹{charges.gst.toFixed(2)}</span>
+                    <p>To be calculated</p>
+                    
                   </div>
                   <div className="price-row total">
                     <span>Total</span>
-                    <span>₹{charges.total.toFixed(2)}</span>
+                    <p>To be calculated</p>
+                
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
-                <button type="submit" className="pay-btn" disabled={loading}>
-                  {loading ? "Processing..." : `Pay ₹${charges.total.toFixed(2)} Now`}
-                </button>
-              </form>
+      {showConfirmation && orderDetails && (
+        <div className="chadhava-checkout-overlay">
+          <div className="chadhava-checkout-modal">
+            <div className="chadhava-checkout-header">
+              <h3>Confirm Your Order</h3>
+              <button className="close-btn" onClick={() => setShowConfirmation(false)}>
+                ✕
+              </button>
+            </div>
+            <div className="chadhava-checkout-body">
+              <div className="confirmation-details">
+                <h4>Delivery Address</h4>
+                <p>{address.devoteeName}</p>
+                <p>{address.street1}</p>
+                {address.street2 && <p>{address.street2}</p>}
+                <p>{address.area}, {address.city}, {address.state} - {address.pincode}</p>
+                <p>Mobile: {address.devoteeMobile}</p>
+
+                <div className="price-summary" style={{ marginTop: '20px' }}>
+                  <h4>Price Details</h4>
+                  <div className="price-row">
+                    <span>Chadhava Cost</span>
+                    <span>₹{orderDetails.payment_data.original_chadhava_cost}</span>
+                  </div>
+                  <div className="price-row">
+                    <span>Convenience Fee</span>
+                    <span>₹{orderDetails.payment_data.convenience_fee}</span>
+                  </div>
+                  <div className="price-row">
+                    <span>Delivery Charge</span>
+                    <span>₹{orderDetails.payment_data.delivery_charge}</span>
+                  </div>
+                  <div className="price-row">
+                    <span>Tax</span>
+                    <span>₹{orderDetails.payment_data.total_tax}</span>
+                  </div>
+                  <div className="price-row total">
+                    <span>Total</span>
+                    <span>₹{orderDetails.payment_data.final_total}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="chadhava-checkout-footer">
+              <button className="pay-btn" onClick={() => initiatePayment(orderDetails)}>
+                Confirm and Pay
+              </button>
             </div>
           </div>
         </div>
