@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useUserAuth } from "../context/UserAuthContext";
 import api from "../api/api";
 import "../styles/ChadhavaDetails.css";
+import TempleImageGallery from "../components/TempleImageGallery";
 
 // Load Razorpay
 const loadRazorpayScript = () => {
@@ -75,19 +76,19 @@ const ChadhavaDetails = () => {
 
         const allItems = data?.results?.length
           ? data.results.flatMap((chadhava) =>
-              chadhava.assigned_items.map((item) => ({
-                id: item.id,
-                name: item.name,
-                description: item.description,
-                cost: parseFloat(item.cost) || 0,
-                image: item.image,
-                pooja: chadhava.pooja_chadhava?.name || "Chadhava",
-                temple: chadhava.pooja_chadhava?.temple?.name || "Unknown Temple",
-                templeId: chadhava.pooja_chadhava?.temple?.id,
-                poojaId: chadhava.pooja_chadhava?.id,
-                quantity: 1,
-              }))
-            )
+            chadhava.assigned_items.map((item) => ({
+              id: item.id,
+              name: item.name,
+              description: item.description,
+              cost: parseFloat(item.cost) || 0,
+              image: item.image,
+              pooja: chadhava.pooja_chadhava?.name || "Chadhava",
+              temple: chadhava.pooja_chadhava?.temple?.name || "Unknown Temple",
+              templeId: chadhava.pooja_chadhava?.temple?.id,
+              poojaId: chadhava.pooja_chadhava?.id,
+              quantity: 1,
+            }))
+          )
           : [];
 
         if (allItems.length > 0) {
@@ -336,12 +337,64 @@ const ChadhavaDetails = () => {
   }
 
   return (
-    <div className="chadhava-wrapper">
-      
-      <h1 className="chadhava-title">🛕 Assigned Items</h1>
 
+    <div className="chadhava-wrapper">
+
+      <div className="row">
+        {/* Left 40% - Image Gallery */}
+        <div className="col-12 col-md-5">
+          {assignedItems.length > 0 && (
+            <TempleImageGallery
+              images={assignedItems.map(item => ({ image: item.image }))}
+            />
+          )}
+        </div>
+
+        {/* Right 60% - Chadhava Details */}
+        <div className="col-12 col-md-7 text-start">
+          {assignedItems.length > 0 && (
+            <>
+              {/* Temple Name */}
+              <h5 className="text-primary">
+                {assignedItems[0]?.temple?.name || "Temple Name"}
+              </h5>
+
+              {/* Chadhava Name */}
+              <h1 className="fw-bold">
+                {assignedItems[0]?.name || "Chadhava Name"}
+              </h1>
+
+              {/* Description / Details */}
+              <p className="text-muted">
+                {assignedItems[0]?.details || "No details available"}
+              </p>
+
+              {/* Benefits */}
+              <div className="mb-2">
+                <h6 className="fw-bold">Benefits:</h6>
+                <p>{assignedItems[0]?.benefits || "Not provided"}</p>
+              </div>
+
+              {/* Includes */}
+              <div>
+                <h6 className="fw-bold">Includes:</h6>
+                {assignedItems[0]?.included ? (
+                  <ul>
+                    {assignedItems[0].included.split(",").map((inc, idx) => (
+                      <li key={idx}>{inc.trim()}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No items specified</p>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
       <div className="chadhava-details">
         <div className="assigned-items">
+          <h1 className="chadhava-title">🛕 Assigned Items</h1>
           <ul>
             {assignedItems.map((item) => (
               <li key={item.id} className="assigned-item-card">
@@ -354,7 +407,7 @@ const ChadhavaDetails = () => {
                   <div className="assigned-item-name">
                     <label>{item.name}</label>
                   </div>
-                  <p className="assigned-item-description">{item.description}</p>               
+                  <p className="assigned-item-description">{item.description}</p>
                   <p className="assigned-item-meta">Temple: {item.temple}</p>
                   <p className="assigned-item-cost">Cost: ₹{item.cost.toFixed(2)}</p>
 
@@ -633,17 +686,17 @@ const ChadhavaDetails = () => {
                   <div className="price-row">
                     <span>Shipping</span>
                     <p>To be calculated</p>
-                   
+
                   </div>
                   <div className="price-row">
                     <span>GST </span>
                     <p>To be calculated</p>
-                    
+
                   </div>
                   <div className="price-row total">
                     <span>Total</span>
                     <p>To be calculated</p>
-                
+
                   </div>
                 </div>
               </div>
