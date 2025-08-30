@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import "../styles/SpecialPooja.css";
 
+// ✅ Import the new CustomerReviews component
+import CustomerReviews from "./CustomerReviews";
+
 const fallbackImage = "/assets/images/placeholder.png"; // Ensure this path is correct
 
 const SpecialPooja = () => {
@@ -36,53 +39,59 @@ const SpecialPooja = () => {
   };
 
   return (
-    <main className="special-pooja-main">
-      <div className="text-center">
-        <div className="special-pooja-heading">
-          <span className="line"></span>
-          <h2 className="section-title-special-pooja">SPECIAL PUJA'S</h2>
-          <span className="line"></span>
-        </div>
-        <p className="section-subtitle">
-          Experience the magic of a special puja, an enchanting ritual that
-          elevates the spirit and brings blessings into your life.
-        </p>
-      </div>
-
-      <div className="container mt-4">
-        {loading ? (
-          <div className="text-center">Loading categories...</div>
-        ) : error ? (
-          <div className="alert alert-danger text-center">{error}</div>
-        ) : categoryList.length === 0 ? (
-          <div className="text-center">No special pooja categories available.</div>
-        ) : (
-          <div className="row justify-content-center">
-            {categoryList.map((category) => (
-              <div
-                key={category.id}
-                className="col-6 col-md-4 col-lg-2 mb-4 text-center"
-                onClick={() => handleCategoryClick(category.id)}
-                style={{ cursor: "pointer" }}
-              >
-                <div className="special-pooja-card-wrapper">
-                  <img
-                    src={category.image || fallbackImage}
-                    alt={category.name}
-                    className="special-pooja-card-image"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = fallbackImage;
-                    }}
-                  />
-                  <h6 className="special-pooja-card-name">{category.name}</h6>
-                </div>
-              </div>
-            ))}
+    <>
+      {/* ----------------- Special Pooja Section ----------------- */}
+      <main className="special-pooja-main">
+        <div className="text-center">
+          <div className="special-pooja-heading">
+            <span className="line"></span>
+            <h2 className="section-title-special-pooja">SPECIAL PUJA'S</h2>
+            <span className="line"></span>
           </div>
-        )}
-      </div>
-    </main>
+          <p className="section-subtitle">
+            Experience the magic of a special puja, an enchanting ritual that
+            elevates the spirit and brings blessings into your life.
+          </p>
+        </div>
+
+        <div className="container mt-4">
+          {loading ? (
+            <div className="text-center">Loading categories...</div>
+          ) : error ? (
+            <div className="alert alert-danger text-center">{error}</div>
+          ) : categoryList.length === 0 ? (
+            <div className="text-center">No special pooja categories available.</div>
+          ) : (
+            <div className="row justify-content-center">
+              {categoryList.map((category) => (
+                <div
+                  key={category.id}
+                  className="col-6 col-md-4 col-lg-2 mb-4 text-center"
+                  onClick={() => handleCategoryClick(category.id)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className="special-pooja-card-wrapper">
+                    <img
+                      src={category.image || fallbackImage}
+                      alt={category.name}
+                      className="special-pooja-card-image"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = fallbackImage;
+                      }}
+                    />
+                    <h6 className="special-pooja-card-name">{category.name}</h6>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
+
+      {/* ----------------- Customer Reviews Section ----------------- */}
+      <CustomerReviews />
+    </>
   );
 };
 
