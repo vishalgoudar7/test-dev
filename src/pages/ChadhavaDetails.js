@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useUserAuth } from "../context/UserAuthContext";
 import api from "../api/api";
 import "../styles/ChadhavaDetails.css";
-import TempleImageGallery from "../components/TempleImageGallery";
+import { FaPlaceOfWorship, FaCalendarAlt, FaStar, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 // Load Razorpay
 const loadRazorpayScript = () => {
@@ -31,7 +31,7 @@ const fetchRazorpayKey = async () => {
 
 const ChadhavaDetails = () => {
   const navigate = useNavigate();
-  const { profile } = useUserAuth();
+  const { user } = useUserAuth();
 
   const [assignedItems, setAssignedItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
@@ -40,6 +40,7 @@ const ChadhavaDetails = () => {
   const [showCheckout, setShowCheckout] = useState(false);
   const [orderDetails, setOrderDetails] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Checkout form state
   const [address, setAddress] = useState({
@@ -65,6 +66,28 @@ const ChadhavaDetails = () => {
     gst: 0,
     total: 0,
   });
+
+  // Sample images for the carousel (you can replace with actual images)
+  const carouselImages = [
+    {
+      id: 1,
+      src: "/placeholder.png", // Replace with actual Lord Bhairav image
+      title: "Bhairav Chadhava",
+      subtitle: "Vikrant Bhairav Temple, Ujjain"
+    },
+    {
+      id: 2,
+      src: "/placeholder.png", // Replace with temple structure image
+      title: "Benefits of Chadhava",
+      subtitle: "Protection from negative energies, Freedom from fear and mental stress, Success in all efforts"
+    },
+    {
+      id: 3,
+      src: "/placeholder.png", // Replace with another temple image
+      title: "Bhairav Chadhava",
+      subtitle: "Complete offering package"
+    }
+  ];
 
   // Fetch chadhava items
   useEffect(() => {
@@ -129,12 +152,12 @@ const ChadhavaDetails = () => {
       return;
     }
 
-    // Prefill from profile
-    const devoteeName = `${profile?.firstName || ""} ${profile?.lastName || ""}`.trim();
+    // Prefill from user profile
+    const devoteeName = user?.name || "";
     setAddress((prev) => ({
       ...prev,
       devoteeName: devoteeName,
-      devoteeMobile: profile?.phone || "",
+      devoteeMobile: "", // No phone in user object
       familyMember: devoteeName,
     }));
 
@@ -304,7 +327,7 @@ const ChadhavaDetails = () => {
       },
       prefill: {
         name: address.devoteeName,
-        email: profile?.email || "",
+        email: user?.email || "",
         contact: `+91${address.devoteeMobile}`,
       },
       theme: { color: "#e57373" },
@@ -317,10 +340,21 @@ const ChadhavaDetails = () => {
     rzp.open();
   };
 
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % carouselImages.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
+  };
+
   if (loading) {
     return (
       <div className="chadhava-wrapper">
-        <p>Loading assigned items...</p>
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+          <p>Loading special offerings...</p>
+        </div>
       </div>
     );
   }
@@ -328,145 +362,181 @@ const ChadhavaDetails = () => {
   if (error || assignedItems.length === 0) {
     return (
       <div className="chadhava-wrapper">
-        <p className="error-text">{error || "No items available."}</p>
-        <button className="chadhava-btn" onClick={() => navigate("/chadhava")}>
-          Back to Offerings
-        </button>
+        <div className="error-container">
+          <p className="error-text">{error || "No offerings available."}</p>
+          <button className="chadhava-btn" onClick={() => navigate("/chadhava")}>
+            Back to Offerings
+          </button>
+        </div>
       </div>
     );
   }
 
+  const currentDate = new Date();
+  const nextSaturday = new Date(currentDate);
+  nextSaturday.setDate(currentDate.getDate() + (6 - currentDate.getDay() + 7) % 7);
+
   return (
-
     <div className="chadhava-wrapper">
-
-      <div className="row">
-        {/* Left 40% - Image Gallery */}
-        <div className="col-12 col-md-5">
-          {assignedItems.length > 0 && (
-            <TempleImageGallery
-              images={assignedItems.map(item => ({ image: item.image }))}
-            />
-          )}
-        </div>
-
-        {/* Right 60% - Chadhava Details */}
-        <div className="col-12 col-md-7 text-start">
-          {assignedItems.length > 0 && (
-            <>
-              {/* Temple Name */}
-              <h5 className="text-primary">
-                {assignedItems[0]?.temple?.name || "Temple Name"}
-              </h5>
-
-              {/* Chadhava Name */}
-              <h1 className="fw-bold">
-                {assignedItems[0]?.name || "Chadhava Name"}
-              </h1>
-
-              {/* Description / Details */}
-              <p className="text-muted">
-                {assignedItems[0]?.details || "No details available"}
-              </p>
-
-              {/* Benefits */}
-              <div className="mb-2">
-                <h6 className="fw-bold">Benefits:</h6>
-                <p>{assignedItems[0]?.benefits || "Not provided"}</p>
-              </div>
-
-              {/* Includes */}
-              <div>
-                <h6 className="fw-bold">Includes:</h6>
-                {assignedItems[0]?.included ? (
-                  <ul>
-                    {assignedItems[0].included.split(",").map((inc, idx) => (
-                      <li key={idx}>{inc.trim()}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No items specified</p>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-      <div className="chadhava-details">
-        <div className="assigned-items">
-          <h1 className="chadhava-title">🛕 Assigned Items</h1>
-          <ul>
-            {assignedItems.map((item) => (
-              <li key={item.id} className="assigned-item-card">
-                <img
-                  src={item.image || "/placeholder.png"}
-                  alt={item.name}
-                  className="assigned-item-image"
-                />
-                <div className="assigned-item-details">
-                  <div className="assigned-item-name">
-                    <label>{item.name}</label>
-                  </div>
-                  <p className="assigned-item-description">{item.description}</p>
-                  <p className="assigned-item-meta">Temple: {item.temple}</p>
-                  <p className="assigned-item-cost">Cost: ₹{item.cost.toFixed(2)}</p>
-
-                  {selectedItems.some((si) => si.id === item.id) ? (
-                    <div style={{ marginTop: "6px", fontSize: "13px" }}>
-                      <label>Qty: </label>
-                      <button
-                        onClick={() =>
-                          updateQuantity(item.id, (item.quantity || 1) - 1)
-                        }
-                        disabled={(item.quantity || 1) <= 1}
-                        style={{
-                          width: "24px",
-                          background: "#f0f0f0",
-                          border: "1px solid #ccc",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                        }}
-                      >
-                        −
-                      </button>
-                      <span style={{ margin: "0 8px" }}>
-                        {selectedItems.find((si) => si.id === item.id)
-                          ?.quantity || 1}
-                      </span>
-                      <button
-                        onClick={() =>
-                          updateQuantity(item.id, (item.quantity || 1) + 1)
-                        }
-                        style={{
-                          width: "24px",
-                          background: "#f0f0f0",
-                          border: "1px solid #ccc",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                        }}
-                      >
-                        +
-                      </button>
-                    </div>
-                  ) : null}
-
-                  <button
-                    className="add-btn"
-                    onClick={() => handleSelectItem(item)}
-                  >
-                    {selectedItems.some((si) => si.id === item.id)
-                      ? "Remove"
-                      : "Add"}
-                  </button>
+      <div className="main-content">
+        {/* Left Panel - Image Carousel */}
+        <div className="left-panel">
+          <div className="image-carousel-section">
+            {/* Main Large Image */}
+            <div className="main-image-container">
+              <img
+                src={carouselImages[currentImageIndex].src}
+                alt={carouselImages[currentImageIndex].title}
+                className="main-image"
+              />
+              <div className="image-overlay">
+                <h2 className="image-title">{carouselImages[currentImageIndex].title}</h2>
+                <div className="decorative-line">
+                  <span className="star-motif">★</span>
                 </div>
-              </li>
-            ))}
-          </ul>
+                <p className="image-subtitle">{carouselImages[currentImageIndex].subtitle}</p>
+              </div>
+              
+              {/* Navigation Arrows */}
+              <button className="carousel-arrow left" onClick={prevImage}>
+                <FaArrowLeft />
+              </button>
+              <button className="carousel-arrow right" onClick={nextImage}>
+                <FaArrowRight />
+              </button>
+            </div>
+
+            {/* Thumbnail Images */}
+            <div className="thumbnail-images">
+              {carouselImages.map((image, index) => (
+                <div 
+                  key={image.id} 
+                  className={`thumbnail-item ${index === currentImageIndex ? 'active' : ''}`}
+                  onClick={() => setCurrentImageIndex(index)}
+                >
+                  <img 
+                    src={image.src} 
+                    alt={image.title}
+                    className="thumbnail-img"
+                  />
+                  <div className="thumbnail-overlay">
+                    <h4>{image.title}</h4>
+                    <p>{image.subtitle}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <button className="chadhava-btn" onClick={handleAddToCart}>
-          Add to Cart ({selectedItems.length})
-        </button>
+        {/* Right Panel - Booking Details */}
+        <div className="right-panel">
+          <div className="offerings-details">
+            {/* Top Banner */}
+            <div className="top-banner">
+              <span>Last day today!</span>
+            </div>
+
+            {/* Main Title */}
+            <h1 className="main-title">Bhairav Chadhava</h1>
+            <p className="subtitle">
+              A Sacred Opportunity to Break Free from Fear, Obstacles & Negativity
+            </p>
+            
+                         {/* Temple Info */}
+             <div className="temple-info">
+               <div className="info-item">
+               <span> <FaPlaceOfWorship className="info-icon" />&nbsp;&nbsp;
+                 Temple name </span>
+               </div>
+              {/* <div className="info-item">
+                <FaCalendarAlt className="info-icon" />
+                <span>{nextSaturday.toLocaleDateString('en-US', { 
+                  day: 'numeric', 
+                  month: 'short'
+                })}, {nextSaturday.toLocaleDateString('en-US', { 
+                  weekday: 'short'
+                })}</span>
+              </div> */}
+            </div>
+
+            {/* Rating */}
+            {/* <div className="rating-section">
+              <div className="stars">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <FaStar key={star} className="star-icon filled" />
+                ))}
+              </div>
+              <span className="rating-text">5 (5+)</span>
+            </div> */}
+
+            {/* Devotee Count */}
+            {/* <div className="devotee-count">
+              <span>3890+ Devotees already Offered</span>
+            </div> */}
+
+            {/* Product Selection Cards */}
+            <div className="product-selection">
+              <h3>Select Your Offerings</h3>
+              <div className="product-cards">
+                {assignedItems.slice(0, 4).map((item) => (
+                  <div key={item.id} className="product-card">
+                    <img
+                      src={item.image || "/placeholder.png"}
+                      alt={item.name}
+                      className="product-image"
+                    />
+                    <div className="product-info">
+                      <h4 className="product-name">{item.name}</h4>
+                      <p className="product-price">₹{item.cost.toFixed(2)}</p>
+                      
+                      {selectedItems.some((si) => si.id === item.id) ? (
+                        <div className="quantity-section">
+                          <label>Qty: </label>
+                          <button
+                            onClick={() => updateQuantity(item.id, (selectedItems.find(si => si.id === item.id)?.quantity || 1) - 1)}
+                            disabled={(selectedItems.find(si => si.id === item.id)?.quantity || 1) <= 1}
+                            className="qty-btn"
+                          >
+                            −
+                          </button>
+                          <span className="qty-display">
+                            {selectedItems.find((si) => si.id === item.id)?.quantity || 1}
+                          </span>
+                          <button
+                            onClick={() => updateQuantity(item.id, (selectedItems.find(si => si.id === item.id)?.quantity || 1) + 1)}
+                            className="qty-btn"
+                          >
+                            +
+                          </button>
+                          <button
+                            className="remove-btn"
+                            onClick={() => handleSelectItem(item)}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          className="select-btn"
+                          onClick={() => handleSelectItem(item)}
+                        >
+                          Select
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Call to Action Button */}
+            <button className="cta-button" onClick={handleAddToCart}>
+              Offer Chadhava
+              <span className="arrow">→</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Checkout Modal */}
