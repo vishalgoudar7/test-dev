@@ -14,26 +14,6 @@ const ProfilePage = () => {
   const [completion, setCompletion] = useState(0);
   const navigate = useNavigate();
 
-  // Fields to calculate profile completion
-  const requiredFields = [
-    "firstName",
-    "lastName",
-    "phone",
-    "gender",
-    "dob",
-    "placeOfBirth",
-    "occupation",
-    "kula",
-    "gotra",
-    "rashi",
-    "nakshatra",
-    "street1",
-    "city",
-    "state",
-    "pincode",
-    "sankalpa"
-  ];
-
   useEffect(() => {
     const fetchApiProfile = async () => {
       try {
@@ -84,8 +64,25 @@ const ProfilePage = () => {
     }
   }, [profile]);
 
-  // Calculate profile completion
   useEffect(() => {
+    const requiredFields = [
+      "firstName",
+      "lastName",
+      "phone",
+      "gender",
+      "dob",
+      "placeOfBirth",
+      "occupation",
+      "kula",
+      "gotra",
+      "rashi",
+      "nakshatra",
+      "street1",
+      "city",
+      "state",
+      "pincode",
+      "sankalpa"
+    ];
     const total = requiredFields.length;
     let filled = 0;
 
@@ -131,52 +128,17 @@ const ProfilePage = () => {
 
           {/* Profile Completion Meter */}
           <div className="profile-completion-container">
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 12,
-              marginBottom: 8,
-              marginTop: 8
-            }}>
-              <span style={{ fontWeight: 600, fontSize: 16, color: '#333' }}>
-                Profile Completion
+            <div className="completion-header">
+              <span className="completion-title">Profile Completion</span>
+              <span className="completion-percentage" style={{ color: getBarColor() }}>
+                {completion}%
               </span>
-              <span style={{
-                fontWeight: 700,
-                fontSize: 18,
-                color: getBarColor(),
-                background: '#fff',
-                borderRadius: 12,
-                padding: '2px 12px',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.08)'
-              }}>{completion}%</span>
             </div>
-            <div style={{
-              width: '100%',
-              height: 18,
-              background: 'linear-gradient(90deg, #e0e0e0 0%, #f5f5f5 100%)',
-              borderRadius: 12,
-              boxShadow: '0 1px 6px rgba(0,0,0,0.07)',
-              position: 'relative',
-              overflow: 'hidden',
-              marginBottom: 4
-            }}>
-              <div style={{
-                width: `${completion}%`,
-                height: '100%',
-                background: `linear-gradient(90deg, ${getBarColor()} 0%, #8bc34a 100%)`,
-                borderRadius: 12,
-                transition: 'width 0.6s cubic-bezier(.4,2,.3,1)',
-                boxShadow: '0 2px 8px rgba(76,175,80,0.15)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: completion > 10 ? 'flex-end' : 'flex-start',
-                color: '#fff',
-                fontWeight: 700,
-                fontSize: 14,
-                paddingRight: completion > 10 ? 10 : 0
-              }}>
-                {/* Optionally show percentage inside bar for high completion */}
+            <div className="progress-bar-container">
+              <div
+                className="progress-bar-fill"
+                style={{ width: `${completion}%`, backgroundColor: getBarColor() }}
+              >
                 {completion > 70 && <span>{completion}%</span>}
               </div>
             </div>
@@ -258,9 +220,9 @@ const ProfilePage = () => {
       </div>
 
       {/* Address Info */}
-      <div className="user-compact-box" style={{ marginTop: "20px" }}>
+      <div className="user-compact-box address-box">
         <h5>
-          <FaHome style={{ marginRight: "6px" }} />
+          <FaHome className="address-icon" />
           Address Details
         </h5>
         <div className="user-grid-form">
@@ -288,7 +250,7 @@ const ProfilePage = () => {
             <label>Pincode</label>
             <input type="text" value={localProfile.pincode || ""} readOnly />
           </div>
-          <div className="input-field" style={{ gridColumn: "1 / -1" }}>
+          <div className="input-field sankalpa-field">
             <label>Sankalpa</label>
             <input type="text" value={localProfile.sankalpa || ""} readOnly />
           </div>

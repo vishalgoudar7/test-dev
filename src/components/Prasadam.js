@@ -94,7 +94,6 @@ const Prasadam = () => {
         const imageUrl =
           prasadam.temple?.images?.[0]?.image ||
           poojaPrasadam.temple?.images?.[0]?.image;
-        const temple = prasadam.temple || poojaPrasadam.temple || {};
 
         const includes = poojaPrasadam.included || prasadam.included || 'Not specified';
         const benefits = poojaPrasadam.excluded || prasadam.excluded || '-';
