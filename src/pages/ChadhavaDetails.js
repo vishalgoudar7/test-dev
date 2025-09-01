@@ -41,6 +41,8 @@ const ChadhavaDetails = () => {
   const [orderDetails, setOrderDetails] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [title, setTitle] = useState("Bhairav Chadhava");
+  const [subtitle, setSubtitle] = useState("A Sacred Opportunity to Break Free from Fear, Obstacles & Negativity");
 
   // Checkout form state
   const [address, setAddress] = useState({
@@ -68,7 +70,7 @@ const ChadhavaDetails = () => {
   });
 
   // Sample images for the carousel (you can replace with actual images)
-  const carouselImages = [
+  const [carouselImages, setCarouselImages] = useState([
     {
       id: 1,
       src: "/placeholder.png", // Replace with actual Lord Bhairav image
@@ -87,7 +89,7 @@ const ChadhavaDetails = () => {
       title: "Bhairav Chadhava",
       subtitle: "Complete offering package"
     }
-  ];
+  ]);
 
   // Fetch chadhava items
   useEffect(() => {
@@ -96,6 +98,27 @@ const ChadhavaDetails = () => {
         setLoading(true);
         const res = await api.get("https://beta.devalayas.com/api/v1/devotee/chadhava/");
         const data = res.data;
+
+        if (data?.results?.length > 0) {
+          const firstResult = data.results[0];
+          if(firstResult.name){
+            setTitle(firstResult.name);
+          }
+          if(firstResult.details){
+            setSubtitle(firstResult.details);
+          }
+
+          if (firstResult.pooja_chadhava?.images?.length > 0) {
+            const { pooja_chadhava } = firstResult;
+            const newCarouselImages = pooja_chadhava.images.map((img, index) => ({
+              id: img.id || index,
+              src: img.image,
+              title: img.title || pooja_chadhava.name || "Bhairav Chadhava",
+              subtitle: pooja_chadhava.temple?.name || "Vikrant Bhairav Temple, Ujjain"
+            }));
+            setCarouselImages(newCarouselImages);
+          }
+        }
 
         const allItems = data?.results?.length
           ? data.results.flatMap((chadhava) =>
@@ -291,40 +314,49 @@ const ChadhavaDetails = () => {
       image: "https://devalaya-bucket.s3.amazonaws.com/logo_512x512.png",
       order_id: orderId,
       handler: async (rz_response) => {
-        try {
-          const payload = {
-            razorpay_response: rz_response,
-            request_id: rz_response.razorpay_payment_id,
-            family_member: [{ name: address.familyMember }],
-            billing_address: {
-              name: address.devoteeName,
-              phone_number: address.devoteeMobile,
-              street_address_1: address.street1,
-              street_address_2: address.street2 || "",
-              area: address.area,
-              city: address.city,
-              state: address.state,
-              pincode: parseInt(address.pincode, 10),
-            },
-          };
-          console.log("Payment verification payload:", payload);
-          const verificationResponse = await api.post("https://beta.devalayas.com/api/v1/devotee/pooja_request/payment/", payload);
-
-          if (verificationResponse.data.success) {
-            const orderDetailsResponse = await api.get(`https://beta.devalayas.com/api/v1/devotee/pooja_request/list/?search=${order.order_id}`);
-            handleCloseCheckout();
-            navigate(`/payment-success?payment_id=${rz_response.razorpay_payment_id}&order_id=${order.order_id}&status=success`, { state: { orderDetails: orderDetailsResponse.data } });
-          } else {
-            const message = verificationResponse.data.message || "Payment verification failed";
-            navigate(`/payment-success?payment_id=${rz_response.razorpay_payment_id}&order_id=${order.order_id}&status=failed&error=${encodeURIComponent(message)}`);
-          }
-        } catch (err) {
-          console.error("placeOrder error:", err);
-          handleCloseCheckout();
-          const errorMessage = err.response?.data?.detail || err.message || "Unknown error";
-          navigate(`/payment-success?payment_id=${rz_response.razorpay_payment_id || ''}&order_id=${order.order_id}&status=failed&error=${encodeURIComponent(errorMessage)}`);
-        }
+  try {
+    const payload = {
+      request_id: order.order_id,  // ✅ correct field name
+      razorpay_response: {         // ✅ wrap Razorpay response inside object
+        razorpay_order_id: rz_response.razorpay_order_id,
+        razorpay_payment_id: rz_response.razorpay_payment_id,
+        razorpay_signature: rz_response.razorpay_signature,
       },
+    };
+             console.log("Payment verification payload:", payload);
+
+    const verificationResponse = await api.post(
+      "https://beta.devalayas.com/api/v1/devotee/pooja_request/payment/",
+      payload
+    );
+
+    if (verificationResponse.data.success) {
+      const orderDetailsResponse = await api.get(
+        `https://beta.devalayas.com/api/v1/devotee/pooja_request/list/?search=${order.order_id}`
+      );
+
+      handleCloseCheckout();
+      navigate(
+        `/payment-success?payment_id=${rz_response.razorpay_payment_id}&order_id=${order.order_id}&status=success`,
+        { state: { orderDetails: orderDetailsResponse.data } }
+      );
+    } else {
+      const message =
+        verificationResponse.data.message || "Payment verification failed";
+      navigate(
+        `/payment-success?payment_id=${rz_response.razorpay_payment_id}&order_id=${order.order_id}&status=failed&error=${encodeURIComponent(message)}`
+      );
+    }
+  } catch (err) {
+    console.error("placeOrder error:", err);
+    handleCloseCheckout();
+    const errorMessage =
+      err.response?.data?.detail || err.message || "Unknown error";
+    navigate(
+      `/payment-success?payment_id=${rz_response.razorpay_payment_id || ""}&order_id=${order.order_id}&status=failed&error=${encodeURIComponent(errorMessage)}`
+    );
+  }
+},
       prefill: {
         name: address.devoteeName,
         email: user?.email || "",
@@ -378,23 +410,23 @@ const ChadhavaDetails = () => {
 
   return (
     <div className="chadhava-wrapper">
-      <div className="main-content">
+      <div className="main-content"style={{ display: "flex", gap: "20px" }}>
         {/* Left Panel - Image Carousel */}
-        <div className="left-panel">
+        <div className="left-panel"style={{ flex: "0 0 40%" }}>
           <div className="image-carousel-section">
             {/* Main Large Image */}
             <div className="main-image-container">
               <img
                 src={carouselImages[currentImageIndex].src}
-                alt={carouselImages[currentImageIndex].title}
+                // alt={carouselImages[currentImageIndex].title}
                 className="main-image"
               />
               <div className="image-overlay">
-                <h2 className="image-title">{carouselImages[currentImageIndex].title}</h2>
-                <div className="decorative-line">
+                {/* <h2 className="image-title">{carouselImages[currentImageIndex].title}</h2> */}
+                {/* <div className="decorative-line">
                   <span className="star-motif">★</span>
-                </div>
-                <p className="image-subtitle">{carouselImages[currentImageIndex].subtitle}</p>
+                </div> */}
+                {/* <p className="image-subtitle">{carouselImages[currentImageIndex].subtitle}</p> */}
               </div>
               
               {/* Navigation Arrows */}
@@ -416,13 +448,10 @@ const ChadhavaDetails = () => {
                 >
                   <img 
                     src={image.src} 
-                    alt={image.title}
+                    // alt={image.title}
                     className="thumbnail-img"
                   />
-                  <div className="thumbnail-overlay">
-                    <h4>{image.title}</h4>
-                    <p>{image.subtitle}</p>
-                  </div>
+                  
                 </div>
               ))}
             </div>
@@ -430,24 +459,24 @@ const ChadhavaDetails = () => {
         </div>
 
         {/* Right Panel - Booking Details */}
-        <div className="right-panel">
+        <div className="right-panel"style={{ flex: "0 0 60%" }}>
           <div className="offerings-details">
             {/* Top Banner */}
-            <div className="top-banner">
+            {/* <div className="top-banner">
               <span>Last day today!</span>
-            </div>
+            </div> */}
 
             {/* Main Title */}
-            <h1 className="main-title">Bhairav Chadhava</h1>
+            <h1 className="main-title">{title}</h1>
             <p className="subtitle">
-              A Sacred Opportunity to Break Free from Fear, Obstacles & Negativity
+              {subtitle}
             </p>
             
                          {/* Temple Info */}
              <div className="temple-info">
                <div className="info-item">
                <span> <FaPlaceOfWorship className="info-icon" />&nbsp;&nbsp;
-                 Temple name </span>
+                 Temple: {assignedItems[0]?.temple} </span>
                </div>
               {/* <div className="info-item">
                 <FaCalendarAlt className="info-icon" />
@@ -784,15 +813,16 @@ const ChadhavaDetails = () => {
                 ✕
               </button>
             </div>
-            <div className="chadhava-checkout-body">
-              <div className="confirmation-details">
+            <div className="chadhava-checkout-body confirmation-body">
+              <div className="confirmation-address">
                 <h4>Delivery Address</h4>
                 <p>{address.devoteeName}</p>
                 <p>{address.street1}</p>
                 {address.street2 && <p>{address.street2}</p>}
                 <p>{address.area}, {address.city}, {address.state} - {address.pincode}</p>
                 <p>Mobile: {address.devoteeMobile}</p>
-
+              </div>
+              <div className="price-summary-container">
                 <div className="price-summary" style={{ marginTop: '20px' }}>
                   <h4>Price Details</h4>
                   <div className="price-row">

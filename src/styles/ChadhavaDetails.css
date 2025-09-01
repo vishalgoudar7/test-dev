@@ -177,6 +177,7 @@
 }
 
 .offerings-details {
+  width: 100%;
   background: white;
   border-radius: 12px;
   padding: 30px;
@@ -200,13 +201,13 @@
   font-weight: 800;
   color: #333;
   margin: 0 0 15px 0;
-  text-align: center;
+  text-align: start;
 }
 
 .subtitle {
   font-size: 18px;
   color: #e91e63;
-  text-align: center;
+  text-align: start;
   margin: 0 0 25px 0;
   font-weight: 500;
   line-height: 1.4;
@@ -762,4 +763,58 @@
   .main-image-container {
     height: 300px;
   }
+}
+
+@media (max-width: 480px) {
+  .main-title {
+    font-size: 24px;
+  }
+
+  .subtitle {
+    font-size: 16px;
+  }
+
+  .offerings-details {
+    padding: 15px;
+  }
+
+  .product-card {
+    padding: 15px;
+  }
+
+  .cta-button {
+    padding: 15px 20px;
+    font-size: 16px;
+  }
+
+  .chadhava-checkout-header h3 {
+    font-size: 20px;
+  }
+
+  .chadhava-checkout-header {
+    padding: 15px 20px;
+  }
+
+  .checkout-form, .checkout-summary {
+    padding: 20px;
+  }
+}
+
+.confirmation-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 30px;
+  padding: 30px;
+}
+
+.confirmation-address {
+  flex: 1;
+}
+
+.price-summary-container {
+  flex-basis: 350px;
+  background: #f8f9fa;
+  padding: 30px;
+  border-radius: 8px;
 }
