@@ -1,6 +1,7 @@
+/* src/styles/CustomerReviews.css */
 .customer-reviews-section {
   padding: 40px 20px;
-  background: #fafafa;
+  background: #f4c6a3;
   position: relative;
 }
 
@@ -83,8 +84,5 @@
 .nav-btn:hover {
   background: #e68900;
 }
-
-
-
 
 
