@@ -1,4 +1,4 @@
-body {
+/* body {
   background-color: #ffe5d0;
 }
 
@@ -19,15 +19,15 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative; /* Required for absolute positioning of label */
+  position: relative; /
 }
 
-/* 🔖 Top Left Label */
+
 .prasadam-top-label {
   position: absolute;
   top: 15px;
   left: 15px;
-  background-color: #f25c05; /* Matches your .label color */
+  background-color: #f25c05; 
   color: white;
   font-size: 12px;
   font-weight: bold;
@@ -109,4 +109,146 @@ body {
   0% { color: white; }
   50% { color: transparent; }
   100% { color: white; }
+} */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+body {
+  background-color: #ffe5d0;
 }
+
+.prasadam-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  padding: 40px 20px;
+}
+
+.prasadam-card-modern {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  width: 300px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.prasadam-top-label {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background-color: #f25c05;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 6px;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  animation: blink 1s infinite;
+}
+
+.prasadam-title {
+  color: #000;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.prasadam-image-wrapper {
+  border: 2px solid orange;
+  padding: 5px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  background: #fff9f0;
+}
+
+.prasadam-image-modern {
+  width: 260px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* New video style */
+.prasadam-video-modern {
+  width: 260px;
+  height: 180px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.prasadam-card-content-modern {
+  width: 100%;
+  flex-grow: 1;
+}
+
+.prasadam-card-content-modern p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  margin: 10px 0;
+}
+
+.label {
+  color: #f25c05;
+  font-weight: 600;
+}
+
+.prasadam-book-btn {
+  margin-top: 20px;
+  background-color: #ff6600;
+  color: white;
+  padding: 10px 0;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.prasadam-book-btn:hover {
+  background-color: #cc5200;
+}
+
+@media (max-width: 600px) {
+  .prasadam-card-modern {
+    width: 90%;
+  }
+}
+
+@keyframes blink {
+  0% {
+    color: white;
+  }
+  50% {
+    color: transparent;
+  }
+  100% {
+    color: white;
+  }
+}
+
