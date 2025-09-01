@@ -418,7 +418,7 @@ const ChadhavaDetails = () => {
             <div className="main-image-container">
               <img
                 src={carouselImages[currentImageIndex].src}
-                // alt={carouselImages[currentImageIndex].title}
+                alt={carouselImages[currentImageIndex].title}
                 className="main-image"
               />
               <div className="image-overlay">
@@ -448,7 +448,7 @@ const ChadhavaDetails = () => {
                 >
                   <img 
                     src={image.src} 
-                    // alt={image.title}
+                    alt={image.title}
                     className="thumbnail-img"
                   />
                   
@@ -504,68 +504,70 @@ const ChadhavaDetails = () => {
               <span>3890+ Devotees already Offered</span>
             </div> */}
 
-            {/* Product Selection Cards */}
-            <div className="product-selection">
-              <h3>Select Your Offerings</h3>
-              <div className="product-cards">
-                {assignedItems.slice(0, 4).map((item) => (
-                  <div key={item.id} className="product-card">
-                    <img
-                      src={item.image || "/placeholder.png"}
-                      alt={item.name}
-                      className="product-image"
-                    />
-                    <div className="product-info">
-                      <h4 className="product-name">{item.name}</h4>
-                      <p className="product-price">₹{item.cost.toFixed(2)}</p>
-                      
-                      {selectedItems.some((si) => si.id === item.id) ? (
-                        <div className="quantity-section">
-                          <label>Qty: </label>
-                          <button
-                            onClick={() => updateQuantity(item.id, (selectedItems.find(si => si.id === item.id)?.quantity || 1) - 1)}
-                            disabled={(selectedItems.find(si => si.id === item.id)?.quantity || 1) <= 1}
-                            className="qty-btn"
-                          >
-                            −
-                          </button>
-                          <span className="qty-display">
-                            {selectedItems.find((si) => si.id === item.id)?.quantity || 1}
-                          </span>
-                          <button
-                            onClick={() => updateQuantity(item.id, (selectedItems.find(si => si.id === item.id)?.quantity || 1) + 1)}
-                            className="qty-btn"
-                          >
-                            +
-                          </button>
-                          <button
-                            className="remove-btn"
-                            onClick={() => handleSelectItem(item)}
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          className="select-btn"
-                          onClick={() => handleSelectItem(item)}
-                        >
-                          Select
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Call to Action Button */}
-            <button className="cta-button" onClick={handleAddToCart}>
-              Offer Chadhava
-              <span className="arrow">→</span>
-            </button>
           </div>
         </div>
+      </div>
+
+      {/* Product Selection Cards */}
+      <div className="full-width-container">
+        <div className="product-selection">
+          <h3>Select Your Offerings</h3>
+          <div className="product-cards">
+            {assignedItems.slice(0, 5).map((item) => (
+              <div key={item.id} className="product-card">
+                <img
+                  src={item.image || "/placeholder.png"}
+                  alt={item.name}
+                  className="product-image"
+                />
+                <div className="product-info">
+                  <h4 className="product-name">{item.name}</h4>
+                  <p className="product-price">₹{item.cost.toFixed(2)}</p>
+                  
+                  {selectedItems.some((si) => si.id === item.id) ? (
+                    <div className="quantity-section">
+                      <label>Qty: </label>
+                      <button
+                        onClick={() => updateQuantity(item.id, (selectedItems.find(si => si.id === item.id)?.quantity || 1) - 1)}
+                        disabled={(selectedItems.find(si => si.id === item.id)?.quantity || 1) <= 1}
+                        className="qty-btn"
+                      >
+                        −
+                      </button>
+                      <span className="qty-display">
+                        {selectedItems.find((si) => si.id === item.id)?.quantity || 1}
+                      </span>
+                      <button
+                        onClick={() => updateQuantity(item.id, (selectedItems.find(si => si.id === item.id)?.quantity || 1) + 1)}
+                        className="qty-btn"
+                      >
+                        +
+                      </button>
+                      <button
+                        className="remove-btn"
+                        onClick={() => handleSelectItem(item)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      className="select-btn"
+                      onClick={() => handleSelectItem(item)}
+                    >
+                      Select
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Call to Action Button */}
+        <button className="cta-button" onClick={handleAddToCart}>
+          Offer Chadhava
+          <span className="arrow">→</span>
+        </button>
       </div>
 
       {/* Checkout Modal */}
@@ -695,7 +697,6 @@ const ChadhavaDetails = () => {
                       <input
                         type="text"
                         name="street2"
-                        value={address.street2}
                         onChange={handleInputChange}
                         placeholder="Apartment, floor"
                       />
@@ -823,7 +824,7 @@ const ChadhavaDetails = () => {
                 <p>Mobile: {address.devoteeMobile}</p>
               </div>
               <div className="price-summary-container">
-                <div className="price-summary" style={{ marginTop: '20px' }}>
+                <div className="price-summary">
                   <h4>Price Details</h4>
                   <div className="price-row">
                     <span>Chadhava Cost</span>
