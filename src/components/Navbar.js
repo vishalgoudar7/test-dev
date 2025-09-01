@@ -87,6 +87,13 @@ const Navbar = () => {
       console.warn('API logout failed:', error);
     }
     
+    // Clear cart immediately
+    localStorage.removeItem("cart");
+    setCartCount(0);
+    // Notify other components that cart has been cleared
+    window.dispatchEvent(new Event("storage"));
+    window.dispatchEvent(new Event("cartUpdated"));
+    
     // Then proceed with the existing logout logic
     logout()
       .then(() => {

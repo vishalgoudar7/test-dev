@@ -53,6 +53,12 @@ export const UserAuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    
+    // Clear cart on logout
+    localStorage.removeItem("cart");
+    // Notify other components that cart has been cleared
+    window.dispatchEvent(new Event("storage"));
+    window.dispatchEvent(new Event("cartUpdated"));
   };
 
   return (
