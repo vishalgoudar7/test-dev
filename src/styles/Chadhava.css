@@ -1,5 +1,5 @@
 .chadhava-wrapper {
-  padding: 30px;
+  padding: 20px;
   text-align: center;
   background: #fdfaf6;
   min-height: 80vh;
@@ -7,7 +7,7 @@
 
 .chadhava-title {
   font-size: 28px;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   color: #4a2c2a;
 }
 
@@ -23,7 +23,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
-  margin-top: 30px;
 }
 
 .chadhava-card {
@@ -127,4 +126,27 @@
   border-radius: 5px;
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+.chadhava-search-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.chadhava-search-input {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+}
+
+.chadhava-search-button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #ef5b0c;
+  color: white;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
 }

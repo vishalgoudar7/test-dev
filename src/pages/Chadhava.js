@@ -7,6 +7,7 @@ const Chadhava = () => {
   const [chadhavaItems, setChadhavaItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,17 +33,39 @@ const Chadhava = () => {
     navigate(`/chadhava/${item.id}`, { state: { item: item } });
   };
 
+  const handleSearch = () => {
+    // Implement search functionality here
+    console.log("Searching for:", searchTerm);
+  };
+
+  const filteredChadhavaItems = chadhavaItems.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="chadhava-wrapper">
       <h1 className="chadhava-title">🛕 Chadhava Offerings</h1>
+
+      <div className="chadhava-search-container">
+        <input
+          type="text"
+          placeholder="Search for Chadhava..."
+          className="chadhava-search-input"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <button className="chadhava-search-button" onClick={handleSearch}>
+          Search
+        </button>
+      </div>
 
       {loading && <p className="loading-text">Loading...</p>}
       {error && <p className="error-text">{error}</p>}
 
       {!loading && !error && (
         <div className="chadhava-grid">
-          {chadhavaItems.length > 0 ? (
-            chadhavaItems.map((item) => {
+          {filteredChadhavaItems.length > 0 ? (
+            filteredChadhavaItems.map((item) => {
               const templeImage =
                 item.temple?.images?.[0]?.image || "/placeholder.png";
               const assignedItems = item.assigned_items || [];
@@ -50,7 +73,7 @@ const Chadhava = () => {
               return (
                 <div key={item.id} className="chadhava-card">
                   {/* 🔹 Label inside card */}
-                  <div className="chadhava-label">Chadhava</div>
+                  <div className="chadhava-label"><span className="blinking-text">Chadhava</span></div>
 
                   <img
                     src={templeImage}
@@ -67,7 +90,7 @@ const Chadhava = () => {
 {/* 
                   {pooja && (
                     <p className="chadhava-cost">
-                      Cost: <strong>₹{pooja.cost}</strong>
+                      Cost: strong>₹{pooja.cost}</strong>
                     </p>
                   )} */}
 
