@@ -1,7 +1,7 @@
-/* src/styles/CustomerReviews.css */
+/* src/styles/CustomerReviews.css
 .customer-reviews-section {
   padding: 40px 20px;
-  background: #f4c6a3;
+  background: #f8e7dc;
   position: relative;
 }
 
@@ -85,4 +85,147 @@
   background: #e68900;
 }
 
+ */
 
+
+
+
+
+
+.customer-reviews-section {
+  padding: 40px 20px;
+  background: #f8e7dc;
+  position: relative;
+}
+
+.section-title {
+  font-size: 50px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.slider-container {
+  overflow: hidden; /* Hide extra cards */
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.slider-track {
+  display: flex;
+  transition: transform 0.7s ease-in-out;
+}
+
+.review-card {
+  flex: 0 0 calc(33.333% - 12px);
+  margin: 0 6px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.review-card:hover {
+  transform: translateY(-4px);
+  transition: all 0.3s ease;
+}
+
+.review-image {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 12px;
+}
+
+.review-text {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 10px;
+  min-height: 80px;
+}
+
+.review-author {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 4px 0;
+}
+
+.review-place {
+  font-size: 13px;
+  color: #777;
+}
+
+.review-navigation {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.nav-btn {
+  background: #ff9800;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  margin: 0 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s;
+}
+
+.nav-btn:hover {
+  background: #e68900;
+}
+
+/* ------------------ Responsive Styles ------------------ */
+
+/* Tablets (max 992px) - show 2 cards */
+@media (max-width: 992px) {
+  .review-card {
+    flex: 0 0 calc(50% - 12px);
+  }
+
+  .section-title {
+    font-size: 40px;
+  }
+}
+
+/* Mobile (max 768px) - show only 1 card */
+@media (max-width: 768px) {
+  .slider-track {
+    flex-wrap: nowrap;   /* Keep cards in one line */
+  }
+
+  .review-card {
+    flex: 0 0 100%;      /* Full width */
+    max-width: 100%;
+    margin: 0;           /* Remove side gaps */
+  }
+
+  .section-title {
+    font-size: 28px;
+    text-align: center;
+  }
+
+  .review-text {
+    font-size: 13px;
+    min-height: auto;
+  }
+
+  .review-author {
+    font-size: 15px;
+  }
+
+  .review-navigation {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .nav-btn {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+}
