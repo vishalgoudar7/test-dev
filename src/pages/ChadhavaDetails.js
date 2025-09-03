@@ -17,18 +17,6 @@ const loadRazorpayScript = () => {
   });
 };
 
-// Fetch Razorpay Key
-const fetchRazorpayKey = async () => {
-  try {
-    const response = await api.get("https://beta.devalayas.com/api/v1/devotee/payment_key/");
-    return response.data.key;
-  } catch (err) {
-    console.error("Failed to load Razorpay key:", err);
-    alert("Payment gateway not available.");
-    return null;
-  }
-};
-
 const ChadhavaDetails = () => {
   const navigate = useNavigate();
   const { user } = useUserAuth();
@@ -51,6 +39,8 @@ const ChadhavaDetails = () => {
     devoteeMobile: "",
     sankalpa: "",
     nakshatra: "",
+    gotra: "",
+    rashi: "",
     familyMember: "",
     street1: "",
     street2: "",
@@ -91,12 +81,18 @@ const ChadhavaDetails = () => {
     }
   ]);
 
+  useEffect(() => {
+    if (!localStorage.getItem('authToken')) {
+      navigate('/login', { state: { message: "You must be logged in to view this page." } });
+    }
+  }, [navigate]);
+
   // Fetch chadhava items
   useEffect(() => {
     const fetchChadhavas = async () => {
       try {
         setLoading(true);
-        const res = await api.get("https://beta.devalayas.com/api/v1/devotee/chadhava/");
+        const res = await api.get("/api/v1/devotee/chadhava/");
         const data = res.data;
 
         if (data?.results?.length > 0) {
@@ -144,14 +140,18 @@ const ChadhavaDetails = () => {
         }
       } catch (err) {
         console.error("Error fetching chadhava items:", err);
-        setError("Failed to load items. Please try again.");
+        if (err.response && err.response.status === 403) {
+          navigate('/login', { state: { message: "Your session has expired. Please log in again." } });
+        } else {
+          setError("Failed to load items. Please try again.");
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchChadhavas();
-  }, []);
+  }, [navigate]);
 
   const handleSelectItem = (item) => {
     setSelectedItems((prev) =>
@@ -215,6 +215,8 @@ const ChadhavaDetails = () => {
       newErrors.devoteeMobile = "Valid 10-digit mobile";
     if (!address.sankalpa) newErrors.sankalpa = "Required";
     if (!address.nakshatra) newErrors.nakshatra = "Required";
+    if (!address.gotra) newErrors.gotra = "Required";
+    if (!address.rashi) newErrors.rashi = "Required";
     if (!address.familyMember) newErrors.familyMember = "Required";
     if (!address.street1) newErrors.street1 = "Required";
     if (!address.area) newErrors.area = "Required";
@@ -234,6 +236,8 @@ const ChadhavaDetails = () => {
     setLoading(true);
 
     try {
+      const comment = `( Nakshatra :${address.nakshatra})( Gotra :${address.gotra})( Rashi :${address.rashi} )`;
+
       const payload = {
         requests: selectedItems.map((item) => ({
           is_chadhava: true,
@@ -248,11 +252,12 @@ const ChadhavaDetails = () => {
             },
           ],
           pooja_date: address.bookingDate,
-          devotee_name: address.devoteeName,
+          name: address.devoteeName,
           devotee_number: `+91${address.devoteeMobile}`,
           sankalpa: address.sankalpa,
-          nakshatra: address.nakshatra,
+          comment: comment,
           family_member: [{ name: address.familyMember }],
+          booked_by: "CSC",
           prasadam_address: {
             name: address.devoteeName,
             street_address_1: address.street1,
@@ -278,7 +283,7 @@ const ChadhavaDetails = () => {
 
       console.log("Payload sent to backend:", payload);
 
-      const response = await api.post("https://beta.devalayas.com/api/v1/devotee/bulk_pooja_request/", payload);
+      const response = await api.post("/api/v1/devotee/bulk_pooja_request/", payload);
       const order = Array.isArray(response.data) ? response.data[0] : response.data;
 
       setOrderDetails(order);
@@ -293,14 +298,29 @@ const ChadhavaDetails = () => {
   };
 
   const initiatePayment = async (order) => {
+    setLoading(true);
     const scriptLoaded = await loadRazorpayScript();
     if (!scriptLoaded) {
       alert("Payment gateway failed to load.");
+      setLoading(false);
       return;
     }
 
-    const rzpKey = await fetchRazorpayKey();
-    if (!rzpKey) return;
+    let rzpKey;
+    try {
+      const response = await api.get("/api/v1/devotee/payment_key/");
+      rzpKey = response.data.key;
+    } catch (err) {
+      console.error("Failed to load Razorpay key:", err);
+      alert("Payment gateway not available.");
+      setLoading(false);
+      return;
+    }
+
+    if (!rzpKey) {
+      setLoading(false);
+      return;
+    };
 
     const { payment_order_id: orderId, payment_data } = order;
     const amount = Math.round((payment_data?.final_total || charges.total) * 100);
@@ -326,13 +346,13 @@ const ChadhavaDetails = () => {
              console.log("Payment verification payload:", payload);
 
     const verificationResponse = await api.post(
-      "https://beta.devalayas.com/api/v1/devotee/pooja_request/payment/",
+      "/api/v1/devotee/pooja_request/payment/",
       payload
     );
 
     if (verificationResponse.data.success) {
       const orderDetailsResponse = await api.get(
-        `https://beta.devalayas.com/api/v1/devotee/pooja_request/list/?search=${order.order_id}`
+        `/api/v1/devotee/pooja_request/list/?search=${order.order_id}`
       );
 
       handleCloseCheckout();
@@ -355,6 +375,8 @@ const ChadhavaDetails = () => {
     navigate(
       `/payment-success?payment_id=${rz_response.razorpay_payment_id || ""}&order_id=${order.order_id}&status=failed&error=${encodeURIComponent(errorMessage)}`
     );
+  } finally {
+    setLoading(false);
   }
 },
       prefill: {
@@ -368,6 +390,7 @@ const ChadhavaDetails = () => {
     const rzp = new window.Razorpay(options);
     rzp.on("payment.failed", (response) => {
       alert(`Payment failed: ${response.error.description}`);
+      setLoading(false);
     });
     rzp.open();
   };
@@ -657,6 +680,34 @@ const ChadhavaDetails = () => {
                       />
                       {errors.nakshatra && (
                         <span className="error">{errors.nakshatra}</span>
+                      )}
+                    </div>
+
+                    <div className="form-group">
+                      <label>Gotra <span className="required-star">*</span></label>
+                      <input
+                        type="text"
+                        name="gotra"
+                        value={address.gotra}
+                        onChange={handleInputChange}
+                        placeholder="e.g., Kashyapa"
+                      />
+                      {errors.gotra && (
+                        <span className="error">{errors.gotra}</span>
+                      )}
+                    </div>
+
+                    <div className="form-group">
+                      <label>Rashi <span className="required-star">*</span></label>
+                      <input
+                        type="text"
+                        name="rashi"
+                        value={address.rashi}
+                        onChange={handleInputChange}
+                        placeholder="e.g., Vrishabha"
+                      />
+                      {errors.rashi && (
+                        <span className="error">{errors.rashi}</span>
                       )}
                     </div>
 

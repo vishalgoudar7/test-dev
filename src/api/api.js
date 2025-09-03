@@ -39,23 +39,45 @@ api.interceptors.request.use(
     const protectedRoutes = [
       '/api/v1/devotee/profile/',
       '/api/v1/devotee/pooja_request/',
-      '/api/v1/devotee/profile/edit/', // Added for completeness, though update uses PUT
-      '/api/v1/devotee/profile/update/', // Explicitly added for update endpoint
+      '/api/v1/devotee/profile/edit/',
+      '/api/v1/devotee/profile/update/',
+      '/api/v1/devotee/bulk_pooja_request/',
+      '/api/v1/devotee/pooja_request/payment/',
+      '/api/v1/devotee/payment_key/',
     ];
-    const isProtected = protectedRoutes.some(route => config.url.startsWith(route));
+    const isProtected = protectedRoutes.some(route => config.url.includes(route));
 
     if (isProtected && token === presetToken) {
       // Use a custom error message or handle cancellation gracefully
       return Promise.reject(new axios.Cancel('🔒 Guest token not allowed. Please login.'));
     }
 
-    if (!isAuthEndpoint && token) {
+    if (token) {
       config.headers['Authorization'] = `Token ${token}`;
     }
 
     return config;
   },
   (error) => Promise.reject(error)
+);
+
+// ✅ Handle 403 Forbidden globally
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 403) {
+      const userToken = localStorage.getItem('authToken');
+      if (userToken) {
+        // If user was logged in, token might have expired
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('devoteeProfile');
+        alert("Your session has expired. Please log in again.");
+      }
+      // Redirect to login page
+      window.location.href = '/login'; 
+    }
+    return Promise.reject(error);
+  }
 );
 
 // ✅ x-www-form-urlencoded helper
