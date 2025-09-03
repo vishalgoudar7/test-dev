@@ -31,6 +31,8 @@ const ChadhavaDetails = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [title, setTitle] = useState("Bhairav Chadhava");
   const [subtitle, setSubtitle] = useState("A Sacred Opportunity to Break Free from Fear, Obstacles & Negativity");
+  const [includedItems, setIncludedItems] = useState("");
+  const [excludedItems, setExcludedItems] = useState("");
 
   // Checkout form state
   const [address, setAddress] = useState({
@@ -104,6 +106,13 @@ const ChadhavaDetails = () => {
             setSubtitle(firstResult.details);
           }
 
+          if(firstResult.pooja_chadhava?.included){
+            setIncludedItems(firstResult.pooja_chadhava.included);
+          }
+          if(firstResult.pooja_chadhava?.excluded){
+            setExcludedItems(firstResult.pooja_chadhava.excluded);
+          }
+
           if (firstResult.pooja_chadhava?.images?.length > 0) {
             const { pooja_chadhava } = firstResult;
             const newCarouselImages = pooja_chadhava.images.map((img, index) => ({
@@ -141,7 +150,7 @@ const ChadhavaDetails = () => {
       } catch (err) {
         console.error("Error fetching chadhava items:", err);
         if (err.response && err.response.status === 403) {
-          navigate('/login', { state: { message: "Your session has expired. Please log in again." } });
+          navigate('/login', { state: { message: "You must be logged in to view this page." } });
         } else {
           setError("Failed to load items. Please try again.");
         }
@@ -239,46 +248,46 @@ const ChadhavaDetails = () => {
       const comment = `( Nakshatra :${address.nakshatra})( Gotra :${address.gotra})( Rashi :${address.rashi} )`;
 
       const payload = {
-        requests: selectedItems.map((item) => ({
-          is_chadhava: true,
-          is_prasadam_delivery: true, // Always true to get delivery charges
-          pooja: item.poojaId,
-          temple: item.templeId,
-          requested_chadhava_items: [
-            {
+        requests: [
+          {
+            is_chadhava: true,
+            is_prasadam_delivery: true, // Always true to get delivery charges
+            pooja: selectedItems[0]?.poojaId, // Assuming all selected items belong to the same pooja
+            temple: selectedItems[0]?.templeId, // Assuming all selected items belong to the same temple
+            requested_chadhava_items: selectedItems.map((item) => ({
               id: item.id,
               quantity: item.quantity || 1,
               cost: item.cost,
+            })),
+            pooja_date: address.bookingDate,
+            name: address.devoteeName,
+            devotee_number: `+91${address.devoteeMobile}`,
+            sankalpa: address.sankalpa,
+            comment: comment,
+            family_member: [{ name: address.familyMember }],
+            booked_by: "CSC",
+            prasadam_address: {
+              name: address.devoteeName,
+              street_address_1: address.street1,
+              street_address_2: address.street2 || "",
+              area: address.area,
+              city: address.city,
+              state: address.state,
+              pincode: parseInt(address.pincode, 10),
+              phone_number: address.devoteeMobile,
             },
-          ],
-          pooja_date: address.bookingDate,
-          name: address.devoteeName,
-          devotee_number: `+91${address.devoteeMobile}`,
-          sankalpa: address.sankalpa,
-          comment: comment,
-          family_member: [{ name: address.familyMember }],
-          booked_by: "CSC",
-          prasadam_address: {
-            name: address.devoteeName,
-            street_address_1: address.street1,
-            street_address_2: address.street2 || "",
-            area: address.area,
-            city: address.city,
-            state: address.state,
-            pincode: parseInt(address.pincode, 10),
-            phone_number: address.devoteeMobile,
+            billing_address: {
+              name: address.devoteeName,
+              street_address_1: address.street1,
+              street_address_2: address.street2 || "",
+              area: address.area,
+              city: address.city,
+              state: address.state,
+              pincode: parseInt(address.pincode, 10),
+              phone_number: address.devoteeMobile,
+            },
           },
-          billing_address: {
-            name: address.devoteeName,
-            street_address_1: address.street1,
-            street_address_2: address.street2 || "",
-            area: address.area,
-            city: address.city,
-            state: address.state,
-            pincode: parseInt(address.pincode, 10),
-            phone_number: address.devoteeMobile,
-          },
-        })),
+        ],
       };
 
       console.log("Payload sent to backend:", payload);
@@ -494,39 +503,22 @@ const ChadhavaDetails = () => {
             <p className="subtitle">
               {subtitle}
             </p>
-            
-                         {/* Temple Info */}
-             <div className="temple-info">
-               <div className="info-item">
-               <span> <FaPlaceOfWorship className="info-icon" />&nbsp;&nbsp;
-                 Temple: {assignedItems[0]?.temple} </span>
-               </div>
-              {/* <div className="info-item">
-                <FaCalendarAlt className="info-icon" />
-                <span>{nextSaturday.toLocaleDateString('en-US', { 
-                  day: 'numeric', 
-                  month: 'short'
-                })}, {nextSaturday.toLocaleDateString('en-US', { 
-                  weekday: 'short'
-                })}</span>
-              </div> */}
-            </div>
-
-            {/* Rating */}
-            {/* <div className="rating-section">
-              <div className="stars">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <FaStar key={star} className="star-icon filled" />
-                ))}
+            <div className="included-section text-start">
+              <span> <h4><FaPlaceOfWorship className="info-icon" />&nbsp;&nbsp;
+                <strong>Temple:</strong>{assignedItems[0]?.temple}</h4></span>
               </div>
-              <span className="rating-text">5 (5+)</span>
-            </div> */}
-
-            {/* Devotee Count */}
-            {/* <div className="devotee-count">
-              <span>3890+ Devotees already Offered</span>
-            </div> */}
-
+            
+            {includedItems && (
+              <div className="included-section text-start">
+                <h4>Included:{includedItems}</h4>
+              </div>
+            )}
+            {excludedItems && (
+              <div className="excluded-section text-start">
+                <h4>Excluded:{excludedItems}</h4>
+                
+              </div>
+            )}
           </div>
         </div>
       </div>

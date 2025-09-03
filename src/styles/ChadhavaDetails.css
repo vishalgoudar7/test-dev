@@ -371,7 +371,6 @@
   cursor: pointer;
   font-weight: bold;
   font-size: 16px;
-  transition: all 0.3s ease;
 }
 
 .qty-btn:hover:not(:disabled) {
@@ -859,4 +858,35 @@
   width: 100%;
   padding: 20px;
   margin-top: 20px;
+}
+
+.included-section,
+.excluded-section {
+  background-color: #f0f8ff; /* Light blue background */
+  border-left: 4px solid #2196f3; /* Blue left border */
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.excluded-section {
+  background-color: #fff3e0; /* Light orange background */
+  border-left: 4px solid #ff9800; /* Orange left border */
+}
+
+.included-section h4,
+.excluded-section h4 {
+  color: #333;
+  font-size: 18px;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.included-section p,
+.excluded-section p {
+  color: #555;
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 0;
 }
