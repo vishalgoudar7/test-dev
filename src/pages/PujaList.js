@@ -1,4 +1,4 @@
-// src/components/PujaList.js
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
@@ -67,35 +67,42 @@ const PujaList = () => {
   const categories = [
     "All",
     "Abhisheka",
-    "Mahamangalarati",
+    "Mahamgalarti",
     "Rudrabhishek",
     "Homa",
     "Havan",
     "Anushthan",
   ];
 
-  // ✅ Safe filtering (handles category being string or object)
   const filteredPujas = pujas
     .filter((puja) => {
       if (selectedCategory === "All") return true;
 
+      const categoryFilter = selectedCategory.toLowerCase();
       const pujaCategory =
         typeof puja.category === "string"
           ? puja.category
           : puja.category?.name || "";
 
-      return (
-        pujaCategory.toLowerCase() === selectedCategory.toLowerCase()
-      );
+      const checkText = `${pujaCategory} ${puja.name || ""} ${
+        puja.details || ""
+      } ${puja.description || ""}`.toLowerCase();
+
+      return checkText.includes(categoryFilter);
     })
-    .filter((puja) =>
-      puja.name?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    .filter((puja) => {
+      const term = searchTerm.toLowerCase();
+      return (
+        puja.name?.toLowerCase().includes(term) ||
+        puja.temple?.name?.toLowerCase().includes(term)
+      );
+    });
 
   return (
     <div className="puja-list-container">
       <h2 className="puja-heading">Available Pujas</h2>
 
+      {/* Category Section */}
       <div className="category-section">
         {categories.map((category) => (
           <button
@@ -110,17 +117,29 @@ const PujaList = () => {
         ))}
       </div>
 
+      {/* Search Bar */}
       <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search Pujas..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
+        <div className="search-input-wrapper">
+          <input
+            type="text"
+            placeholder="Search Pujas or Temples..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          {searchTerm && (
+            <button
+              className="clear-inside"
+              onClick={() => setSearchTerm("")}
+            >
+              ❌
+            </button>
+          )}
+        </div>
         <button className="search-button">SEARCH</button>
       </div>
 
+      {/* Puja Cards */}
       <div className="puja-cards">
         {loading ? (
           [...Array(6)].map((_, index) => (
@@ -137,13 +156,12 @@ const PujaList = () => {
             const rawImage =
               puja?.images?.length > 0 ? puja.images[0]?.image : null;
             const imageUrl =
-              rawImage ||
-              "https://via.placeholder.com/360x180?text=No+Image";
-            const price =
-              puja.amount || puja.original_cost || puja.cost || 0;
+              rawImage || "https://via.placeholder.com/400x220?text=No+Image";
+            const price = puja.amount || puja.original_cost || puja.cost || 0;
 
             return (
               <div key={puja.id || idx} className="puja-card">
+                {/* Image */}
                 <div className="puja-image-box">
                   <img
                     src={imageUrl}
@@ -151,32 +169,33 @@ const PujaList = () => {
                     className="puja-image"
                     onError={(e) => {
                       e.target.src =
-                        "https://via.placeholder.com/360x180?text=No+Image";
+                        "https://via.placeholder.com/400x220?text=No+Image";
                     }}
                   />
                 </div>
+
+                {/* Title underlined */}
+                <h3 className="puja-name">{puja.name}</h3>
+
+                {/* Info */}
                 <div className="puja-info">
-                  <h3 className="puja-name">{truncateText(puja.name, 20)}</h3>
+                  <p>🛕 {puja.temple?.name || "N/A"}</p>
+                  <p>🙏 {puja.god?.name || "N/A"}</p>
                   <p>
-                    <strong>Temple:</strong> {puja.temple?.name || "N/A"}
-                  </p>
-                  <p>
-                    <strong>God:</strong> {puja.god?.name || "N/A"}
-                  </p>
-                  <p>
-                    <strong>Benefits:</strong>{" "}
+                    ⭐{" "}
                     {truncateText(
                       puja.details || puja.description || "Spiritual harmony",
                       80
                     )}
                   </p>
                   <p className="puja-price">
-                    <strong>Price:</strong> ₹
+                    💰 ₹
                     {price.toLocaleString("en-IN", {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}
                   </p>
+
                   <div className="button-wrapper">
                     <button
                       className="view-details-btn"
