@@ -442,9 +442,9 @@ const ChadhavaDetails = () => {
 
   return (
     <div className="chadhava-wrapper">
-      <div className="main-content"style={{ display: "flex", gap: "20px" }}>
+      <div className="main-content">
         {/* Left Panel - Image Carousel */}
-        <div className="left-panel"style={{ flex: "0 0 40%" }}>
+        <div className="left-panel">
           <div className="image-carousel-section">
             {/* Main Large Image */}
             <div className="main-image-container">
@@ -491,7 +491,7 @@ const ChadhavaDetails = () => {
         </div>
 
         {/* Right Panel - Booking Details */}
-        <div className="right-panel"style={{ flex: "0 0 60%" }}>
+        <div className="right-panel">
           <div className="offerings-details">
             {/* Top Banner */}
             {/* <div className="top-banner">
@@ -500,22 +500,26 @@ const ChadhavaDetails = () => {
 
             {/* Main Title */}
             <h1 className="main-title">{title}</h1>
-            <p className="subtitle">
+            
+              <div className="excluded-section text-start">
+              <span> <h4>
+                <p className="subtitle"><strong>About: </strong>
               {subtitle}
-            </p>
+            </p> </h4></span>
+              </div>
             <div className="included-section text-start">
               <span> <h4>
                 <strong>Temple: </strong>{assignedItems[0]?.temple}</h4></span>
               </div>
             
             {includedItems && (
-              <div className="included-section text-start">
+              <div className="excluded-section text-start">
                 <h4><strong>Includes: </strong>{includedItems}</h4>
               </div>
             )}
             {excludedItems && (
-              <div className="excluded-section text-start">
-                <h4><strong>Includes: </strong>{excludedItems}</h4>
+              <div className="included-section text-start">
+                <h4><strong> Exclude: </strong>{excludedItems}</h4>
                 
               </div>
             )}

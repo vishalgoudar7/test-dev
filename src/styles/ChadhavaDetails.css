@@ -8,16 +8,15 @@
 
 .main-content {
   display: flex;
-  max-width: 1400px;
-  margin: 0 auto;
+  max-width: 1600px; /* Increased from 1400px */
+  margin: 0 auto; /* Center the content */
   padding: 20px;
   gap: 30px;
 }
 
 /* Left Panel - Image Carousel */
 .left-panel {
-  flex: 1;
-  max-width: 600px;
+  flex: 0 0 45%;
 }
 
 .image-carousel-section {
@@ -29,7 +28,7 @@
 
 .main-image-container {
   position: relative;
-  height: 400px;
+  height: 350px;
   overflow: hidden;
 }
 
@@ -145,7 +144,7 @@
 
 .thumbnail-img {
   width: 100%;
-  height: 80px;
+  height: 60px;
   object-fit: cover;
   border-radius: 6px;
 }
@@ -172,8 +171,7 @@
 
 /* Right Panel - Booking Details */
 .right-panel {
-  flex: 1;
-  max-width: 600px;
+  flex: 0 0 55%;
 }
 
 .offerings-details {
@@ -208,7 +206,7 @@
   font-size: 18px;
   color: #e91e63;
   text-align: start;
-  margin: 0 0 25px 0;
+  margin: 0 0 5px 0;
   font-weight: 500;
   line-height: 1.4;
 }
@@ -282,7 +280,7 @@
   font-size: 20px;
   font-weight: 600;
   color: #333;
-  margin: 0 0 20px 0;
+  margin: 0 0 0 0;
 }
 
 .product-cards {
@@ -342,7 +340,7 @@
 }
 
 .select-btn:hover {
-  background: #45a049;
+  background: #d25d1d;
   transform: translateY(-1px);
 }
 
@@ -757,7 +755,7 @@
   }
   
   .thumbnail-images {
-    flex-direction: column;
+    flex-direction: row;
   }
   
   .main-image-container {
@@ -857,13 +855,11 @@
 .full-width-container {
   width: 100%;
   padding: 20px;
-  margin-top: 20px;
 }
 
 .included-section,
 .excluded-section {
   background-color: #f0f8ff; /* Light blue background */
-  border-left: 4px solid #2196f3; /* Blue left border */
   padding: 15px;
   margin-bottom: 15px;
   border-radius: 8px;
@@ -872,7 +868,6 @@
 
 .excluded-section {
   background-color: #fff3e0; /* Light orange background */
-  border-left: 4px solid #ff9800; /* Orange left border */
 }
 
 .included-section h4,
