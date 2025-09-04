@@ -27,7 +27,7 @@
 
 .temple-list-search-wrapper {
   position: relative;
-  width: 70%; /* 🔥 Increased input width */
+  width: 60%; 
 }
 
 .temple-list-search-input {
@@ -189,6 +189,44 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* notice bar */
+
+
+.notice-bar {
+  width: 100%;
+  background: #ffeb3b;
+  color: #111;
+  font-weight: bold;
+  font-size: 13px;
+  padding: 8px 0;
+  overflow: hidden;
+  position: relative;
+  /* border-bottom: 2px solid #f57c00; */
+}
+
+.notice-text {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: scrollNotice 50s linear infinite;
+  will-change: transform;
+  transform: translateZ(0); 
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@keyframes scrollNotice {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+
+
 
 /* ---------------- Responsive ---------------- */
 @media (max-width: 1200px) {
