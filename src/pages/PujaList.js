@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-// src/components/PujaList.js
-=======
->>>>>>> acce854d0d7809fef366e937eb82883192ec257a
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
@@ -225,4 +221,3 @@ const PujaList = () => {
 };
 
 export default PujaList;
-
