@@ -68,7 +68,7 @@ const Chadhava = () => {
             filteredChadhavaItems.map((item) => {
               const templeImage =
                 item.temple?.images?.[0]?.image || "/placeholder.png";
-              const assignedItems = item.assigned_items || [];
+              
 
               return (
                 <div key={item.id} className="chadhava-card">
@@ -100,25 +100,7 @@ const Chadhava = () => {
                   )}
 
 
-                  {/* 
-                  {pooja && (
-                    <p className="chadhava-cost">
-                      Cost: strong>₹{pooja.cost}</strong>
-                    </p>
-                  )} */}
-
-                  {/* {assignedItems.length > 0 && (
-                    <div className="assigned-items">
-                      <h4>Assigned Items:</h4>
-                      <ul>
-                        {assignedItems.map((ai) => (
-                          <li key={ai.id}>
-                            {ai.name} - ₹{ai.cost}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )} */}
+                  
 
                   <button
                     className="chadhava-btn"

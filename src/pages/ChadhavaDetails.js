@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useUserAuth } from "../context/UserAuthContext";
 import api from "../api/api";
 import "../styles/ChadhavaDetails.css";
-import { FaPlaceOfWorship, FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 // Load Razorpay
 const loadRazorpayScript = () => {
