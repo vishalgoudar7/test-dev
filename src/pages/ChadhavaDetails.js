@@ -504,18 +504,18 @@ const ChadhavaDetails = () => {
               {subtitle}
             </p>
             <div className="included-section text-start">
-              <span> <h4><FaPlaceOfWorship className="info-icon" />&nbsp;&nbsp;
-                <strong>Temple:</strong>{assignedItems[0]?.temple}</h4></span>
+              <span> <h4>
+                <strong>Temple: </strong>{assignedItems[0]?.temple}</h4></span>
               </div>
             
             {includedItems && (
               <div className="included-section text-start">
-                <h4>Included:{includedItems}</h4>
+                <h4><strong>Includes: </strong>{includedItems}</h4>
               </div>
             )}
             {excludedItems && (
               <div className="excluded-section text-start">
-                <h4>Excluded:{excludedItems}</h4>
+                <h4><strong>Includes: </strong>{excludedItems}</h4>
                 
               </div>
             )}
