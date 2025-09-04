@@ -81,20 +81,33 @@ const Chadhava = () => {
                     className="chadhava-image"
                   />
 
-                  <h3 className="chadhava-name">{item.name}</h3>
-                  <p className="chadhava-description">{item.details}</p>
 
+                  <h3 className="chadhava-name">{item.name}</h3>
+                  {/* <p className="chadhava-description">{item.details}</p> */}
                   <p className="chadhava-temple">
-                    Temple: <strong>{item.temple?.name}</strong>
+                    <strong>Temple: </strong> {item.temple?.name}
                   </p>
-{/* 
+                  {/* Included and Excluded details */}
+                  {(item.included || item.pooja_chadhava?.included) && (
+                    <p className="chadhava-included">
+                      <strong>Included: </strong>{item.included || item.pooja_chadhava?.included}
+                    </p>
+                  )}
+                  {(item.excluded || item.pooja_chadhava?.excluded) && (
+                    <p className="chadhava-excluded">
+                      <strong>Excluded: </strong> {item.excluded || item.pooja_chadhava?.excluded}
+                    </p>
+                  )}
+
+
+                  {/* 
                   {pooja && (
                     <p className="chadhava-cost">
                       Cost: strong>₹{pooja.cost}</strong>
                     </p>
                   )} */}
 
-                  {assignedItems.length > 0 && (
+                  {/* {assignedItems.length > 0 && (
                     <div className="assigned-items">
                       <h4>Assigned Items:</h4>
                       <ul>
@@ -105,7 +118,7 @@ const Chadhava = () => {
                         ))}
                       </ul>
                     </div>
-                  )}
+                  )} */}
 
                   <button
                     className="chadhava-btn"
