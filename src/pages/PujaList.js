@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 // src/components/PujaList.js
+=======
+>>>>>>> acce854d0d7809fef366e937eb82883192ec257a
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
@@ -20,8 +23,9 @@ const PujaList = () => {
 
         // ✅ Exclude only pujas that contain word "prasadam"
         pujaList = pujaList.filter((puja) => {
-          const checkText =
-            `${puja.name || ""} ${puja.details || ""} ${puja.description || ""}`.toLowerCase();
+          const checkText = `${puja.name || ""} ${puja.details || ""} ${
+            puja.description || ""
+          }`.toLowerCase();
           return !checkText.includes("prasadam");
         });
 
@@ -91,10 +95,10 @@ const PujaList = () => {
       return checkText.includes(categoryFilter);
     })
     .filter((puja) => {
-      const term = searchTerm.toLowerCase();
+      const searchLower = searchTerm.toLowerCase();
       return (
-        puja.name?.toLowerCase().includes(term) ||
-        puja.temple?.name?.toLowerCase().includes(term)
+        puja.name?.toLowerCase().includes(searchLower) ||
+        puja.temple?.name?.toLowerCase().includes(searchLower)
       );
     });
 
@@ -122,7 +126,7 @@ const PujaList = () => {
         <div className="search-input-wrapper">
           <input
             type="text"
-            placeholder="Search Pujas or Temples..."
+            placeholder="Search by puja or temples..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
@@ -132,7 +136,7 @@ const PujaList = () => {
               className="clear-inside"
               onClick={() => setSearchTerm("")}
             >
-              ❌
+              ✖
             </button>
           )}
         </div>
@@ -221,3 +225,4 @@ const PujaList = () => {
 };
 
 export default PujaList;
+

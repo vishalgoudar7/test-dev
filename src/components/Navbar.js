@@ -11,7 +11,7 @@ import {
 import { useUserAuth } from "../context/UserAuthContext";
 import { logout as apiLogout } from "../api/api";
 import "../styles/Navbar.css";
-import logo from "../assets/logo.png";
+import logo from "../assets/NewLogo.png";
 import extraLogo from "../assets/logo2.png";
 
 const Navbar = () => {
