@@ -18,8 +18,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { setUser, googleSignIn } = useUserAuth();
   const location = useLocation(); // ✅ NEW
-  const queryParams = new URLSearchParams(location.search); // ✅ NEW
-  const redirectPath = queryParams.get("redirect") || "/"; // ✅ NEW
+  const from = location.state?.from?.pathname || "/";
 
   const [countryCode, setCountryCode] = useState("+91");
   const [mobile, setMobile] = useState("");
@@ -160,8 +159,7 @@ const Login = () => {
         }
 
         setUser(userObj);
-        navigate("/");
-        navigate(redirectPath);
+        navigate(from, { replace: true });
       } catch (err) {
         console.error("Backend login failed:", err);
         setError("OTP verified, but backend login failed. Please contact support.");
@@ -190,7 +188,6 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     setError("");
     setIsLoading(true);
-    navigate(redirectPath);
 
     try {
       const result = await googleSignIn();
@@ -203,7 +200,7 @@ const Login = () => {
       };
       localStorage.setItem("user", JSON.stringify(userObj));
       setUser(userObj);
-      navigate("/");
+      navigate(from, { replace: true });
     } catch (err) {
       console.error("Google login failed:", err);
       setError(`Google login failed: ${err.message || "An unknown error occurred."}`);

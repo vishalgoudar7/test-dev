@@ -1,10 +1,10 @@
 // src/pages/ChadhavaDetails.js
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useUserAuth } from "../context/UserAuthContext";
+import { useNavigate, useLocation } from "react-router-dom";
 import api from "../api/api";
 import "../styles/ChadhavaDetails.css";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { useUserAuth } from "../context/UserAuthContext";
 
 // Load Razorpay
 const loadRazorpayScript = () => {
@@ -19,6 +19,7 @@ const loadRazorpayScript = () => {
 
 const ChadhavaDetails = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useUserAuth();
 
   const [assignedItems, setAssignedItems] = useState([]);
@@ -83,12 +84,6 @@ const ChadhavaDetails = () => {
     }
   ]);
 
-  useEffect(() => {
-    if (!localStorage.getItem('authToken')) {
-      navigate('/login', { state: { message: "You must be logged in to view this page." } });
-    }
-  }, [navigate]);
-
   // Fetch chadhava items
   useEffect(() => {
     const fetchChadhavas = async () => {
@@ -149,18 +144,14 @@ const ChadhavaDetails = () => {
         }
       } catch (err) {
         console.error("Error fetching chadhava items:", err);
-        if (err.response && err.response.status === 403) {
-          navigate('/login', { state: { message: "You must be logged in to view this page." } });
-        } else {
-          setError("Failed to load items. Please try again.");
-        }
+        setError("Failed to load items. Please try again.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchChadhavas();
-  }, [navigate]);
+  }, []);
 
   const handleSelectItem = (item) => {
     setSelectedItems((prev) =>
@@ -184,15 +175,6 @@ const ChadhavaDetails = () => {
       return;
     }
 
-    // Prefill from user profile
-    const devoteeName = user?.name || "";
-    setAddress((prev) => ({
-      ...prev,
-      devoteeName: devoteeName,
-      devoteeMobile: "", // No phone in user object
-      familyMember: devoteeName,
-    }));
-
     // Calculate total
     const subtotal = selectedItems.reduce(
       (sum, item) => sum + item.cost * (item.quantity || 1),
@@ -204,6 +186,14 @@ const ChadhavaDetails = () => {
     setCharges({ subtotal, convenienceFee: 5.0, shipping: 0, gst, total });
 
     setShowCheckout(true);
+  };
+
+  const handleOfferChadhava = () => {
+    if (!user) {
+      navigate("/login");
+    } else {
+      handleAddToCart();
+    }
   };
 
   const handleCloseCheckout = () => {
@@ -390,7 +380,7 @@ const ChadhavaDetails = () => {
 },
       prefill: {
         name: address.devoteeName,
-        email: user?.email || "",
+        email: "",
         contact: `+91${address.devoteeMobile}`,
       },
       theme: { color: "#e57373" },
@@ -519,7 +509,7 @@ const ChadhavaDetails = () => {
             )}
             {excludedItems && (
               <div className="included-section text-start">
-                <h4><strong> Exclude: </strong>{excludedItems}</h4>
+                <h4><strong> Benifits: </strong>{excludedItems}</h4>
                 
               </div>
             )}
@@ -583,7 +573,7 @@ const ChadhavaDetails = () => {
           </div>
         </div>
         {/* Call to Action Button */}
-        <button className="cta-button" onClick={handleAddToCart}>
+        <button className="cta-button" onClick={handleOfferChadhava}>
           Offer Chadhava
           <span className="arrow">→</span>
         </button>
