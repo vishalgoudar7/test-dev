@@ -21,6 +21,7 @@ const ChadhavaDetails = () => {
   const navigate = useNavigate();
   
   const { user } = useUserAuth();
+  const [profile, setProfile] = useState(null);
 
   const [assignedItems, setAssignedItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
@@ -42,16 +43,26 @@ const ChadhavaDetails = () => {
     devoteeMobile: "",
     sankalpa: "",
     nakshatra: "",
-    gotra: "",
-    rashi: "",
-    familyMember: "",
+    gotraKulaRashi: "",
     street1: "",
     street2: "",
     area: "",
     city: "",
     state: "",
+    district: "",
     pincode: "",
   });
+
+  useEffect(() => {
+    const storedProfile = localStorage.getItem("devoteeProfile");
+    if (storedProfile && storedProfile !== 'undefined') {
+      try {
+        setProfile(JSON.parse(storedProfile));
+      } catch (e) {
+        console.error("Failed to parse devoteeProfile", e);
+      }
+    }
+  }, []);
 
   const [errors, setErrors] = useState({});
   const [charges, setCharges] = useState({
@@ -214,13 +225,12 @@ const ChadhavaDetails = () => {
       newErrors.devoteeMobile = "Valid 10-digit mobile";
     if (!address.sankalpa) newErrors.sankalpa = "Required";
     if (!address.nakshatra) newErrors.nakshatra = "Required";
-    if (!address.gotra) newErrors.gotra = "Required";
-    if (!address.rashi) newErrors.rashi = "Required";
-    if (!address.familyMember) newErrors.familyMember = "Required";
+    if (!address.gotraKulaRashi) newErrors.gotraKulaRashi = "Required";
     if (!address.street1) newErrors.street1 = "Required";
     if (!address.area) newErrors.area = "Required";
     if (!address.city) newErrors.city = "Required";
     if (!address.state) newErrors.state = "Required";
+    if (!address.district) newErrors.district = "Required";
     if (!address.pincode || !/^\d{6}$/.test(address.pincode))
       newErrors.pincode = "6-digit pincode";
 
@@ -235,7 +245,7 @@ const ChadhavaDetails = () => {
     setLoading(true);
 
     try {
-      const comment = `( Nakshatra :${address.nakshatra})( Gotra :${address.gotra})( Rashi :${address.rashi} )`;
+      const comment = `( Nakshatra :${address.nakshatra || ''})( Gotra, Kula & Rashi :${address.gotraKulaRashi || ''} )`;
 
       const payload = {
         requests: [
@@ -250,31 +260,40 @@ const ChadhavaDetails = () => {
               cost: item.cost,
             })),
             pooja_date: address.bookingDate,
-            name: address.devoteeName,
-            devotee_number: `+91${address.devoteeMobile}`,
-            sankalpa: address.sankalpa,
+            name: address.devoteeName || profile?.name || profile?.firstName || 'Devotee',
+            devotee_number: `+91${address.devoteeMobile || profile?.phone || ''}`,
+            sankalpa: address.sankalpa || '',
             comment: comment,
-            family_member: [{ name: address.familyMember }],
-            booked_by: "CSC",
+            // ✅ Upgraded family_member (from Version 2)
+            family_member: [
+              {
+                id: (profile && profile.id) ? profile.id : 1, // fallback to 1 if no profile
+                name: address.devoteeName || profile?.name || profile?.firstName || 'Devotee',
+                nakshatra: address.nakshatra || '', // explicitly include nakshatra
+              },
+            ],
+            booked_by: 'CSC',
             prasadam_address: {
-              name: address.devoteeName,
-              street_address_1: address.street1,
-              street_address_2: address.street2 || "",
-              area: address.area,
-              city: address.city,
-              state: address.state,
-              pincode: parseInt(address.pincode, 10),
-              phone_number: address.devoteeMobile,
+              name: address.devoteeName || profile?.name || 'Devotee',
+              street_address_1: address.street1 || '',
+              street_address_2: address.street2 || '',
+              area: address.area || '',
+              city: address.city || '',
+              state: address.state || '',
+              district: address.district || '',
+              pincode: parseInt(address.pincode, 10) || 0,
+              phone_number: address.devoteeMobile || profile?.phone || '',
             },
             billing_address: {
-              name: address.devoteeName,
-              street_address_1: address.street1,
-              street_address_2: address.street2 || "",
-              area: address.area,
-              city: address.city,
-              state: address.state,
-              pincode: parseInt(address.pincode, 10),
-              phone_number: address.devoteeMobile,
+              name: address.devoteeName || profile?.name || 'Devotee',
+              street_address_1: address.street1 || '',
+              street_address_2: address.street2 || '',
+              area: address.area || '',
+              city: address.city || '',
+              state: address.state || '',
+              district: address.district || '',
+              pincode: parseInt(address.pincode, 10) || 0,
+              phone_number: address.devoteeMobile || profile?.phone || '',
             },
           },
         ],
@@ -670,44 +689,16 @@ const ChadhavaDetails = () => {
                     </div>
 
                     <div className="form-group">
-                      <label>Gotra <span className="required-star">*</span></label>
+                      <label>Gotra, Kula & Rashi <span className="required-star">*</span></label>
                       <input
                         type="text"
-                        name="gotra"
-                        value={address.gotra}
+                        name="gotraKulaRashi"
+                        value={address.gotraKulaRashi}
                         onChange={handleInputChange}
-                        placeholder="e.g., Kashyapa"
+                        placeholder="e.g., Kashyapa, Bhargava, Vrishabha"
                       />
-                      {errors.gotra && (
-                        <span className="error">{errors.gotra}</span>
-                      )}
-                    </div>
-
-                    <div className="form-group">
-                      <label>Rashi <span className="required-star">*</span></label>
-                      <input
-                        type="text"
-                        name="rashi"
-                        value={address.rashi}
-                        onChange={handleInputChange}
-                        placeholder="e.g., Vrishabha"
-                      />
-                      {errors.rashi && (
-                        <span className="error">{errors.rashi}</span>
-                      )}
-                    </div>
-
-                    <div className="form-group">
-                      <label>Offering For <span className="required-star">*</span></label>
-                      <input
-                        type="text"
-                        name="familyMember"
-                        value={address.familyMember}
-                        onChange={handleInputChange}
-                        placeholder="e.g., Self, Father, Mother"
-                      />
-                      {errors.familyMember && (
-                        <span className="error">{errors.familyMember}</span>
+                      {errors.gotraKulaRashi && (
+                        <span className="error">{errors.gotraKulaRashi}</span>
                       )}
                     </div>
 
@@ -790,6 +781,18 @@ const ChadhavaDetails = () => {
                         />
                         {errors.state && (
                           <span className="error">{errors.state}</span>
+                        )}
+                      </div>
+                      <div className="form-group half">
+                        <label>District <span className="required-star">*</span></label>
+                        <input
+                          type="text"
+                          name="district"
+                          value={address.district}
+                          onChange={handleInputChange}
+                        />
+                        {errors.district && (
+                          <span className="error">{errors.district}</span>
                         )}
                       </div>
                     </div>
