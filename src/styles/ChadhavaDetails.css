@@ -736,28 +736,29 @@
   }
   
   .product-cards {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
   }
-  
+
   .chadhava-checkout-body {
     flex-direction: column;
   }
-  
+
   .checkout-summary {
     width: 100%;
     border-left: none;
     border-top: 1px solid #eee;
   }
-  
+
   .form-row {
     flex-direction: column;
     gap: 0;
   }
-  
+
   .thumbnail-images {
     flex-direction: row;
   }
-  
+
   .main-image-container {
     height: 300px;
   }
@@ -778,6 +779,10 @@
 
   .product-card {
     padding: 15px;
+  }
+
+  .product-cards {
+    grid-template-columns: 1fr;
   }
 
   .cta-button {
@@ -880,7 +885,7 @@
 
 .included-section p,
 .excluded-section p {
-  color: #555;
+  color: black;
   font-size: 16px;
   line-height: 1.5;
   margin-bottom: 0;

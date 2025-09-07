@@ -95,7 +95,7 @@ const Chadhava = () => {
                   )}
                   {(item.excluded || item.pooja_chadhava?.excluded) && (
                     <p className="chadhava-excluded">
-                      <strong>Excluded: </strong> {item.excluded || item.pooja_chadhava?.excluded}
+                      <strong>Benifits: </strong> {item.excluded || item.pooja_chadhava?.excluded}
                     </p>
                   )}
 
