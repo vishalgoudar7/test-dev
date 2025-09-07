@@ -740,14 +740,31 @@
     gap: 15px;
   }
 
+  .chadhava-checkout-modal {
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
   .chadhava-checkout-body {
     flex-direction: column;
+    overflow: visible;
+  }
+
+  .checkout-form {
+    overflow-y: visible;
+  }
+
+  .form-scrollable-area {
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 0;
   }
 
   .checkout-summary {
     width: 100%;
     border-left: none;
     border-top: 1px solid #eee;
+    padding: 20px;
   }
 
   .form-row {
@@ -761,6 +778,25 @@
 
   .main-image-container {
     height: 300px;
+  }
+
+  .confirmation-body {
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .price-summary-container {
+    flex-basis: auto; /* Reset flex-basis */
+    width: 100%;
+  }
+
+  .chadhava-checkout-footer {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    padding: 15px 20px;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
   }
 }
 
