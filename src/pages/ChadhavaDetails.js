@@ -1,6 +1,6 @@
 // src/pages/ChadhavaDetails.js
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import "../styles/ChadhavaDetails.css";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
@@ -19,7 +19,7 @@ const loadRazorpayScript = () => {
 
 const ChadhavaDetails = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  
   const { user } = useUserAuth();
 
   const [assignedItems, setAssignedItems] = useState([]);

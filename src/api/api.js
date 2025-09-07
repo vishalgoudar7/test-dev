@@ -31,9 +31,7 @@ api.interceptors.request.use(
     const userToken = localStorage.getItem('authToken');
     const token = userToken || presetToken;
 
-    const isAuthEndpoint =
-      config.url.includes('/api/v1/auth/') ||
-      config.url.includes('/api/v1/devotee/login/');
+    
 
     // ❌ Guest token block
     const protectedRoutes = [

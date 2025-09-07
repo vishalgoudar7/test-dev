@@ -10,6 +10,7 @@
   margin-bottom: 15px; /* More space */
   color: #4a2c2a;
   font-weight: 700; /* Bolder */
+  text-align: center;
 }
 
 .loading-text,
