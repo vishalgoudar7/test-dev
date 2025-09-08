@@ -221,6 +221,43 @@
   background-color: #d32f2f;
 }
 
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  gap: 8px;
+}
+
+.page-btn {
+  padding: 8px 14px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.page-btn:hover {
+  background-color: #ff5722;
+  color: #fff;
+}
+
+.page-btn.active {
+  background-color: #ff5722;
+  color: #fff;
+  border-color: #ff5722;
+}
+
+.page-btn:disabled {
+  background-color: #eee;
+  color: #999;
+  cursor: not-allowed;
+}
+
 /* Responsive */
 @media (max-width: 1300px) {
   .puja-cards {
