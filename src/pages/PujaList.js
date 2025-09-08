@@ -9,15 +9,24 @@
 //   const [error, setError] = useState("");
 //   const [searchTerm, setSearchTerm] = useState("");
 //   const [selectedCategory, setSelectedCategory] = useState("All");
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const [totalPages, setTotalPages] = useState(1);
+//   const pujasPerPage = 15;
 //   const navigate = useNavigate();
 
+//   // ✅ fetch only required page from API
 //   useEffect(() => {
 //     const fetchPujas = async () => {
+//       setLoading(true);
 //       try {
-//         const response = await api.get("/api/v1/devotee/pooja/");
-//         let pujaList = response.data?.results || [];
+//         const response = await api.get(
+//           `/api/v1/devotee/pooja/?page=${currentPage}&page_size=${pujasPerPage}`
+//         );
 
-//         // ✅ Exclude only pujas that contain word "prasadam"
+//         let pujaList = response.data?.results || [];
+//         setTotalPages(Math.ceil(response.data?.count / pujasPerPage));
+
+//         // filter prasadam pujas
 //         pujaList = pujaList.filter((puja) => {
 //           const checkText = `${puja.name || ""} ${puja.details || ""} ${
 //             puja.description || ""
@@ -35,7 +44,7 @@
 //     };
 
 //     fetchPujas();
-//   }, []);
+//   }, [currentPage]);
 
 //   const handleBookNow = (puja) => {
 //     const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -74,29 +83,67 @@
 //     "Anushthan",
 //   ];
 
-//   const filteredPujas = pujas
-//     .filter((puja) => {
-//       if (selectedCategory === "All") return true;
+//   // ✅ filter only on current page data (not all)
+//   const filteredPujas = pujas.filter((puja) => {
+//     const categoryFilter = selectedCategory.toLowerCase();
+//     const pujaCategory =
+//       typeof puja.category === "string"
+//         ? puja.category
+//         : puja.category?.name || "";
 
-//       const categoryFilter = selectedCategory.toLowerCase();
-//       const pujaCategory =
-//         typeof puja.category === "string"
-//           ? puja.category
-//           : puja.category?.name || "";
+//     const checkText = `${pujaCategory} ${puja.name || ""} ${
+//       puja.details || ""
+//     } ${puja.description || ""}`.toLowerCase();
 
-//       const checkText = `${pujaCategory} ${puja.name || ""} ${
-//         puja.details || ""
-//       } ${puja.description || ""}`.toLowerCase();
+//     const matchesCategory =
+//       selectedCategory === "All" || checkText.includes(categoryFilter);
 
-//       return checkText.includes(categoryFilter);
-//     })
-//     .filter((puja) => {
-//       const searchLower = searchTerm.toLowerCase();
-//       return (
-//         puja.name?.toLowerCase().includes(searchLower) ||
-//         puja.temple?.name?.toLowerCase().includes(searchLower)
-//       );
-//     });
+//     const matchesSearch =
+//       puja.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//       puja.temple?.name?.toLowerCase().includes(searchTerm.toLowerCase());
+
+//     return matchesCategory && matchesSearch;
+//   });
+
+//   const handleNext = () => {
+//     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+//   };
+//   const handlePrev = () => {
+//     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+//   };
+
+//   const getPageNumbers = () => {
+//     const pageNumbers = [];
+//     const maxVisible = 6;
+
+//     let start = Math.max(1, currentPage - 2);
+//     let end = Math.min(totalPages, start + maxVisible - 1);
+
+//     if (end - start < maxVisible - 1) {
+//       start = Math.max(1, end - maxVisible + 1);
+//     }
+
+//     for (let i = start; i <= end; i++) {
+//       pageNumbers.push(i);
+//     }
+
+//     return pageNumbers;
+//   };
+
+//   // ✅ image logic (puja → temple → god)
+//   const getImageUrl = (puja) => {
+//     if (puja?.images?.length > 0 && puja.images[0].image) {
+//       return puja.images[0].image;
+//     } else if (
+//       puja?.temple?.images?.length > 0 &&
+//       puja.temple.images[0].image
+//     ) {
+//       return puja.temple.images[0].image;
+//     } else if (puja?.god?.image) {
+//       return puja.god.image;
+//     }
+//     return "https://via.placeholder.com/400x220?text=No+Image";
+//   };
 
 //   return (
 //     <div className="puja-list-container">
@@ -110,7 +157,10 @@
 //             className={`category-button ${
 //               selectedCategory === category ? "active" : ""
 //             }`}
-//             onClick={() => setSelectedCategory(category)}
+//             onClick={() => {
+//               setSelectedCategory(category);
+//               setCurrentPage(1);
+//             }}
 //           >
 //             {category}
 //           </button>
@@ -124,14 +174,14 @@
 //             type="text"
 //             placeholder="Search by puja or temples..."
 //             value={searchTerm}
-//             onChange={(e) => setSearchTerm(e.target.value)}
+//             onChange={(e) => {
+//               setSearchTerm(e.target.value);
+//               setCurrentPage(1);
+//             }}
 //             className="search-input"
 //           />
 //           {searchTerm && (
-//             <button
-//               className="clear-inside"
-//               onClick={() => setSearchTerm("")}
-//             >
+//             <button className="clear-inside" onClick={() => setSearchTerm("")}>
 //               ✖
 //             </button>
 //           )}
@@ -153,10 +203,7 @@
 //           <p>No pujas found.</p>
 //         ) : (
 //           filteredPujas.map((puja, idx) => {
-//             const rawImage =
-//               puja?.images?.length > 0 ? puja.images[0]?.image : null;
-//             const imageUrl =
-//               rawImage || "https://via.placeholder.com/400x220?text=No+Image";
+//             const imageUrl = getImageUrl(puja);
 //             const price = puja.amount || puja.original_cost || puja.cost || 0;
 
 //             return (
@@ -167,6 +214,7 @@
 //                     src={imageUrl}
 //                     alt={puja.name}
 //                     className="puja-image"
+//                     loading="lazy" // ✅ lazy load images
 //                     onError={(e) => {
 //                       e.target.src =
 //                         "https://via.placeholder.com/400x220?text=No+Image";
@@ -174,7 +222,7 @@
 //                   />
 //                 </div>
 
-//                 {/* Title underlined */}
+//                 {/* Title */}
 //                 <h3 className="puja-name">{puja.name}</h3>
 
 //                 {/* Info */}
@@ -216,11 +264,40 @@
 //           })
 //         )}
 //       </div>
+
+//       {/* Pagination */}
+//       <div className="pagination">
+//         <button
+//           onClick={handlePrev}
+//           disabled={currentPage === 1}
+//           className="page-btn"
+//         >
+//           Prev
+//         </button>
+//         {getPageNumbers().map((number) => (
+//           <button
+//             key={number}
+//             onClick={() => setCurrentPage(number)}
+//             className={`page-btn ${currentPage === number ? "active" : ""}`}
+//           >
+//             {number}
+//           </button>
+//         ))}
+//         <button
+//           onClick={handleNext}
+//           disabled={currentPage === totalPages}
+//           className="page-btn"
+//         >
+//           Next
+//         </button>
+//       </div>
 //     </div>
 //   );
 // };
 
 // export default PujaList;
+
+
 
 
 
@@ -248,27 +325,21 @@ const PujaList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+
   const pujasPerPage = 15;
   const navigate = useNavigate();
 
-  // ✅ fetch only required page from API
+  // ✅ fetch all data once, then filter and paginate on the client side
   useEffect(() => {
     const fetchPujas = async () => {
       setLoading(true);
       try {
-        const response = await api.get(
-          `/api/v1/devotee/pooja/?page=${currentPage}&page_size=${pujasPerPage}`
-        );
-
+        const response = await api.get("/api/v1/devotee/pooja/?page_size=1000");
         let pujaList = response.data?.results || [];
-        setTotalPages(Math.ceil(response.data?.count / pujasPerPage));
 
-        // filter prasadam pujas
+        // remove prasadam entries
         pujaList = pujaList.filter((puja) => {
-          const checkText = `${puja.name || ""} ${puja.details || ""} ${
-            puja.description || ""
-          }`.toLowerCase();
+          const checkText = `${puja.name || ""} ${puja.details || ""} ${puja.description || ""}`.toLowerCase();
           return !checkText.includes("prasadam");
         });
 
@@ -282,7 +353,33 @@ const PujaList = () => {
     };
 
     fetchPujas();
-  }, [currentPage]);
+  }, []);
+
+  // ✅ Filtered pujas based on search and category
+  const filteredPujas = pujas.filter((puja) => {
+    const categoryFilter = selectedCategory.toLowerCase();
+    const pujaCategory =
+      typeof puja.category === "string"
+        ? puja.category
+        : puja.category?.name || "";
+
+    const checkText = `${pujaCategory} ${puja.name || ""} ${puja.details || ""} ${puja.description || ""}`.toLowerCase();
+
+    const matchesCategory =
+      selectedCategory === "All" || checkText.includes(categoryFilter);
+
+    const matchesSearch =
+      puja.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      puja.temple?.name?.toLowerCase().includes(searchTerm.toLowerCase());
+
+    return matchesCategory && matchesSearch;
+  });
+
+  // ✅ Pagination logic based on filtered data
+  const totalPages = Math.ceil(filteredPujas.length / pujasPerPage);
+  const indexOfLastPuja = currentPage * pujasPerPage;
+  const indexOfFirstPuja = indexOfLastPuja - pujasPerPage;
+  const currentPujas = filteredPujas.slice(indexOfFirstPuja, indexOfLastPuja);
 
   const handleBookNow = (puja) => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -302,7 +399,6 @@ const PujaList = () => {
       localStorage.setItem("cart", JSON.stringify(cart));
       window.dispatchEvent(new Event("storage"));
     }
-
     navigate("/cart");
   };
 
@@ -321,31 +417,10 @@ const PujaList = () => {
     "Anushthan",
   ];
 
-  // ✅ filter only on current page data (not all)
-  const filteredPujas = pujas.filter((puja) => {
-    const categoryFilter = selectedCategory.toLowerCase();
-    const pujaCategory =
-      typeof puja.category === "string"
-        ? puja.category
-        : puja.category?.name || "";
-
-    const checkText = `${pujaCategory} ${puja.name || ""} ${
-      puja.details || ""
-    } ${puja.description || ""}`.toLowerCase();
-
-    const matchesCategory =
-      selectedCategory === "All" || checkText.includes(categoryFilter);
-
-    const matchesSearch =
-      puja.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      puja.temple?.name?.toLowerCase().includes(searchTerm.toLowerCase());
-
-    return matchesCategory && matchesSearch;
-  });
-
   const handleNext = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
   };
+
   const handlePrev = () => {
     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
@@ -353,29 +428,21 @@ const PujaList = () => {
   const getPageNumbers = () => {
     const pageNumbers = [];
     const maxVisible = 6;
-
     let start = Math.max(1, currentPage - 2);
     let end = Math.min(totalPages, start + maxVisible - 1);
-
     if (end - start < maxVisible - 1) {
       start = Math.max(1, end - maxVisible + 1);
     }
-
     for (let i = start; i <= end; i++) {
       pageNumbers.push(i);
     }
-
     return pageNumbers;
   };
 
-  // ✅ image logic (puja → temple → god)
   const getImageUrl = (puja) => {
     if (puja?.images?.length > 0 && puja.images[0].image) {
       return puja.images[0].image;
-    } else if (
-      puja?.temple?.images?.length > 0 &&
-      puja.temple.images[0].image
-    ) {
+    } else if (puja?.temple?.images?.length > 0 && puja.temple.images[0].image) {
       return puja.temple.images[0].image;
     } else if (puja?.god?.image) {
       return puja.god.image;
@@ -387,14 +454,11 @@ const PujaList = () => {
     <div className="puja-list-container">
       <h2 className="puja-heading">Available Pujas</h2>
 
-      {/* Category Section */}
       <div className="category-section">
         {categories.map((category) => (
           <button
             key={category}
-            className={`category-button ${
-              selectedCategory === category ? "active" : ""
-            }`}
+            className={`category-button ${selectedCategory === category ? "active" : ""}`}
             onClick={() => {
               setSelectedCategory(category);
               setCurrentPage(1);
@@ -405,7 +469,6 @@ const PujaList = () => {
         ))}
       </div>
 
-      {/* Search Bar */}
       <div className="search-bar">
         <div className="search-input-wrapper">
           <input
@@ -424,10 +487,11 @@ const PujaList = () => {
             </button>
           )}
         </div>
-        <button className="search-button">SEARCH</button>
+        <button className="search-button" onClick={() => setCurrentPage(1)}>
+          SEARCH
+        </button>
       </div>
 
-      {/* Puja Cards */}
       <div className="puja-cards">
         {loading ? (
           [...Array(6)].map((_, index) => (
@@ -437,42 +501,31 @@ const PujaList = () => {
           ))
         ) : error ? (
           <p className="error-text">{error}</p>
-        ) : filteredPujas.length === 0 ? (
+        ) : currentPujas.length === 0 ? (
           <p>No pujas found.</p>
         ) : (
-          filteredPujas.map((puja, idx) => {
+          currentPujas.map((puja, idx) => {
             const imageUrl = getImageUrl(puja);
             const price = puja.amount || puja.original_cost || puja.cost || 0;
-
             return (
               <div key={puja.id || idx} className="puja-card">
-                {/* Image */}
                 <div className="puja-image-box">
                   <img
                     src={imageUrl}
                     alt={puja.name}
                     className="puja-image"
-                    loading="lazy" // ✅ lazy load images
+                    loading="lazy"
                     onError={(e) => {
-                      e.target.src =
-                        "https://via.placeholder.com/400x220?text=No+Image";
+                      e.target.src = "https://via.placeholder.com/400x220?text=No+Image";
                     }}
                   />
                 </div>
-
-                {/* Title */}
                 <h3 className="puja-name">{puja.name}</h3>
-
-                {/* Info */}
                 <div className="puja-info">
                   <p>🛕 {puja.temple?.name || "N/A"}</p>
                   <p>🙏 {puja.god?.name || "N/A"}</p>
                   <p>
-                    ⭐{" "}
-                    {truncateText(
-                      puja.details || puja.description || "Spiritual harmony",
-                      80
-                    )}
+                    ⭐ {truncateText(puja.details || puja.description || "Spiritual harmony", 80)}
                   </p>
                   <p className="puja-price">
                     💰 ₹
@@ -481,18 +534,11 @@ const PujaList = () => {
                       maximumFractionDigits: 2,
                     })}
                   </p>
-
                   <div className="button-wrapper">
-                    <button
-                      className="view-details-btn"
-                      onClick={() => navigate(`/puja/${puja.id}`)}
-                    >
+                    <button className="view-details-btn" onClick={() => navigate(`/puja/${puja.id}`)}>
                       View Details
                     </button>
-                    <button
-                      className="book-button"
-                      onClick={() => handleBookNow(puja)}
-                    >
+                    <button className="book-button" onClick={() => handleBookNow(puja)}>
                       Participate
                     </button>
                   </div>
@@ -503,13 +549,8 @@ const PujaList = () => {
         )}
       </div>
 
-      {/* Pagination */}
       <div className="pagination">
-        <button
-          onClick={handlePrev}
-          disabled={currentPage === 1}
-          className="page-btn"
-        >
+        <button onClick={handlePrev} disabled={currentPage === 1} className="page-btn">
           Prev
         </button>
         {getPageNumbers().map((number) => (
@@ -521,11 +562,7 @@ const PujaList = () => {
             {number}
           </button>
         ))}
-        <button
-          onClick={handleNext}
-          disabled={currentPage === totalPages}
-          className="page-btn"
-        >
+        <button onClick={handleNext} disabled={currentPage === totalPages} className="page-btn">
           Next
         </button>
       </div>
