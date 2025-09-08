@@ -107,25 +107,27 @@ const SplpujaDetails = () => {
                   </div>
                 )}
 
-{/* Description */}
-<ul className="splpuja-description">
-  {visibleDetails?.map((point, idx) => (
+                {/* Description */}
+                <ul className="splpuja-description">
+  {(isExpanded ? details : details?.slice(0, 2))?.map((point, idx, arr) => (
     <li key={idx}>
       • {point.trim()}
-      {/* Show "Read more" after the last visible bullet */}
-      {idx === visibleDetails.length - 1 && details?.length > 5 && !isExpanded && (
+      {/* Add "Read more" inline after the last visible point */}
+      {!isExpanded && idx === arr.length - 1 && details?.length > 2 && (
         <span
           className="read-more"
           onClick={() => setExpandedPooja(pooja.id)}
+          // style={{ cursor: "pointer", color: "blue", marginLeft: "5px" }}
         >
-          ... Read more
+          ... Read more ▼
         </span>
       )}
-      {/* Show "Show less" at the end when expanded */}
-      {idx === details.length - 1 && isExpanded && details?.length > 5 && (
+      {/* Add "Show less" inline after the last expanded point */}
+      {isExpanded && idx === arr.length - 1 && details?.length > 2 && (
         <span
           className="show-less"
           onClick={() => setExpandedPooja(null)}
+          // style={{ cursor: "pointer", color: "blue", marginLeft: "5px" }}
         >
           ... Show less ▲
         </span>
