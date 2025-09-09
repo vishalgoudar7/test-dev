@@ -1,8 +1,76 @@
-body {
+/* body {
   background-color: #ffe5d0;
 }
 
-.prasadam-wrapper {
+.pras-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pras-search-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px auto;
+  max-width: 700px;
+  width: 100%;
+  margin-top: 40px;
+  margin-bottom: 10px;
+  border: 2px solid #ff6600;
+  border-radius: 30px;
+  overflow: hidden;
+  background: white;
+}
+
+.pras-search-input-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.pras-search-input {
+  width: 100%;
+  padding: 12px 40px 12px 15px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #333;
+  box-sizing: border-box;
+}
+
+.pras-clear-inside {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #999;
+}
+
+.pras-clear-inside:hover {
+  color: #333;
+}
+
+.pras-search-button {
+  padding: 12px 25px;
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  border-left: 2px solid #ff6600;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.pras-search-button:hover {
+  background-color: #e64a19;
+}
+
+.pras-wrapper {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -10,7 +78,7 @@ body {
   padding: 40px 20px;
 }
 
-.prasadam-card-modern {
+.pras-card {
   background: white;
   border-radius: 12px;
   padding: 20px;
@@ -19,15 +87,14 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative; /* Required for absolute positioning of label */
+  position: relative;
 }
 
-/* 🔖 Top Left Label */
-.prasadam-top-label {
+.pras-top-label {
   position: absolute;
   top: 15px;
   left: 15px;
-  background-color: #f25c05; /* Matches your .label color */
+  background-color: #f25c05;
   color: white;
   font-size: 12px;
   font-weight: bold;
@@ -41,7 +108,7 @@ body {
   animation: blink 1s infinite;
 }
 
-.prasadam-title {
+.pras-title {
   color: #000;
   font-size: 18px;
   font-weight: 600;
@@ -49,7 +116,7 @@ body {
   text-align: center;
 }
 
-.prasadam-image-wrapper {
+.pras-image-wrapper {
   border: 2px solid orange;
   padding: 5px;
   border-radius: 10px;
@@ -57,31 +124,38 @@ body {
   background: #fff9f0;
 }
 
-.prasadam-image-modern {
+.pras-image {
   width: 260px;
   height: 180px;
   object-fit: cover;
   border-radius: 8px;
 }
 
-.prasadam-card-content-modern {
+.pras-video {
+  width: 260px;
+  height: 180px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.pras-card-content {
   width: 100%;
   flex-grow: 1;
 }
 
-.prasadam-card-content-modern p {
+.pras-card-content p {
   font-size: 14px;
   line-height: 1.5;
   color: #333;
   margin: 10px 0;
 }
 
-.label {
+.pras-label {
   color: #f25c05;
   font-weight: 600;
 }
 
-.prasadam-book-btn {
+.pras-book-btn {
   margin-top: 20px;
   background-color: #ff6600;
   color: white;
@@ -95,18 +169,256 @@ body {
   transition: background 0.3s ease;
 }
 
-.prasadam-book-btn:hover {
+.pras-book-btn:hover {
   background-color: #cc5200;
 }
 
 @media (max-width: 600px) {
-  .prasadam-card-modern {
+  .pras-card {
     width: 90%;
   }
 }
 
 @keyframes blink {
-  0% { color: white; }
-  50% { color: transparent; }
-  100% { color: white; }
+  0% {
+    color: white;
+  }
+  50% {
+    color: transparent;
+  }
+  100% {
+    color: white;
+  }
+} */
+
+
+
+
+
+
+
+
+
+
+
+
+body {
+  background-color: #ffe5d0;
+}
+
+.pras-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pras-search-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px auto;
+  max-width: 700px;
+  width: 100%;
+  margin-top: 40px;
+  margin-bottom: 10px;
+  border: 2px solid #ff6600;
+  border-radius: 30px;
+  overflow: hidden;
+  background: white;
+}
+
+.pras-search-input-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.pras-search-input {
+  width: 100%;
+  padding: 12px 40px 12px 15px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #333;
+  box-sizing: border-box;
+}
+
+.pras-clear-inside {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #999;
+}
+
+.pras-clear-inside:hover {
+  color: #333;
+}
+
+.pras-search-button {
+  padding: 12px 25px;
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  border-left: 2px solid #ff6600;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.pras-search-button:hover {
+  background-color: #e64a19;
+}
+
+.pras-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  padding: 40px 20px;
+}
+
+.pras-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  width: 300px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.pras-top-label {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background-color: #f25c05;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 6px;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  animation: blink 1s infinite;
+}
+
+.pras-title {
+  color: #000;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-align: center;
+  max-height: 3.6em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pras-image-wrapper {
+  border: 2px solid orange;
+  padding: 5px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  background: #fff9f0;
+}
+
+.pras-image {
+  width: 260px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.pras-video {
+  width: 260px;
+  height: 180px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.pras-card-content {
+  width: 100%;
+  flex-grow: 1;
+}
+
+.pras-card-content p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  margin: 10px 0;
+}
+
+.pras-label {
+  color: #f25c05;
+  font-weight: 600;
+}
+
+.expandable-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.expandable-content.expanded {
+  max-height: 200px;
+}
+
+.expand-btn {
+  background: none;
+  border: none;
+  color: #ff6600;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.pras-book-btn {
+  margin-top: 20px;
+  background-color: #ff6600;
+  color: white;
+  padding: 10px 0;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.pras-book-btn:hover {
+  background-color: #cc5200;
+}
+
+.pras-loading, .pras-error {
+  text-align: center;
+  padding: 20px;
+  font-size: 18px;
+}
+
+@media (max-width: 600px) {
+  .pras-card {
+    width: 90%;
+  }
+}
+
+@keyframes blink {
+  0% {
+    color: white;
+  }
+  50% {
+    color: transparent;
+  }
+  100% {
+    color: white;
+  }
 }

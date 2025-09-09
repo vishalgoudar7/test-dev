@@ -1,42 +1,63 @@
-.temple-container {
+/* ---------------- Temple List Container ---------------- */
+.temple-list-container {
   padding: 5px;
   background-color: #f8f9fa;
 }
 
-.temple-title {
+.temple-list-title {
   text-align: center;
   margin-top: 10px;
   margin-bottom: 10px;
   color: #111;
   font-weight: bold;
-  font-size: 30px;
+  font-size: 44px;
 }
 
-.search-container {
+/* ---------------- Search Bar ---------------- */
+.temple-list-search {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 12px;
-  max-width: 800px;
-  /* Wider container */
+  max-width: 1000px;
   margin: 0 auto 2rem;
+  margin-top: 30px;
   width: 100%;
 }
 
-.search-container .form-control {
-  padding: 10px;
-  width: 68%;
-  /* Slightly reduced width to make the input field shorter */
-  font-size: 16px;
-  border-radius: 5px;
-  border: 2px solid #ccc;
-  height: 49px;
-  /* Ensure input field has the same height as the button */
+.temple-list-search-wrapper {
+  position: relative;
+  width: 60%; 
 }
 
-.search-container .btn-primary {
+.temple-list-search-input {
+  padding: 10px 40px 10px 14px; /* space for clear button */
+  width: 100%;
+  font-size: 17px;
+  border-radius: 5px;
+  border: 2px solid #ccc;
+  height: 52px; /* slightly taller */
+}
+
+.temple-list-clear-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  color: #888;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.temple-list-clear-btn:hover {
+  color: #333;
+}
+
+.temple-list-search-btn {
   padding: 12px 20px;
-  /* Larger padding to make the button look more square */
   margin-left: 10px;
   background-color: #f44336;
   color: white;
@@ -44,25 +65,22 @@
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
-  height: 48px;
-  /* Ensured button height is 48px to align with the input field */
-  width: 80px;
-  /* Set width to match height for a more square-like button */
+  height: 52px;
+  width: 90px;
   text-align: center;
   display: flex;
   justify-content: center;
-  /* Ensures the text is centered inside the button */
   align-items: center;
-  /* Centers the text vertically */
 }
 
-.temple-grid {
+/* ---------------- Temple Cards ---------------- */
+.temple-list-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 1.5rem;
 }
 
-.temple-card {
+.temple-list-card {
   background: #fff;
   border-radius: 0.5rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
@@ -72,13 +90,13 @@
   overflow: hidden;
 }
 
-.temple-card:hover {
+.temple-list-card:hover {
   transform: translateY(-5px);
 }
 
-.temple-card img {
+.temple-list-card img {
   width: 100%;
-  height: 180px;
+  height: 190px;
   border: 1px solid #e0e0e0;
   border-bottom: none;
   object-fit: contain;
@@ -88,27 +106,26 @@
   border-top-right-radius: 0.5rem;
 }
 
-.card-body-tl {
+.temple-list-card-body {
   padding: 1rem;
   display: flex;
   flex-direction: column;
   text-align: center;
   flex-grow: 1;
-      border: 1px solid #e0e0e0;
-    border-top: none;
+  border: 1px solid #e0e0e0;
+  border-top: none;
 }
 
-.card-title {
-  font-size: 1rem;
+.temple-list-card-title {
+  font-size: 1.05rem;
   font-weight: bold;
   color: #111;
   margin-bottom: 0.3rem;
   line-height: 1.4;
 }
 
-.temple-location {
+.temple-list-card-location {
   font-size: 1.1rem;
-  /* Increased font size */
   color: #555;
   margin-bottom: 1rem;
   display: flex;
@@ -117,38 +134,30 @@
   gap: 6px;
 }
 
-.location-icon {
+.temple-list-location-icon {
   color: #f44336;
 }
 
-.btn-outline-primary {
+.temple-list-btn {
   margin-top: auto;
   background-color: #ff5722;
   color: white;
   border: none;
-  padding: 8px 12px;
+  padding: 9px 14px;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
   text-align: center;
-
 }
 
-.btn-outline-primary:hover {
+.temple-list-btn:hover {
   background-color: #e65c00;
-  /* Darker orange on hover */
   transform: translateY(-2px);
-  /* Slight lift on hover */
   cursor: pointer;
 }
 
-
-
-
-
-
-
-.pagination-container {
+/* ---------------- Pagination ---------------- */
+.temple-list-pagination {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -156,7 +165,7 @@
   margin-top: 2rem;
 }
 
-.pagination-container .btn {
+.temple-list-pagination .btn {
   width: 45px;
   height: 45px;
   padding: 0;
@@ -164,52 +173,91 @@
   border-radius: 6px;
 }
 
-.pagination-container .btn-primary {
+.temple-list-pagination .btn-primary {
   background-color: #0d6efd;
   color: white;
 }
 
-.pagination-container .btn-outline-primary,
-.pagination-container .btn-outline-secondary {
+.temple-list-pagination .btn-outline-primary,
+.temple-list-pagination .btn-outline-secondary {
   border-color: #0d6efd;
   color: #111;
 }
 
-.pagination-container .btn:disabled {
+.temple-list-pagination .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* Responsive layout */
+/* notice bar */
+
+
+.notice-bar {
+  width: 100%;
+  background: #ffeb3b;
+  color: #f40909;
+  font-weight: bold;
+  font-size: 13px;
+  padding: 8px 0;
+  overflow: hidden;
+  position: relative;
+  /* border-bottom: 2px solid #f57c00; */
+}
+
+.notice-text {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: scrollNotice 90s linear infinite;
+  will-change: transform;
+  transform: translateZ(0); 
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@keyframes scrollNotice {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+
+
+
+/* ---------------- Responsive ---------------- */
 @media (max-width: 1200px) {
-  .temple-grid {
+  .temple-list-grid {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
 @media (max-width: 992px) {
-  .temple-grid {
+  .temple-list-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (max-width: 768px) {
-  .temple-grid {
+  .temple-list-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .search-container {
+  .temple-list-search {
     flex-direction: row;
     gap: 10px;
   }
 }
 
 @media (max-width: 480px) {
-  .temple-grid {
+  .temple-list-grid {
     grid-template-columns: repeat(1, 1fr);
   }
 }
 
+/* Keep btn-danger style */
 .btn-danger {
   background-color: #ff5722;
 }

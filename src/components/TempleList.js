@@ -6,7 +6,7 @@ import '../styles/TempleList.css';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 
 const SkeletonCard = () => (
-  <div className="temple-card skeleton">
+  <div className="temple-list-card skeleton">
     <div className="skeleton-img" />
     <div className="skeleton-text title" />
     <div className="skeleton-text location" />
@@ -55,27 +55,51 @@ const TempleList = () => {
   };
 
   return (
-    <div className="temple-container">
-      <h1 className="temple-title">EXPLORE MORE TEMPLES</h1>
+    <div className="temple-list-container">
 
-      <div className="search-container">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Search Temples..."
-          value={search}
-          onChange={(e) => dispatch(setSearch(e.target.value))}
-        />
-        <button className="btn btn-primary" style={{ backgroundColor: '#ff5722', borderColor: '#ff5722' }}>
+      {/* 🔔 Important Notice */}
+      <div className="notice-bar">
+        <div className="notice-text">
+          Important Notice: www.devalayas.com and csc.devalayas.com are the only officially authorized platforms for online temple services such as puja bookings and prasadam delivery, authorized by the Government of Karnataka and respective temple authorities, in collaboration with CSC e-Governance. For any doubts, verify authenticity by contacting our official support team. Book with trust. Serve with devotion.  
+          ⚠ ಪ್ರಮುಖ ಸೂಚನೆ: www.devalayas.com ಮತ್ತು csc.devalayas.com ಮಾತ್ರ ಅಧಿಕೃತವಾಗಿ ಅಧಿಕೃತವಾದ ಆನ್‌ಲೈನ್ ದೇವಾಲಯ ಸೇವೆಗಳಾದ ಪೂಜೆ ಬುಕಿಂಗ್ ಮತ್ತು ಪ್ರಸಾದ ವಿತರಣೆಗೆ ವೇದಿಕೆಗಳಾಗಿದ್ದು, ಇದನ್ನು ಕರ್ನಾಟಕ ಸರ್ಕಾರ ಮತ್ತು ಆಯಾ ದೇವಾಲಯ ಅಧಿಕಾರಿಗಳು CSC ಇ-ಗವರ್ನೆನ್ಸ್ ಸಹಯೋಗದೊಂದಿಗೆ ಅಧಿಕೃತಗೊಳಿಸಿದ್ದಾರೆ. ಯಾವುದೇ ಸಂದೇಹಗಳಿದ್ದರೆ, ನಮ್ಮ ಅಧಿಕೃತ ಬೆಂಬಲ ತಂಡವನ್ನು ಸಂಪರ್ಕಿಸುವ ಮೂಲಕ ದೃಢೀಕರಣವನ್ನು ಪರಿಶೀಲಿಸಿ. ನಂಬಿಕೆಯೊಂದಿಗೆ ಬುಕ್ ಮಾಡಿ. ಭಕ್ತಿಯಿಂದ ಸೇವೆ ಮಾಡಿ.
+        </div>
+      </div>
+
+      <h1 className="temple-list-title">EXPLORE MORE TEMPLES</h1>
+
+      {/* Search Bar */}
+      <div className="temple-list-search">
+        <div className="temple-list-search-wrapper">
+          <input
+            type="text"
+            className="temple-list-search-input"
+            placeholder="Search Temples..."
+            value={search}
+            onChange={(e) => dispatch(setSearch(e.target.value))}
+          />
+          {search && (
+            <button
+              className="temple-list-clear-btn"
+              onClick={() => dispatch(setSearch(''))}
+            >
+              ✖
+            </button>
+          )}
+        </div>
+        <button
+          className="temple-list-search-btn"
+          style={{ backgroundColor: '#ff5722', borderColor: '#ff5722' }}
+        >
           SEARCH
         </button>
       </div>
 
-      <div className="temple-grid">
+      {/* Temples Grid */}
+      <div className="temple-list-grid">
         {loading
           ? Array(10).fill(0).map((_, idx) => <SkeletonCard key={idx} />)
           : paginated.map((temple) => (
-              <div key={temple.id} className="temple-card">
+              <div key={temple.id} className="temple-list-card">
                 <img
                   src={getImageUrl(temple)}
                   alt={temple.name}
@@ -85,13 +109,16 @@ const TempleList = () => {
                     e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
                   }}
                 />
-                <div className="card-body-tl">
-                  <h5 className="card-title">{temple.name}</h5>
-                  <p className="temple-location">
-                    <FaMapMarkerAlt className="location-icon" />{' '}
+                <div className="temple-list-card-body">
+                  <h5 className="temple-list-card-title">{temple.name}</h5>
+                  <p className="temple-list-card-location">
+                    <FaMapMarkerAlt className="temple-list-location-icon" />{' '}
                     {temple.district || temple.taluk || 'Unknown Location'}
                   </p>
-                  <button className="btn btn-outline-primary" onClick={() => navigate(`/Temples/${temple.id}`)}>
+                  <button
+                    className="temple-list-btn"
+                    onClick={() => navigate(`/Temples/${temple.id}`)}
+                  >
                     PARTICIPATE
                   </button>
                 </div>
@@ -99,8 +126,9 @@ const TempleList = () => {
             ))}
       </div>
 
+      {/* Pagination */}
       {!loading && (
-        <div className="pagination-container" style={{ display: 'flex', gap: 8, justifyContent: 'center', alignItems: 'center' }}>
+        <div className="temple-list-pagination" style={{ display: 'flex', gap: 8, justifyContent: 'center', alignItems: 'center' }}>
           <button className="btn btn-outline-danger btn-sm" onClick={handlePrev} disabled={page === 1}>Prev</button>
           {(() => {
             let start = Math.max(1, page - 1);
