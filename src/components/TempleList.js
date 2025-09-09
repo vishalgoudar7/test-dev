@@ -110,7 +110,7 @@ const TempleList = () => {
                   }}
                 />
                 <div className="temple-list-card-body">
-                  <h5 className="temple-list-card-title">{temple.name}</h5>
+                  <h6 className="temple-list-card-title">{temple.name}</h6>
                   <p className="temple-list-card-location">
                     <FaMapMarkerAlt className="temple-list-location-icon" />{' '}
                     {temple.district || temple.taluk || 'Unknown Location'}

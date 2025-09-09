@@ -118,11 +118,11 @@
 }
 
 .temple-list-card-title {
-  font-size: 1.05rem;
+  font-size: 14px;
   font-weight: bold;
   color: #111;
   margin-bottom: 0.3rem;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .temple-list-card-location {
