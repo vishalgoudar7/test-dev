@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/logo.png';
+import NewLogo from '../assets/NewLogo.png';
 import google from '../assets/google.jpg';
 import apple from '../assets/apple.jpg';
 import incubatedAt from '../assets/ginserve.jpg';
@@ -33,7 +33,7 @@ const Footer = () => {
           {/* Logo + About */}
           <div className="footer-column about-column">
             <div className="about-header">
-              <img className="footer-logo" src={logo} alt="Devalaya Logo" />
+              <img className="footer-logo" src={NewLogo} alt="Devalaya Logo" />
               <h6 className="footer-tagline">WITH TRUST & DEVOTION</h6>
             </div>
             <p className="about-text">
