@@ -119,24 +119,18 @@ body {
 
 .prasadam-image-wrapper {
   border: 2px solid orange;
-  padding: 5px;
+  /* padding: 5px; */
   border-radius: 10px;
   margin-bottom: 15px;
   background: #fff9f0;
 }
 
-.prasadam-image {
-  width: 260px;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
+.prasadam-image,
 .prasadam-video {
-  width: 260px;
-  height: 180px;
-  border-radius: 8px;
+  width: 100%;
+  aspect-ratio: 800 / 450;
   object-fit: cover;
+  border-radius: 8px;
 }
 
 .prasadam-card-content {
