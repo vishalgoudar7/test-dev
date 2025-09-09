@@ -210,15 +210,7 @@ const PujaList = () => {
                   <p>🛕 {puja.temple?.name || "N/A"}</p>
                   <p>🙏 {puja.god?.name || "N/A"}</p>
                   <p>
-<<<<<<< HEAD
-                    ⭐{" "}
-                    {truncateText(
-                      puja.excluded|| "Spiritual harmony",
-                      80
-                    )}
-=======
                     ⭐ {truncateText(puja.details || puja.description || "Spiritual harmony", 80)}
->>>>>>> ba04a15dc6690c7930b796dbbabc3f78f7832153
                   </p>
                   <p className="puja-price">
                     💰 ₹
