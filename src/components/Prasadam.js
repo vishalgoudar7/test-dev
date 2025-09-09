@@ -14,7 +14,6 @@
 //       try {
 //         setLoading(true);
 
-//         // Fetch both APIs in parallel
 //         const [poojaRes, prasadamRes] = await Promise.all([
 //           api.get("/api/v1/devotee/pooja/"),
 //           api.get("/api/v1/devotee/prasadam/"),
@@ -23,7 +22,6 @@
 //         const poojaItems = poojaRes.data?.results || [];
 //         const prasadamItems = prasadamRes.data?.results || [];
 
-//         // Filter prasadam items from pooja API
 //         const filteredPooja = poojaItems.filter(
 //           (item) =>
 //             item.name?.toLowerCase().includes("prasadam") ||
@@ -45,7 +43,6 @@
 //     fetchPrasadam();
 //   }, []);
 
-//   // ✅ Live Search Functionality
 //   useEffect(() => {
 //     if (!searchTerm.trim()) {
 //       setFilteredList(prasadamList);
@@ -97,42 +94,42 @@
 
 //   if (loading) {
 //     return (
-//       <div className="prasadam-loading">
-//         <div className="loader"></div>
+//       <div className="pras-loading">
+//         <div className="pras-loader"></div>
 //         <p>Loading prasadam...</p>
 //       </div>
 //     );
 //   }
 
-//   if (error) return <div className="prasadam-error">{error}</div>;
-//   if (!prasadamList.length) return <div className="prasadam-error">No prasadam available.</div>;
+//   if (error) return <div className="pras-error">{error}</div>;
+//   if (!prasadamList.length) return <div className="pras-error">No prasadam available.</div>;
 
 //   return (
 //     <div>
 //       {/* 🔍 Search Bar */}
-//       <div className="search-bar">
-//         <div className="search-input-wrapper">
+//       <div className="pras-search-bar">
+//         <div className="pras-search-input-wrapper">
 //           <input
 //             type="text"
 //             placeholder="Search by prasadam or temples..."
 //             value={searchTerm}
 //             onChange={(e) => setSearchTerm(e.target.value)}
-//             className="search-input"
+//             className="pras-search-input"
 //           />
 //           {searchTerm && (
 //             <button
-//               className="clear-inside"
+//               className="pras-clear-inside"
 //               onClick={() => setSearchTerm("")}
 //             >
 //               ✖
 //             </button>
 //           )}
 //         </div>
-//         <button className="search-button">SEARCH</button>
+//         <button className="pras-search-button">SEARCH</button>
 //       </div>
 
 //       {/* Cards */}
-//       <div className="prasadam-wrapper">
+//       <div className="pras-wrapper">
 //         {filteredList.map((prasadam) => {
 //           const poojaPrasadam = prasadam.pooja_prasadam || {};
 //           const mediaUrl =
@@ -153,17 +150,15 @@
 //             rawCost && !isNaN(rawCost) ? `₹ ${rawCost}/-` : "₹ Not specified";
 
 //           return (
-//             <div key={prasadam.id} className="prasadam-card-modern">
-//               {/* 🔖 Top Left Label */}
-//               <div className="prasadam-top-label">Prasadam</div>
+//             <div key={prasadam.id} className="pras-card">
+//               <div className="pras-top-label">Prasadam</div>
 
-//               {/* Media (Video or Image) */}
 //               {mediaUrl && (
-//                 <div className="prasadam-image-wrapper">
+//                 <div className="pras-image-wrapper">
 //                   {/\.mp4$|\.webm$|\.ogg$/i.test(mediaUrl) ? (
 //                     <video
 //                       src={mediaUrl}
-//                       className="prasadam-video-modern"
+//                       className="pras-video"
 //                       controls
 //                       autoPlay
 //                       muted
@@ -174,7 +169,7 @@
 //                     <img
 //                       src={mediaUrl}
 //                       alt={prasadam.name}
-//                       className="prasadam-image-modern"
+//                       className="pras-image"
 //                       onError={(e) => {
 //                         e.target.style.display = "none";
 //                       }}
@@ -183,31 +178,28 @@
 //                 </div>
 //               )}
 
-//               {/* Title */}
-//               <h4 className="prasadam-title">
+//               <h4 className="pras-title">
 //                 🌸 {prasadam.name || poojaPrasadam.name || "Prasadam"}
 //               </h4>
 
-//               {/* Content */}
-//               <div className="prasadam-card-content-modern">
+//               <div className="pras-card-content">
 //                 <p>
-//                   <span className="label">Details:</span>{" "}
+//                   <span className="pras-label">Details:</span>{" "}
 //                   {prasadam.details || poojaPrasadam.details || "N/A"}
 //                 </p>
 //                 <p>
-//                   <span className="label">Include's:</span> {includes}
+//                   <span className="pras-label">Include's:</span> {includes}
 //                 </p>
 //                 <p>
-//                   <span className="label">Benefits:</span> {benefits}
+//                   <span className="pras-label">Benefits:</span> {benefits}
 //                 </p>
 //                 <p>
-//                   <span className="label">Cost:</span> {costDisplay}
+//                   <span className="pras-label">Cost:</span> {costDisplay}
 //                 </p>
 //               </div>
 
-//               {/* Button */}
 //               <button
-//                 className="prasadam-book-btn"
+//                 className="pras-book-btn"
 //                 onClick={() => addToCart(prasadam)}
 //               >
 //                 Book ➜
@@ -227,6 +219,7 @@
 
 
 
+
 import React, { useEffect, useState } from "react";
 import api from "../api/api";
 import "../styles/Prasadam.css";
@@ -237,12 +230,12 @@ const Prasadam = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [expandedItems, setExpandedItems] = useState({}); // Track expanded state
 
   useEffect(() => {
     const fetchPrasadam = async () => {
       try {
         setLoading(true);
-
         const [poojaRes, prasadamRes] = await Promise.all([
           api.get("/api/v1/devotee/pooja/"),
           api.get("/api/v1/devotee/prasadam/"),
@@ -321,6 +314,13 @@ const Prasadam = () => {
     }
   };
 
+  const toggleExpand = (id) => {
+    setExpandedItems((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
   if (loading) {
     return (
       <div className="pras-loading">
@@ -334,8 +334,7 @@ const Prasadam = () => {
   if (!prasadamList.length) return <div className="pras-error">No prasadam available.</div>;
 
   return (
-    <div>
-      {/* 🔍 Search Bar */}
+    <div className="pras-page">
       <div className="pras-search-bar">
         <div className="pras-search-input-wrapper">
           <input
@@ -357,7 +356,6 @@ const Prasadam = () => {
         <button className="pras-search-button">SEARCH</button>
       </div>
 
-      {/* Cards */}
       <div className="pras-wrapper">
         {filteredList.map((prasadam) => {
           const poojaPrasadam = prasadam.pooja_prasadam || {};
@@ -367,6 +365,7 @@ const Prasadam = () => {
 
           const includes = poojaPrasadam.included || prasadam.included || "Not specified";
           const benefits = poojaPrasadam.excluded || prasadam.excluded || "-";
+          const details = prasadam.details || poojaPrasadam.details || "N/A";
 
           const rawCost =
             poojaPrasadam.original_cost ||
@@ -374,9 +373,10 @@ const Prasadam = () => {
             prasadam.original_cost ||
             prasadam.cost ||
             null;
-
           const costDisplay =
             rawCost && !isNaN(rawCost) ? `₹ ${rawCost}/-` : "₹ Not specified";
+
+          const isExpanded = expandedItems[prasadam.id] || false;
 
           return (
             <div key={prasadam.id} className="pras-card">
@@ -407,24 +407,26 @@ const Prasadam = () => {
                 </div>
               )}
 
-              <h4 className="pras-title">
-                🌸 {prasadam.name || poojaPrasadam.name || "Prasadam"}
-              </h4>
+              <h4 className="pras-title">🌸 {prasadam.name || poojaPrasadam.name || "Prasadam"}</h4>
 
               <div className="pras-card-content">
                 <p>
-                  <span className="pras-label">Details:</span>{" "}
-                  {prasadam.details || poojaPrasadam.details || "N/A"}
+                  <span className="pras-label">Details:</span> {details}
                 </p>
                 <p>
                   <span className="pras-label">Include's:</span> {includes}
                 </p>
-                <p>
-                  <span className="pras-label">Benefits:</span> {benefits}
-                </p>
-                <p>
-                  <span className="pras-label">Cost:</span> {costDisplay}
-                </p>
+                <div className={`expandable-content ${isExpanded ? "expanded" : ""}`}>
+                  <p>
+                    <span className="pras-label">Benefits:</span> {benefits}
+                  </p>
+                  <p>
+                    <span className="pras-label">Cost:</span> {costDisplay}
+                  </p>
+                </div>
+                <button className="expand-btn" onClick={() => toggleExpand(prasadam.id)}>
+                  {isExpanded ? "Read less" : "Read more"}
+                </button>
               </div>
 
               <button
