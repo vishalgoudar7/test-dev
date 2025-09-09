@@ -115,7 +115,7 @@ const TempleDetails = () => {
                   onClick={() => handleImageClick(getFullImageUrl(p.images?.[0]?.image))}
                   onError={(e) => { e.target.onerror = null; e.target.src = require('../assets/Default.png'); }}
                   className="img-fluid rounded shadow-sm"
-                  style={{ height: '180px', width: '100%', objectFit: 'cover', borderRadius: '10px', border: '2px solid #ffc107' }}
+                  style={{ aspectRatio: '800 / 450', width: '100%', objectFit: 'cover', borderRadius: '10px', border: '2px solid #ffc107' }}
                 />
               </div>
               <div className="text-dark small mb-3">
@@ -157,7 +157,7 @@ const TempleDetails = () => {
                     onClick={() => handleImageClick(getFullImageUrl(p.images?.[0]?.image))}
                     onError={(e) => { e.target.onerror = null; e.target.src = require('../assets/Default.png'); }}
                     className="img-fluid rounded shadow-sm"
-                    style={{ height: '180px', width: '100%', objectFit: 'cover', borderRadius: '10px', border: '2px solid #ffc107' }}
+                    style={{ aspectRatio: '800 / 450', width: '100%', objectFit: 'cover', borderRadius: '10px', border: '2px solid #ffc107' }}
                   />
                 </div>
                 <div className="text-dark small mb-3">
