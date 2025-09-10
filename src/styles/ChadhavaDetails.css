@@ -16,7 +16,7 @@
 
 /* Left Panel - Image Carousel */
 .left-panel {
-  flex: 0 0 45%;
+  flex: 0 0 40%;
 }
 
 .image-carousel-section {
@@ -28,8 +28,12 @@
 
 .main-image-container {
   position: relative;
-  height: 350px;
+  width: 100%; /* Take full width of parent */
+  height: auto; /* Height adjusts automatically */
+  aspect-ratio: 800 / 450; /* Maintain 800x450 aspect ratio */
   overflow: hidden;
+  margin: 0 auto; /* Center the image container */
+  max-width: 800px; /* Ensure it doesn't grow beyond desired width */
 }
 
 .main-image {
@@ -171,14 +175,14 @@
 
 /* Right Panel - Booking Details */
 .right-panel {
-  flex: 0 0 55%;
+  flex: 0 0 60%;
 }
 
 .offerings-details {
   width: 100%;
   background: white;
   border-radius: 12px;
-  padding: 30px;
+  padding: 15px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
@@ -608,7 +612,7 @@
 }
 
 .pay-btn {
-  background: #4caf50;
+  background: #ff5722;
   color: white;
   border: none;
   padding: 15px 30px;
@@ -622,7 +626,7 @@
 }
 
 .pay-btn:hover:not(:disabled) {
-  background: #45a049;
+  background: #ff794d;
   transform: translateY(-1px);
 }
 
@@ -901,8 +905,8 @@
 .included-section,
 .excluded-section {
   background-color: #f0f8ff; /* Light blue background */
-  padding: 15px;
-  margin-bottom: 15px;
+  padding: 10px;
+  margin-bottom: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }

@@ -233,9 +233,8 @@ const ChadhavaDetails = () => {
     if (!address.devoteeName) newErrors.devoteeName = "Required";
     if (!address.devoteeMobile || !/^\d{10}$/.test(address.devoteeMobile))
       newErrors.devoteeMobile = "Valid 10-digit mobile";
-    if (!address.sankalpa) newErrors.sankalpa = "Required";
-    if (!address.nakshatra) newErrors.nakshatra = "Required";
-    if (!address.gotraKulaRashi) newErrors.gotraKulaRashi = "Required";
+    // if (!address.sankalpa) newErrors.sankalpa = "Required";
+    // if (!address.nakshatra) newErrors.nakshatra = "Required";
     if (!address.street1) newErrors.street1 = "Required";
     if (!address.area) newErrors.area = "Required";
     if (!address.city) newErrors.city = "Required";
@@ -670,7 +669,7 @@ const ChadhavaDetails = () => {
                     </div>
 
                     <div className="form-group">
-                      <label>Sankalpa <span className="required-star">*</span></label>
+                      <label>Sankalpa </label>
                       <input
                         type="text"
                         name="sankalpa"
@@ -684,7 +683,7 @@ const ChadhavaDetails = () => {
                     </div>
 
                     <div className="form-group">
-                      <label>Nakshatra <span className="required-star">*</span></label>
+                      <label>Nakshatra </label>
                       <input
                         type="text"
                         name="nakshatra"
@@ -698,7 +697,7 @@ const ChadhavaDetails = () => {
                     </div>
 
                     <div className="form-group">
-                      <label>Gotra, Kula & Rashi <span className="required-star">*</span></label>
+                      <label>Gotra, Kula & Rashi </label>
                       <input
                         type="text"
                         name="gotraKulaRashi"
@@ -753,7 +752,7 @@ const ChadhavaDetails = () => {
                         )}
                       </div>
                       <div className="form-group half">
-                        <label>Pincode *</label>
+                        <label>Pincode <span className="required-star">*</span></label>
                         <input
                           type="text"
                           name="pincode"
@@ -781,18 +780,6 @@ const ChadhavaDetails = () => {
                         )}
                       </div>
                       <div className="form-group half">
-                        <label>State <span className="required-star">*</span></label>
-                        <input
-                          type="text"
-                          name="state"
-                          value={address.state}
-                          onChange={handleInputChange}
-                        />
-                        {errors.state && (
-                          <span className="error">{errors.state}</span>
-                        )}
-                      </div>
-                      <div className="form-group half">
                         <label>District <span className="required-star">*</span></label>
                         <input
                           type="text"
@@ -802,6 +789,18 @@ const ChadhavaDetails = () => {
                         />
                         {errors.district && (
                           <span className="error">{errors.district}</span>
+                        )}
+                      </div>
+                      <div className="form-group half">
+                        <label>State <span className="required-star">*</span></label>
+                        <input
+                          type="text"
+                          name="state"
+                          value={address.state}
+                          onChange={handleInputChange}
+                        />
+                        {errors.state && (
+                          <span className="error">{errors.state}</span>
                         )}
                       </div>
                     </div>

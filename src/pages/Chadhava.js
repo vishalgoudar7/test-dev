@@ -66,9 +66,11 @@ const Chadhava = () => {
         <div className="chadhava-grid">
           {filteredChadhavaItems.length > 0 ? (
             filteredChadhavaItems.map((item) => {
-              const templeImage =
-                item.temple?.images?.[0]?.image || "/placeholder.png";
-              
+              // Prefer pooja_chadhava.images[0].image, then temple image, then placeholder
+              const chadhavaImage =
+                item.pooja_chadhava?.images?.[0]?.image ||
+                item.temple?.images?.[0]?.image ||
+                "/placeholder.png";
 
               return (
                 <div key={item.id} className="chadhava-card">
@@ -76,11 +78,10 @@ const Chadhava = () => {
                   <div className="chadhava-label"><span className="blinking-text">Chadhava</span></div>
 
                   <img
-                    src={templeImage}
-                    alt={item.temple?.name || item.name}
+                    src={chadhavaImage}
+                    alt={item.pooja_chadhava?.images?.[0]?.title || item.temple?.name || item.name}
                     className="chadhava-image"
                   />
-
 
                   <h3 className="chadhava-name">{item.name}</h3>
                   {/* <p className="chadhava-description">{item.details}</p> */}
@@ -103,7 +104,7 @@ const Chadhava = () => {
                   
 
                   <button
-                    className="chadhava-btn"
+                    className="chadhava-btn-o"
                     onClick={() => handleOfferNow(item)}
                   >
                     Offer Now
