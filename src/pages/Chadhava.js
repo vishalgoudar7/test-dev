@@ -30,7 +30,7 @@ const Chadhava = () => {
   }, []);
 
   const handleOfferNow = (item) => {
-    navigate(`/chadhava/${item.id}`, { state: { item: item } });
+    navigate(`/chadhava/${item.temple.id}`, { state: { item: item } });
   };
 
   const handleSearch = () => {

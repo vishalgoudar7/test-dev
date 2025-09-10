@@ -1,6 +1,6 @@
 // src/pages/ChadhavaDetails.js
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/api";
 import "../styles/ChadhavaDetails.css";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
@@ -19,6 +19,7 @@ const loadRazorpayScript = () => {
 
 const ChadhavaDetails = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   
   const { user } = useUserAuth();
   const [profile, setProfile] = useState(null);
@@ -52,6 +53,23 @@ const ChadhavaDetails = () => {
     district: "",
     pincode: "",
   });
+
+  // Moved these functions up to resolve ESLint no-undef errors
+  const handleSelectItem = (item) => {
+    setSelectedItems((prev) =>
+      prev.some((i) => i.id === item.id)
+        ? prev.filter((i) => i.id !== item.id)
+        : [...prev, { ...item, quantity: 1 }]
+    );
+  };
+
+  const updateQuantity = (itemId, qty) => {
+    setSelectedItems((prev) =>
+      prev.map((item) =>
+        item.id === itemId ? { ...item, quantity: Math.max(1, qty) } : item
+      )
+    );
+  };
 
   useEffect(() => {
     const storedProfile = localStorage.getItem("devoteeProfile");
@@ -100,8 +118,14 @@ const ChadhavaDetails = () => {
     const fetchChadhavas = async () => {
       try {
         setLoading(true);
-        const res = await api.get("/api/v1/devotee/chadhava/");
+        const res = await api.get(`/api/v1/devotee/chadhava/?temple=${parseInt(id)}`);
         const data = res.data;
+
+        if (!data) {
+          setError("No data received from server.");
+          console.error("No data received from server.", res);
+          return;
+        }
 
         if (data?.results?.length > 0) {
           const firstResult = data.results[0];
@@ -152,33 +176,19 @@ const ChadhavaDetails = () => {
           setAssignedItems(allItems);
         } else {
           setError("No items assigned for offering.");
+          console.error("No items assigned for offering.", data);
         }
       } catch (err) {
+        setError("Failed to load items. Please try again. " + (err?.message || ""));
         console.error("Error fetching chadhava items:", err);
-        setError("Failed to load items. Please try again.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchChadhavas();
-  }, []);
+  }, [id]);
 
-  const handleSelectItem = (item) => {
-    setSelectedItems((prev) =>
-      prev.some((i) => i.id === item.id)
-        ? prev.filter((i) => i.id !== item.id)
-        : [...prev, { ...item, quantity: 1 }]
-    );
-  };
-
-  const updateQuantity = (itemId, qty) => {
-    setSelectedItems((prev) =>
-      prev.map((item) =>
-        item.id === itemId ? { ...item, quantity: Math.max(1, qty) } : item
-      )
-    );
-  };
 
   const handleAddToCart = () => {
     if (selectedItems.length === 0) {
@@ -235,23 +245,22 @@ const ChadhavaDetails = () => {
       newErrors.pincode = "6-digit pincode";
 
     setErrors(newErrors);
+    console.log("Validation errors:", newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
     setLoading(true);
-
     try {
-      const comment = `( Nakshatra :${address.nakshatra || ''})( Gotra, Kula & Rashi :${address.gotraKulaRashi || ''} )`;
+      const comment = `( Nakshatra :${address.nakshatra || ''})( Gotra, Kula & Rashi :${address.gotraKulaRashi || ''} )`; // Moved up
 
       const payload = {
         requests: [
           {
             is_chadhava: true,
-            is_prasadam_delivery: true, // Always true to get delivery charges
+            is_prasadam_delivery: false, // Always true to get delivery charges
             pooja: selectedItems[0]?.poojaId, // Assuming all selected items belong to the same pooja
             temple: selectedItems[0]?.templeId, // Assuming all selected items belong to the same temple
             requested_chadhava_items: selectedItems.map((item) => ({
@@ -523,7 +532,7 @@ const ChadhavaDetails = () => {
             
             {includedItems && (
               <div className="excluded-section text-start">
-                <h4><strong>Includes: </strong>{includedItems}</h4>
+                <h4><strong>Chadhava items: </strong>{includedItems}</h4>
               </div>
             )}
             {excludedItems && (
