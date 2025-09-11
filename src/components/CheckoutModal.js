@@ -312,15 +312,15 @@ const CheckoutModal = ({ open, onClose }) => {
       onClose();
 
       if (response.data?.success === true) {
-        navigate(`/payment-success?payment_id=${rz_response?.razorpay_payment_id}&order_id=${orderId}&status=success`);
+        navigate(`/payment-success?payment_id=${rz_response?.razorpay_payment_id}&order_id=${orderId}&status=success`, { replace: true });
       } else {
-        navigate(`/payment-success?payment_id=${rz_response?.razorpay_payment_id}&order_id=${orderId}&status=failed&error=${encodeURIComponent('Payment verification failed')}`);
+        navigate(`/payment-success?payment_id=${rz_response?.razorpay_payment_id}&order_id=${orderId}&status=failed&error=${encodeURIComponent('Payment verification failed')}`, { replace: true });
       }
     } catch (err) {
       console.error("placeOrder error:", err);
       onClose();
       const errorMessage = err.response?.data?.detail || err.message || "Unknown error";
-      navigate(`/payment-success?payment_id=${rz_response?.razorpay_payment_id || ''}&order_id=${orderId}&status=failed&error=${encodeURIComponent(errorMessage)}`);
+      navigate(`/payment-success?payment_id=${rz_response?.razorpay_payment_id || ''}&order_id=${orderId}&status=failed&error=${encodeURIComponent(errorMessage)}`, { replace: true });
     }
   };
 

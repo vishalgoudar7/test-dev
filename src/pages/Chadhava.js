@@ -69,7 +69,7 @@ const Chadhava = () => {
               // Prefer pooja_chadhava.images[0].image, then temple image, then placeholder
               const chadhavaImage =
                 item.pooja_chadhava?.images?.[0]?.image ||
-                item.temple?.images?.[0]?.image ||
+                // item.temple?.images?.[0]?.image ||
                 "/placeholder.png";
 
               return (
@@ -79,7 +79,7 @@ const Chadhava = () => {
 
                   <img
                     src={chadhavaImage}
-                    alt={item.pooja_chadhava?.images?.[0]?.title || item.temple?.name || item.name}
+                    // alt={item.pooja_chadhava?.images?.[0]?.title || item.temple?.name || item.name}
                     className="chadhava-image"
                   />
 

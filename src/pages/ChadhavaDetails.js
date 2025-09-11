@@ -488,7 +488,7 @@ const ChadhavaDetails = () => {
             </div>
 
             {/* Thumbnail Images */}
-            <div className="thumbnail-images">
+            {/* <div className="thumbnail-images">
               {carouselImages.map((image, index) => (
                 <div 
                   key={image.id} 
@@ -503,7 +503,7 @@ const ChadhavaDetails = () => {
                   
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
         </div>
 

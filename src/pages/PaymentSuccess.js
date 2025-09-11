@@ -26,6 +26,18 @@ const PaymentSuccess = () => {
   const isSuccess = status === 'success' || (!status && !error);
 
   useEffect(() => {
+    window.history.pushState(null, document.title, window.location.href);
+    const handlePopState = () => {
+      navigate('/', { replace: true });
+    };
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [navigate]);
+
+  useEffect(() => {
     if (!orderId && !paymentId) {
       setTimeout(() => navigate('/'), 2000);
     }
