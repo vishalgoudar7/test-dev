@@ -358,7 +358,7 @@ const PujaList = () => {
   const categories = [
     "All",
     "Abhishek",
-    "Mahamgalarti",
+    "Mahamangalarti",
     "Rudrabhishek",
     "Homa",
     "Havan",
