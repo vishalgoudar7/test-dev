@@ -1,6 +1,6 @@
 .puja-list-container {
   padding: 20px;
-  background: #fff;
+  background: #faf9f9;
 }
 
 .puja-heading {
@@ -108,9 +108,9 @@
 
 .puja-card {
   background: #fff;
-  border: 2px solid #800080;
+  border: 1px solid #dcdbdb;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 6px 6px 14px rgba(241, 239, 239, 0.938);
   overflow: hidden;
   width: 100%;
   max-width: 400px;
