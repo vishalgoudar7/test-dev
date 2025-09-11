@@ -91,12 +91,12 @@ const Chadhava = () => {
                   {/* Included and Excluded details */}
                   {(item.included || item.pooja_chadhava?.included) && (
                     <p className="chadhava-included">
-                      <strong>Included: </strong>{item.included || item.pooja_chadhava?.included}
+                      <strong>Chadhava items: </strong>{item.included || item.pooja_chadhava?.included}
                     </p>
                   )}
                   {(item.excluded || item.pooja_chadhava?.excluded) && (
                     <p className="chadhava-excluded">
-                      <strong>Benifits: </strong> {item.excluded || item.pooja_chadhava?.excluded}
+                      <strong>Benefits: </strong> {item.excluded || item.pooja_chadhava?.excluded}
                     </p>
                   )}
 

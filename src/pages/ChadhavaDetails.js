@@ -536,7 +536,7 @@ const ChadhavaDetails = () => {
             )}
             {excludedItems && (
               <div className="included-section text-start">
-                <h4><strong> Benifits: </strong>{excludedItems}</h4>
+                <h4><strong>Benefits: </strong>{excludedItems}</h4>
                 
               </div>
             )}
